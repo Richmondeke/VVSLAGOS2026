@@ -1,0 +1,17 @@
+{
+    "name": "@vvs/members",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "scripts": {
+        "build": "tsc",
+        "type-check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@vvs/contracts": "workspace:*",
+        "@vvs/shared": "workspace:*"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "files": [],
+    "references": [
+        { "path": "packages/contracts" },
+        { "path": "packages/shared" },
+        { "path": "packages/auth" },
+        { "path": "packages/members" },
+        { "path": "packages/marketplace" },
+        { "path": "packages/finance" },
+        { "path": "packages/social" },
+        { "path": "packages/platform" },
+        { "path": "apps/api" },
+        { "path": "apps/workers" }
+    ]
+}

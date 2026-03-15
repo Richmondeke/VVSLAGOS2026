@@ -1,0 +1,15 @@
+{
+    "name": "@vvs/workers",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsx watch src/index.ts",
+        "type-check": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@vvs/contracts": "workspace:*",
+        "@vvs/shared": "workspace:*"
+    }
+}

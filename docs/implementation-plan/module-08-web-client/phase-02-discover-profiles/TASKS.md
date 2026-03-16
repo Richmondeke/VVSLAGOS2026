@@ -1,42 +1,42 @@
 ## Phase 8.2 Task List: Discovery, Profiles, Listings
 
 ### Discover Page (P0 — Default Landing)
-[ ] 1.  Build /discover page as the default authenticated landing
-[ ] 2.  Search bar with immediate feedback (loading indicator on input)
+[x] 1.  Build /discover page as the default authenticated landing
+[x] 2.  Search bar with immediate feedback (loading indicator on input)
 [ ] 3.  Category filter chips (horizontal scroll on mobile)
 [ ] 4.  Filter panel: price range, min reputation, availability (bottom sheet on mobile)
 [ ] 5.  Sort options: relevance, rating, price, newest
-[ ] 6.  Listing cards: title, provider avatar+name, "from ₦X", rating, tx count, response time badge
+[x] 6.  Listing cards: title, provider avatar+name, "from ₦X", rating, tx count, response time badge
 [ ] 7.  Toggle: "Services" (default) / "People"
 [ ] 8.  "Recently Completed" carousel section at top (shows proof of marketplace activity)
-[ ] 9.  Empty state: "No services found for [query]. Know someone who offers this? Invite them."
+[x] 9.  Empty state: "No services found for [query]. Know someone who offers this? Invite them."
 [ ] 10. Error state: search timeout → stale results shown + "Refreshing..." indicator
 [ ] 11. Offline state: show cached listings from service worker with "Showing cached results" banner
 
 ### Listing Detail Page (P0)
-[ ] 12. Build /listings/:id page
-[ ] 13. Provider card: avatar, name, tier badge, rating, tx count, response time, "Referred by [Name]"
-[ ] 14. Pricing tier selector (Basic/Standard/Premium) with clear deliverables comparison
-[ ] 15. Sticky "Order This Service" CTA on mobile scroll
+[x] 12. Build /listings/:id page
+[x] 13. Provider card: avatar, name, tier badge, rating, tx count, response time, "Referred by [Name]"
+[x] 14. Pricing tier selector (Basic/Standard/Premium) with clear deliverables comparison
+[x] 15. Sticky "Order This Service" CTA on mobile scroll
 [ ] 16. "Contact Provider" secondary CTA
 [ ] 17. Portfolio samples grid
 [ ] 18. Reviews section with ratings
-[ ] 19. Order flow modal: MKT-M01 (tier confirmation, deliverables, notes, submit)
+[x] 19. Order flow modal: MKT-M01 (tier confirmation, deliverables, notes, submit)
 [ ] 20. Error state: provider became unverified → "This listing is currently unavailable"
 
 ### Create/Edit Listing Page (P0)
-[ ] 21. Build /listings/new and /listings/:id/edit pages
-[ ] 22. Multi-step form: basics, pricing tiers, portfolio samples, preview
-[ ] 23. Pricing tier builder: up to 3 tiers with deliverables/timeline per tier
+[x] 21. Build /listings/new and /listings/:id/edit pages
+[x] 22. Multi-step form: basics, pricing tiers, portfolio samples, preview
+[x] 23. Pricing tier builder: up to 3 tiers with deliverables/timeline per tier
 [ ] 24. Gate: show verification prompt if not Verified+
 
 ### Profile Pages (P0)
-[ ] 25. Build /profile (own profile, editable)
-[ ] 26. Availability toggle (prominent, top of page)
+[x] 25. Build /profile (own profile, editable)
+[x] 26. Availability toggle (prominent, top of page)
 [ ] 27. Portfolio gallery with media items
-[ ] 28. Reputation metrics: rating, tx count, "New member" if < 3 reviews
-[ ] 29. Tier progress indicator: "2 more transactions to reach Pro"
-[ ] 30. "Referred by [Name]" displayed prominently
+[x] 28. Reputation metrics: rating, tx count, "New member" if < 3 reviews
+[x] 29. Tier progress indicator: "2 more transactions to reach Pro"
+[x] 30. "Referred by [Name]" displayed prominently
 [ ] 31. Reviews section
 [ ] 32. Build /members/:userId (public profile, read-only, with Contact/Hire CTAs)
 [ ] 33. Build /profile/edit (inline edit mode)
@@ -50,7 +50,7 @@
 [ ] 39. Converts to "You're live!" confirmation when all items complete
 
 ### My Listings (P0)
-[ ] 40. Build /listings/mine page with status, quick stats, pause/edit/delete actions
+[x] 40. Build /listings/mine page with status, quick stats, pause/edit/delete actions
 [ ] 41. Pause confirmation modal: MKT-M11
 [ ] 42. Delete confirmation modal: MKT-M12
 

@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+    /* VVS Brand Colors */
+    --color-vvs-primary: #1a1a2e;
+    --color-vvs-accent: #e94560;
+    --color-vvs-gold: #d4a843;
+    --color-vvs-blue: #3b82f6;
+    --color-vvs-green: #22c55e;
+    --color-vvs-yellow: #eab308;
+    --color-vvs-grey: #6b7280;
+
+    /* Tier Colors */
+    --color-tier-free: #9ca3af;
+    --color-tier-verified: #3b82f6;
+    --color-tier-pro: #d4a843;
+
+    /* Availability Colors */
+    --color-avail-available: #22c55e;
+    --color-avail-busy: #eab308;
+    --color-avail-unavailable: #9ca3af;
+}

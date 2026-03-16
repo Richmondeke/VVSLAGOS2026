@@ -1,4 +1,4 @@
-import { eq, or, sql, desc } from "drizzle-orm";
+import { eq, or, sql, desc, count as drizzleCount } from "drizzle-orm";
 import type { ScopedClient } from "@vvs/shared";
 import { orders, orderStateLog, deliverables, revisionRequests } from "../schema.js";
 
@@ -148,6 +148,37 @@ export function createOrdersRepo(db: ScopedClient) {
                 page,
                 pageSize,
             };
+        },
+
+        async listAll(
+            page = 1,
+            pageSize = 20,
+            status?: string,
+        ): Promise<{ items: OrderRow[]; total: number; page: number; pageSize: number }> {
+            const condition = status ? eq(orders.status, status as OrderRow["status"]) : undefined;
+
+            const [countResult, items] = await Promise.all([
+                condition
+                    ? db.select({ count: sql<number>`count(*)::int` }).from(orders).where(condition)
+                    : db.select({ count: sql<number>`count(*)::int` }).from(orders),
+                condition
+                    ? db.select().from(orders).where(condition).orderBy(desc(orders.createdAt)).limit(pageSize).offset((page - 1) * pageSize)
+                    : db.select().from(orders).orderBy(desc(orders.createdAt)).limit(pageSize).offset((page - 1) * pageSize),
+            ]);
+
+            return { items, total: countResult[0]?.count ?? 0, page, pageSize };
+        },
+
+        async countByStatus(): Promise<Record<string, number>> {
+            const rows = await db
+                .select({ status: orders.status, count: drizzleCount() })
+                .from(orders)
+                .groupBy(orders.status);
+            const result: Record<string, number> = {};
+            for (const row of rows) {
+                result[row.status] = row.count;
+            }
+            return result;
         },
 
         async addRevisionRequest(data: {

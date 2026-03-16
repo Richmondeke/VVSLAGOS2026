@@ -7,6 +7,7 @@ import { membersRoutes, createMockS3Adapter } from "@vvs/members";
 import { marketplaceRoutes } from "@vvs/marketplace";
 import { socialRoutes } from "@vvs/social";
 import { platformRoutes } from "@vvs/platform";
+import { adminApiRoutes } from "./admin-routes.js";
 import Fastify from "fastify";
 import type { FastifyRequest } from "fastify";
 
@@ -149,6 +150,9 @@ export async function buildApp() {
     // Platform routes
     const platformDb = createScopedClient("platform", DB_URL);
     await app.register(platformRoutes, { db: platformDb });
+
+    // Admin API routes (cross-domain queries for admin dashboard)
+    await app.register(adminApiRoutes, { authDb, marketplaceDb, platformDb });
 
     return app;
 }

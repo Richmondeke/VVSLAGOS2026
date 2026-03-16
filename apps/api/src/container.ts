@@ -33,12 +33,20 @@ export class Container {
     }
 }
 
-export function createContainer(): Container {
+export function createContainer(deps?: {
+    financeDb?: import("@vvs/shared").ScopedClient;
+}): Container {
     const container = new Container();
 
     // Register services here as domain packages are implemented:
-    // container.set("authService", new AuthService(db));
-    // container.set("walletService", new WalletService(db));
+    // container.set("authService", createAuthService(db));
+
+    if (deps?.financeDb) {
+        const { createWalletService, createEscrowService, createRatingsService } = require("@vvs/finance");
+        container.set("walletService", createWalletService(deps.financeDb));
+        container.set("escrowService", createEscrowService(deps.financeDb));
+        container.set("ratingsService", createRatingsService(deps.financeDb));
+    }
 
     return container;
 }

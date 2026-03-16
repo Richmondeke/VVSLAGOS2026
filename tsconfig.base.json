@@ -14,17 +14,7 @@
         "sourceMap": true,
         "composite": true,
         "outDir": "dist",
-        "rootDir": "src",
-        "paths": {
-            "@vvs/contracts": ["./packages/contracts/src"],
-            "@vvs/shared": ["./packages/shared/src"],
-            "@vvs/auth": ["./packages/auth/src"],
-            "@vvs/members": ["./packages/members/src"],
-            "@vvs/marketplace": ["./packages/marketplace/src"],
-            "@vvs/finance": ["./packages/finance/src"],
-            "@vvs/social": ["./packages/social/src"],
-            "@vvs/platform": ["./packages/platform/src"]
-        }
+        "rootDir": "src"
     },
     "exclude": ["node_modules", "dist"]
 }

@@ -84,13 +84,31 @@ importers:
       '@vvs/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
+      '@vvs/finance':
+        specifier: workspace:*
+        version: link:../../packages/finance
+      '@vvs/marketplace':
+        specifier: workspace:*
+        version: link:../../packages/marketplace
+      '@vvs/members':
+        specifier: workspace:*
+        version: link:../../packages/members
       '@vvs/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      bullmq:
+        specifier: ^5.52.1
+        version: 5.71.0
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(postgres@3.4.8)
     devDependencies:
       '@types/node':
         specifier: ^25.5.0
         version: 25.5.0
+      postgres:
+        specifier: ^3.4.8
+        version: 3.4.8
 
   packages/auth:
     dependencies:
@@ -149,6 +167,16 @@ importers:
       '@vvs/shared':
         specifier: workspace:*
         version: link:../shared
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(postgres@3.4.8)
+      fastify:
+        specifier: ^5.8.2
+        version: 5.8.2
+    devDependencies:
+      postgres:
+        specifier: ^3.4.8
+        version: 3.4.8
 
   packages/members:
     dependencies:
@@ -158,6 +186,16 @@ importers:
       '@vvs/shared':
         specifier: workspace:*
         version: link:../shared
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(postgres@3.4.8)
+      fastify:
+        specifier: ^5.8.2
+        version: 5.8.2
+    devDependencies:
+      postgres:
+        specifier: ^3.4.8
+        version: 3.4.8
 
   packages/platform:
     dependencies:
@@ -210,6 +248,16 @@ importers:
       '@vvs/shared':
         specifier: workspace:*
         version: link:../shared
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(postgres@3.4.8)
+      fastify:
+        specifier: ^5.8.2
+        version: 5.8.2
+    devDependencies:
+      postgres:
+        specifier: ^3.4.8
+        version: 3.4.8
 
 packages:
 

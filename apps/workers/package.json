@@ -10,9 +10,15 @@
     },
     "dependencies": {
         "@vvs/contracts": "workspace:*",
-        "@vvs/shared": "workspace:*"
+        "@vvs/finance": "workspace:*",
+        "@vvs/marketplace": "workspace:*",
+        "@vvs/members": "workspace:*",
+        "@vvs/shared": "workspace:*",
+        "bullmq": "^5.52.1",
+        "drizzle-orm": "^0.45.1"
     },
     "devDependencies": {
-        "@types/node": "^25.5.0"
+        "@types/node": "^25.5.0",
+        "postgres": "^3.4.8"
     }
 }

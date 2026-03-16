@@ -8,7 +8,24 @@
       "Bash(pnpm tsc:*)",
       "Bash(pnpm lint:*)",
       "Bash(pnpm biome:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(grep:*)",
+      "Bash(pnpm:*)",
+      "Bash(docker compose:*)",
+      "Bash(docker info:*)",
+      "Bash(npx vitest:*)",
+      "Bash(PGPASSWORD=vvs_dev_password psql -h localhost -U vvs -d vvs_dev -c \"SELECT 1 AS connected;\" 2>&1)",
+      "Bash(docker exec:*)",
+      "Bash(DATABASE_URL=\"postgres://vvs:vvs_dev_password@localhost:5432/vvs_dev\" pnpm migrate 2>&1)",
+      "Bash(node:*)",
+      "Bash(docker cp:*)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/chuqu/repo/vvs-members/**)",
+      "Bash(done)",
+      "Bash(cd:*)",
+      "Bash(npx tsc:*)",
+      "Bash(PGPASSWORD=vvs_dev_password psql -h 127.0.0.1 -p 5433 -U vvs -d vvs_dev -c \"SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'social';\" 2>&1)"
     ]
   }
 }

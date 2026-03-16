@@ -29,6 +29,27 @@
       "when": 1773631590476,
       "tag": "0003_lively_sabretooth",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1773636199207,
+      "tag": "0004_thin_tinkerer",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1773641838119,
+      "tag": "0005_polite_rockslide",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1773643081316,
+      "tag": "0006_round_sentry",
+      "breakpoints": true
     }
   ]
 }

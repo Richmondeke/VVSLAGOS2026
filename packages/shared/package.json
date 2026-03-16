@@ -11,6 +11,11 @@
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
-        "@vvs/contracts": "workspace:*"
+        "@vvs/contracts": "workspace:*",
+        "drizzle-orm": "^0.45.1",
+        "postgres": "^3.4.8"
+    },
+    "devDependencies": {
+        "@types/node": "^25.5.0"
     }
 }

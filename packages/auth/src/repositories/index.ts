@@ -5,3 +5,4 @@ export { createInviteCodesRepo, type InviteCodeRow, type NewInviteCode } from ".
 export { createReferralsRepo, type ReferralRow, type NewReferral } from "./referrals.js";
 export { createVerificationsRepo, type VerificationRow, type NewVerification } from "./verifications.js";
 export { createTiersRepo, type TierRow, type NewTierEntry } from "./tiers.js";
+export { createKycDocumentsRepo, type KycDocumentRow, type NewKycDocument } from "./kyc-documents.js";

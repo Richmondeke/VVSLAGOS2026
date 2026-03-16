@@ -25,7 +25,9 @@
       "Bash(done)",
       "Bash(cd:*)",
       "Bash(npx tsc:*)",
-      "Bash(PGPASSWORD=vvs_dev_password psql -h 127.0.0.1 -p 5433 -U vvs -d vvs_dev -c \"SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'social';\" 2>&1)"
+      "Bash(PGPASSWORD=vvs_dev_password psql -h 127.0.0.1 -p 5433 -U vvs -d vvs_dev -c \"SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'social';\" 2>&1)",
+      "Bash(npx drizzle-kit:*)",
+      "Bash(ls:*)"
     ]
   }
 }

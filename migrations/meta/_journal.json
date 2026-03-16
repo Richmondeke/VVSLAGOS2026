@@ -50,6 +50,13 @@
       "when": 1773643081316,
       "tag": "0006_round_sentry",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1773652350884,
+      "tag": "0007_lying_saracen",
+      "breakpoints": true
     }
   ]
 }

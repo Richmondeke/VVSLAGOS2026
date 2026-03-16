@@ -5,6 +5,7 @@ import { type AppError, createScopedClient, getLogger, mapErrorToHttp, withCorre
 import { membersRoutes, createMockS3Adapter } from "@vvs/members";
 import { marketplaceRoutes } from "@vvs/marketplace";
 import { socialRoutes } from "@vvs/social";
+import { platformRoutes } from "@vvs/platform";
 import Fastify from "fastify";
 import type { FastifyRequest } from "fastify";
 
@@ -138,6 +139,10 @@ export async function buildApp() {
         async getMessageCountLast24h() { return 0; },
     };
     await app.register(socialRoutes, { db: socialDb, rateLimiter: mockRateLimiter });
+
+    // Platform routes
+    const platformDb = createScopedClient("platform", DB_URL);
+    await app.register(platformRoutes, { db: platformDb });
 
     return app;
 }

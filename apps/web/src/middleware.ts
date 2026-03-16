@@ -16,9 +16,10 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    // Check for refresh token cookie (presence only — validation happens server-side)
-    const refreshToken = request.cookies.get("refresh_token");
-    if (!refreshToken) {
+    // Check for auth indicator cookie (set client-side on login, cleared on logout)
+    // The actual httpOnly refresh token lives on the API domain — middleware can't see it
+    const hasSession = request.cookies.get("vvs_logged_in");
+    if (!hasSession) {
         const loginUrl = new URL("/login", request.url);
         loginUrl.searchParams.set("redirect", pathname);
         return NextResponse.redirect(loginUrl);

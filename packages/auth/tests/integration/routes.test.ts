@@ -65,8 +65,12 @@ describe("POST /auth/login", () => {
             expect(response.statusCode).toBe(200);
             const body = response.json();
             expect(body.accessToken).toBeDefined();
-            expect(body.refreshToken).toBeDefined();
-            expect(body.userId).toBe(user.id);
+            expect(body.user).toBeDefined();
+            expect(body.user.id).toBe(user.id);
+            expect(body.user.email).toBe(user.email);
+            // Refresh token is now set as httpOnly cookie
+            const cookies = response.headers["set-cookie"];
+            expect(cookies).toBeDefined();
 
             await app.close();
         } finally {

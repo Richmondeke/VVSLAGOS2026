@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
 import { type AppError, createScopedClient, getLogger, mapErrorToHttp, withCorrelationId } from "@vvs/shared";
+import { authRoutes } from "@vvs/auth";
 import { membersRoutes, createMockS3Adapter } from "@vvs/members";
 import { marketplaceRoutes } from "@vvs/marketplace";
 import { socialRoutes } from "@vvs/social";
@@ -30,7 +31,7 @@ export async function buildApp() {
     app.decorateRequest("correlationId", "");
 
     // CORS
-    await app.register(cors, { origin: true });
+    await app.register(cors, { origin: true, credentials: true });
 
     // Rate limiting
     await app.register(rateLimit, {
@@ -95,6 +96,11 @@ export async function buildApp() {
 
     // Domain routes
     const DB_URL = process.env.DATABASE_URL ?? "postgres://vvs:vvs_dev_password@127.0.0.1:5433/vvs_dev";
+
+    // Auth routes
+    const authDb = createScopedClient("auth", DB_URL);
+    await app.register(authRoutes, { db: authDb });
+
     const membersDb = createScopedClient("members", DB_URL);
     const s3 = createMockS3Adapter(); // TODO: replace with real S3 adapter
     await app.register(membersRoutes, { db: membersDb, s3 });

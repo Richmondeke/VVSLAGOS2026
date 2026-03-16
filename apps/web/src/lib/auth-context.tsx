@@ -32,9 +32,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 });
                 setAccessToken(data.accessToken);
                 setUser(data.user);
+                document.cookie = "vvs_logged_in=1; path=/; max-age=2592000";
             } catch {
                 setAccessToken(null);
                 setUser(null);
+                document.cookie = "vvs_logged_in=; path=/; max-age=0";
             } finally {
                 setLoading(false);
             }
@@ -48,14 +50,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
         setAccessToken(data.accessToken);
         setUser(data.user);
+        // Set indicator cookie for middleware (not httpOnly — readable by Next.js middleware)
+        document.cookie = "vvs_logged_in=1; path=/; max-age=2592000"; // 30 days
     }, []);
 
     const register = useCallback(async (email: string, password: string, inviteCode: string) => {
-        const data = await apiClient<{ user: User; accessToken: string }>("/auth/register", {
+        const data = await apiClient<{ user: User; accessToken?: string }>("/auth/register", {
             method: "POST",
             body: { email, password, inviteCode },
         });
-        setAccessToken(data.accessToken);
+        if (data.accessToken) {
+            setAccessToken(data.accessToken);
+        }
         setUser(data.user);
     }, []);
 
@@ -67,6 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         setAccessToken(null);
         setUser(null);
+        document.cookie = "vvs_logged_in=; path=/; max-age=0"; // clear indicator
     }, []);
 
     return (

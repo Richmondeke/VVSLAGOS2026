@@ -1,18 +1,32 @@
 import type { FastifyPluginAsync } from "fastify";
 import type { ScopedClient } from "@vvs/shared";
+import { UnauthorizedError } from "@vvs/shared";
 import { register } from "./registration.js";
 import { login } from "./login.js";
-import { refreshSession, revokeSession } from "./session.js";
+import { refreshSession, revokeSession, verifyRefreshToken } from "./session.js";
+import { createUsersRepo } from "./repositories/users.js";
 import { getOAuthRedirectUrl, handleOAuthCallback, type OAuthProvider, type OAuthState } from "./oauth.js";
 
 export type AuthRoutesOpts = {
     db: ScopedClient;
 };
 
+const REFRESH_COOKIE = "vvs_refresh";
+const SESSION_COOKIE = "vvs_session";
+const COOKIE_OPTS = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+    path: "/",
+    maxAge: 30 * 24 * 60 * 60, // 30 days in seconds
+};
+
 export const authRoutes: FastifyPluginAsync<AuthRoutesOpts> = async (app, opts) => {
     const { db } = opts;
+    const usersRepo = createUsersRepo(db);
 
     // POST /auth/register
+    // Returns { user: { id, email, status } } — no accessToken since user is pending_approval
     app.post<{
         Body: { inviteCode: string; email: string; password: string };
     }>(
@@ -32,11 +46,18 @@ export const authRoutes: FastifyPluginAsync<AuthRoutesOpts> = async (app, opts) 
         },
         async (request, reply) => {
             const result = await register(db, request.body);
-            return reply.status(201).send(result);
+            return reply.status(201).send({
+                user: {
+                    id: result.userId,
+                    email: request.body.email,
+                    status: result.status,
+                },
+            });
         },
     );
 
     // POST /auth/login
+    // Returns { user: { id, email, status }, accessToken } + sets refresh/session cookies
     app.post<{
         Body: { email: string; password: string; deviceInfo?: unknown };
     }>(
@@ -56,50 +77,77 @@ export const authRoutes: FastifyPluginAsync<AuthRoutesOpts> = async (app, opts) 
         },
         async (request, reply) => {
             const result = await login(db, request.body);
-            return reply.send(result);
+
+            // Set httpOnly cookies for refresh token and session ID
+            reply.header("set-cookie", [
+                `${REFRESH_COOKIE}=${result.refreshToken}; HttpOnly; ${COOKIE_OPTS.secure ? "Secure; " : ""}SameSite=${COOKIE_OPTS.sameSite}; Path=${COOKIE_OPTS.path}; Max-Age=${COOKIE_OPTS.maxAge}`,
+                `${SESSION_COOKIE}=${result.sessionId}; HttpOnly; ${COOKIE_OPTS.secure ? "Secure; " : ""}SameSite=${COOKIE_OPTS.sameSite}; Path=${COOKIE_OPTS.path}; Max-Age=${COOKIE_OPTS.maxAge}`,
+            ]);
+
+            // Fetch user info for the response
+            const user = await usersRepo.findById(result.userId);
+
+            return reply.send({
+                user: {
+                    id: result.userId,
+                    email: user?.email ?? request.body.email,
+                    status: user?.status ?? "active",
+                },
+                accessToken: result.accessToken,
+            });
         },
     );
 
     // POST /auth/refresh
-    app.post<{
-        Body: { refreshToken: string };
-    }>(
+    // Reads refresh token from cookie, returns { user, accessToken }, sets new cookie
+    app.post(
         "/auth/refresh",
-        {
-            schema: {
-                body: {
-                    type: "object",
-                    required: ["refreshToken"],
-                    properties: {
-                        refreshToken: { type: "string", minLength: 1 },
-                    },
-                },
-            },
-        },
         async (request, reply) => {
-            const result = await refreshSession(db, request.body.refreshToken);
-            return reply.send(result);
+            const cookieHeader = request.headers.cookie ?? "";
+            const refreshToken = parseCookie(cookieHeader, REFRESH_COOKIE);
+
+            if (!refreshToken) {
+                throw new UnauthorizedError("No refresh token");
+            }
+
+            // Extract userId from the old refresh token to fetch user info
+            const { sessionId } = await verifyRefreshToken(refreshToken);
+            const sessionsRepo = (await import("./repositories/sessions.js")).createSessionsRepo(db);
+            const session = await sessionsRepo.findById(sessionId);
+            const user = session ? await usersRepo.findById(session.userId) : null;
+
+            const result = await refreshSession(db, refreshToken);
+
+            // Set new refresh cookie
+            reply.header("set-cookie",
+                `${REFRESH_COOKIE}=${result.refreshToken}; HttpOnly; ${COOKIE_OPTS.secure ? "Secure; " : ""}SameSite=${COOKIE_OPTS.sameSite}; Path=${COOKIE_OPTS.path}; Max-Age=${COOKIE_OPTS.maxAge}`,
+            );
+
+            return reply.send({
+                user: user ? { id: user.id, email: user.email, status: user.status } : null,
+                accessToken: result.accessToken,
+            });
         },
     );
 
     // POST /auth/logout
-    app.post<{
-        Body: { sessionId: string };
-    }>(
+    // Reads session ID from cookie, revokes session, clears cookies
+    app.post(
         "/auth/logout",
-        {
-            schema: {
-                body: {
-                    type: "object",
-                    required: ["sessionId"],
-                    properties: {
-                        sessionId: { type: "string", minLength: 1 },
-                    },
-                },
-            },
-        },
         async (request, reply) => {
-            await revokeSession(db, request.body.sessionId);
+            const cookieHeader = request.headers.cookie ?? "";
+            const sessionId = parseCookie(cookieHeader, SESSION_COOKIE);
+
+            if (sessionId) {
+                await revokeSession(db, sessionId);
+            }
+
+            // Clear cookies
+            reply.header("set-cookie", [
+                `${REFRESH_COOKIE}=; HttpOnly; Path=/; Max-Age=0`,
+                `${SESSION_COOKIE}=; HttpOnly; Path=/; Max-Age=0`,
+            ]);
+
             return reply.status(204).send();
         },
     );
@@ -150,3 +198,8 @@ export const authRoutes: FastifyPluginAsync<AuthRoutesOpts> = async (app, opts) 
         },
     );
 };
+
+function parseCookie(header: string, name: string): string | undefined {
+    const match = header.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
+    return match?.[1];
+}

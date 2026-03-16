@@ -12,6 +12,8 @@
 
 5. **Auth context uses client-side fetch for session restore**: The `AuthProvider` calls `/auth/refresh` on mount to restore sessions. This works but causes a brief loading state on first render. Server Components with cookies-based auth would eliminate this flash.
 
+6. **Auth uses dual-cookie pattern**: The API sets httpOnly `vvs_refresh` and `vvs_session` cookies for secure token storage. A separate non-httpOnly `vvs_logged_in` indicator cookie is set client-side so Next.js middleware can gate protected routes (middleware can't see cross-origin httpOnly cookies).
+
 ## Phase 8.2 — Discovery, Profiles, Listings
 
 6. **Discover page is basic**: Missing category filter chips, filter panel (price range, reputation, availability), sort options, services/people toggle, "Recently Completed" carousel, and offline cached-results mode.

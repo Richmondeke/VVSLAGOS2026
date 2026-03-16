@@ -16,7 +16,7 @@
 [x] 11. Implement JWT storage: access token in memory, refresh token in httpOnly cookie
 [x] 12. Implement silent token refresh on 401 responses
 [x] 13. Error states: wrong credentials → inline error (no field enumeration); network failure → retry prompt
-[ ] 14. Test: login flow with correct credentials navigates to /discover
+[x] 14. Test: login flow with correct credentials navigates to /discover
 
 ### Post-Approval Onboarding (P0)
 [x] 15. Build /welcome page (shown once after first login post-approval)

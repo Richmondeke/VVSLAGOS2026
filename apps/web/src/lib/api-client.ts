@@ -38,7 +38,7 @@ export async function apiClient<T = unknown>(
     const { method = "GET", body, headers = {} } = options;
 
     const reqHeaders: Record<string, string> = {
-        "Content-Type": "application/json",
+        ...(body ? { "Content-Type": "application/json" } : {}),
         ...headers,
     };
 

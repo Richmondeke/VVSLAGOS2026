@@ -4,7 +4,15 @@
     "private": true,
     "type": "module",
     "exports": {
-        ".": "./src/index.ts"
+        ".": "./src/index.ts",
+        "./common": "./src/common.ts",
+        "./auth": "./src/auth.ts",
+        "./finance": "./src/finance.ts",
+        "./members": "./src/members.ts",
+        "./marketplace": "./src/marketplace.ts",
+        "./social": "./src/social.ts",
+        "./platform": "./src/platform.ts",
+        "./events": "./src/events.ts"
     },
     "scripts": {
         "build": "tsc",

@@ -7,7 +7,7 @@
         "test": "turbo test",
         "lint": "biome check .",
         "format": "biome format . --write",
-        "type-check": "tsc --noEmit"
+        "type-check": "turbo type-check"
     },
     "devDependencies": {
         "@biomejs/biome": "^1.9.0",

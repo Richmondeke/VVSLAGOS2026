@@ -12,6 +12,10 @@
     },
     "dependencies": {
         "@vvs/contracts": "workspace:*",
-        "@vvs/shared": "workspace:*"
+        "@vvs/shared": "workspace:*",
+        "drizzle-orm": "^0.45.1"
+    },
+    "devDependencies": {
+        "postgres": "^3.4.8"
     }
 }

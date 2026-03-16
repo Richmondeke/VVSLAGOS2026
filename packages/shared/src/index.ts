@@ -40,6 +40,10 @@ export {
     recordIdempotency,
 } from "./idempotency/index.js";
 
+// Config
+export { loadEnv } from "./config/env.js";
+export type { Env } from "./config/env.js";
+
 // Test Utils
 export {
     createTestUser,

@@ -9,13 +9,20 @@
         "type-check": "tsc --noEmit"
     },
     "dependencies": {
-        "@vvs/contracts": "workspace:*",
-        "@vvs/shared": "workspace:*",
+        "@fastify/cors": "^11.2.0",
+        "@fastify/multipart": "^9.4.0",
+        "@fastify/rate-limit": "^10.3.0",
         "@vvs/auth": "workspace:*",
-        "@vvs/members": "workspace:*",
-        "@vvs/marketplace": "workspace:*",
+        "@vvs/contracts": "workspace:*",
         "@vvs/finance": "workspace:*",
+        "@vvs/marketplace": "workspace:*",
+        "@vvs/members": "workspace:*",
+        "@vvs/platform": "workspace:*",
+        "@vvs/shared": "workspace:*",
         "@vvs/social": "workspace:*",
-        "@vvs/platform": "workspace:*"
+        "fastify": "^5.8.2"
+    },
+    "devDependencies": {
+        "@types/node": "^25.5.0"
     }
 }

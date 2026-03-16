@@ -1,0 +1,265 @@
+{
+    "id": "fae992fd-3020-4df9-bb50-0c634918fd1f",
+    "prevId": "00000000-0000-0000-0000-000000000000",
+    "version": "7",
+    "dialect": "postgresql",
+    "tables": {
+        "outbox.consumer_offsets": {
+            "name": "consumer_offsets",
+            "schema": "outbox",
+            "columns": {
+                "consumer_name": {
+                    "name": "consumer_name",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "event_id": {
+                    "name": "event_id",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "processed_at": {
+                    "name": "processed_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "consumer_offsets_event_id_events_id_fk": {
+                    "name": "consumer_offsets_event_id_events_id_fk",
+                    "tableFrom": "consumer_offsets",
+                    "tableTo": "events",
+                    "schemaTo": "outbox",
+                    "columnsFrom": ["event_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {
+                "consumer_offsets_consumer_name_event_id_pk": {
+                    "name": "consumer_offsets_consumer_name_event_id_pk",
+                    "columns": ["consumer_name", "event_id"]
+                }
+            },
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "outbox.dead_letters": {
+            "name": "dead_letters",
+            "schema": "outbox",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "integer",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "identity": {
+                        "type": "always",
+                        "name": "dead_letters_id_seq",
+                        "schema": "outbox",
+                        "increment": "1",
+                        "startWith": "1",
+                        "minValue": "1",
+                        "maxValue": "2147483647",
+                        "cache": "1",
+                        "cycle": false
+                    }
+                },
+                "original_event_id": {
+                    "name": "original_event_id",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "event_type": {
+                    "name": "event_type",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "payload": {
+                    "name": "payload",
+                    "type": "jsonb",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "error_message": {
+                    "name": "error_message",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "retry_count": {
+                    "name": "retry_count",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "failed_at": {
+                    "name": "failed_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                },
+                "resolved_at": {
+                    "name": "resolved_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "resolution": {
+                    "name": "resolution",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {},
+            "foreignKeys": {
+                "dead_letters_original_event_id_events_id_fk": {
+                    "name": "dead_letters_original_event_id_events_id_fk",
+                    "tableFrom": "dead_letters",
+                    "tableTo": "events",
+                    "schemaTo": "outbox",
+                    "columnsFrom": ["original_event_id"],
+                    "columnsTo": ["id"],
+                    "onDelete": "no action",
+                    "onUpdate": "no action"
+                }
+            },
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        },
+        "outbox.events": {
+            "name": "events",
+            "schema": "outbox",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "type": "integer",
+                    "primaryKey": true,
+                    "notNull": true,
+                    "identity": {
+                        "type": "always",
+                        "name": "events_id_seq",
+                        "schema": "outbox",
+                        "increment": "1",
+                        "startWith": "1",
+                        "minValue": "1",
+                        "maxValue": "2147483647",
+                        "cache": "1",
+                        "cycle": false
+                    }
+                },
+                "event_type": {
+                    "name": "event_type",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "event_version": {
+                    "name": "event_version",
+                    "type": "integer",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": 1
+                },
+                "payload": {
+                    "name": "payload",
+                    "type": "jsonb",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "idempotency_key": {
+                    "name": "idempotency_key",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": true
+                },
+                "ordering_key": {
+                    "name": "ordering_key",
+                    "type": "text",
+                    "primaryKey": false,
+                    "notNull": false
+                },
+                "created_at": {
+                    "name": "created_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": true,
+                    "default": "now()"
+                },
+                "published_at": {
+                    "name": "published_at",
+                    "type": "timestamp with time zone",
+                    "primaryKey": false,
+                    "notNull": false
+                }
+            },
+            "indexes": {
+                "idx_outbox_events_idempotency_key": {
+                    "name": "idx_outbox_events_idempotency_key",
+                    "columns": [
+                        {
+                            "expression": "idempotency_key",
+                            "isExpression": false,
+                            "asc": true,
+                            "nulls": "last"
+                        }
+                    ],
+                    "isUnique": true,
+                    "concurrently": false,
+                    "method": "btree",
+                    "with": {}
+                },
+                "idx_outbox_events_unpublished": {
+                    "name": "idx_outbox_events_unpublished",
+                    "columns": [
+                        {
+                            "expression": "created_at",
+                            "isExpression": false,
+                            "asc": true,
+                            "nulls": "last"
+                        }
+                    ],
+                    "isUnique": false,
+                    "where": "published_at IS NULL",
+                    "concurrently": false,
+                    "method": "btree",
+                    "with": {}
+                }
+            },
+            "foreignKeys": {},
+            "compositePrimaryKeys": {},
+            "uniqueConstraints": {},
+            "policies": {},
+            "checkConstraints": {},
+            "isRLSEnabled": false
+        }
+    },
+    "enums": {},
+    "schemas": {
+        "outbox": "outbox"
+    },
+    "sequences": {},
+    "roles": {},
+    "policies": {},
+    "views": {},
+    "_meta": {
+        "columns": {},
+        "schemas": {},
+        "tables": {}
+    }
+}

@@ -2,6 +2,7 @@
 
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import Countdown from "../ui/Countdown";
 
 export default function Hero() {
     const ref = useRef<HTMLElement>(null);
@@ -33,6 +34,16 @@ export default function Hero() {
                 style={{ opacity }}
                 className="w-full max-w-7xl mx-auto px-5 sm:px-8 relative z-10 flex flex-col items-center overflow-hidden"
             >
+                {/* Countdown */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="mb-12"
+                >
+                    <Countdown targetDate="2026-07-05T19:00:00" variant="hero" />
+                </motion.div>
+
                 {/* Label */}
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -53,7 +64,7 @@ export default function Hero() {
                     style={{ y: titleY }}
                     className="text-[clamp(2rem,9vw,9rem)] font-serif font-extrabold text-vvs-white lg:leading-tight mb-8 tracking-tighter text-center leading-[1.1] w-full"
                 >
-                    AFRO<br /><span className="text-vvs-gold italic font-bold">MODERNISM</span>
+                    AFRO<br /><span className="text-vvs-gold font-bold">MODERNISM</span>
                 </motion.h1>
 
                 {/* Subtitle */}

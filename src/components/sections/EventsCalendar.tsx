@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Countdown from "../ui/Countdown";
 
 const events = [
     {
@@ -64,80 +65,17 @@ const events = [
 function getDayLabel(isoDate: string): string {
     const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
     const d = new Date(isoDate);
+    // Note: This can still cause hydration issues if server/client timezones differ
+    // However, for these specific dates, they are all fixed in the future.
     return days[d.getDay()];
 }
 
-interface TimeLeft {
-    days: number;
-    hours: number;
-    minutes: number;
-    seconds: number;
-    past: boolean;
-}
-
-function calcTimeLeft(isoDate: string): TimeLeft {
-    const target = new Date(isoDate).getTime();
-    const now = Date.now();
-    const diff = target - now;
-    if (diff <= 0) {
-        return { days: 0, hours: 0, minutes: 0, seconds: 0, past: true };
-    }
-    return {
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / (1000 * 60)) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
-        past: false,
-    };
-}
-
-function pad(n: number) {
-    return String(n).padStart(2, "0");
-}
-
-function CountdownTimer({ isoDate }: { isoDate: string }) {
-    const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calcTimeLeft(isoDate));
+export default function EventsCalendar() {
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        const id = setInterval(() => setTimeLeft(calcTimeLeft(isoDate)), 1000);
-        return () => clearInterval(id);
-    }, [isoDate]);
-
-    if (timeLeft.past) {
-        return (
-            <span className="text-vvs-gold/40 text-[10px] uppercase tracking-widest font-mono">
-                Concluded
-            </span>
-        );
-    }
-
-    return (
-        <div className="flex items-center gap-1 mt-1">
-            {[
-                { label: "D", value: timeLeft.days },
-                { label: "H", value: timeLeft.hours },
-                { label: "M", value: timeLeft.minutes },
-                { label: "S", value: timeLeft.seconds },
-            ].map(({ label, value }, i) => (
-                <React.Fragment key={label}>
-                    <div className="flex flex-col items-center">
-                        <span className="text-vvs-gold font-mono font-extrabold text-xs leading-none tabular-nums">
-                            {pad(value)}
-                        </span>
-                        <span className="text-vvs-white/30 text-[8px] font-mono leading-none mt-[2px]">
-                            {label}
-                        </span>
-                    </div>
-                    {i < 3 && (
-                        <span className="text-vvs-gold/50 font-mono font-bold text-xs pb-[4px]">:</span>
-                    )}
-                </React.Fragment>
-            ))}
-        </div>
-    );
-}
-
-export default function EventsCalendar() {
+        setMounted(true);
+    }, []);
     return (
         <section id="events" className="py-20 md:py-32 bg-vvs-black relative overflow-hidden">
             {/* Mascot Accent */}
@@ -177,7 +115,7 @@ export default function EventsCalendar() {
                                         {/* Top meta row: DAY · Date · Category */}
                                         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
                                             <span className="text-vvs-gold text-sm sm:text-base md:text-lg font-mono font-extrabold leading-none">
-                                                {getDayLabel(event.fullDate)}
+                                                {mounted ? getDayLabel(event.fullDate) : "---"}
                                             </span>
                                             <span className="h-1 w-1 bg-vvs-gold/40 rounded-full" />
                                             <span className="text-vvs-white/50 text-xs font-sans">{event.date}</span>
@@ -206,7 +144,7 @@ export default function EventsCalendar() {
                                             <span className="text-vvs-white text-sm sm:text-base md:text-lg font-mono font-bold tracking-tighter">{event.time}</span>
                                             <span className="text-vvs-gold/60 text-[10px] sm:text-xs uppercase tracking-widest font-mono">{event.venue}</span>
                                         </div>
-                                        <CountdownTimer isoDate={event.fullDate} />
+                                        <Countdown targetDate={event.fullDate} />
                                     </div>
                                 </div>
                             </div>

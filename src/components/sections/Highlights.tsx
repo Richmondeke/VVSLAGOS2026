@@ -24,7 +24,7 @@ export default function Highlights() {
                             {highlights.map((item) => (
                                 <div key={item.title} className="flex items-center space-x-4 sm:space-x-8">
                                     <img src="/assets/VVSMASCOT1.webp" alt="" aria-hidden="true" className="h-6 sm:h-10 w-auto opacity-70" />
-                                    <span className="text-3xl sm:text-5xl md:text-7xl font-serif font-extrabold uppercase tracking-tighter italic">{item.title}</span>
+                                    <span className="text-3xl sm:text-5xl md:text-7xl font-serif font-extrabold uppercase tracking-tighter">{item.title}</span>
                                     <img src="/assets/VVSMASCOT1.webp" alt="" aria-hidden="true" className="h-6 sm:h-10 w-auto opacity-70" />
                                 </div>
                             ))}

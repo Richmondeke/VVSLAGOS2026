@@ -35,7 +35,7 @@ export default function Theme() {
                             2026 THEME
                         </span>
                         <h2 className="font-serif font-extrabold text-vvs-white mb-6 md:mb-8 leading-[1.05]" style={{ fontSize: "clamp(2rem, 8vw, 3.75rem)" }}>
-                            AFRO<br /><span className="text-vvs-gold italic">MODERNISM</span>
+                            AFRO<br /><span className="text-vvs-gold">MODERNISM</span>
                         </h2>
                         <div className="space-y-4 md:space-y-5 text-vvs-white/70 text-sm sm:text-base md:text-lg leading-relaxed font-light font-sans break-words">
                             <p>

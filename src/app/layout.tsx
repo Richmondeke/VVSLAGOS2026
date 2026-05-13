@@ -22,9 +22,6 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: "VVS Lagos | Afromodernism",
   description: "Experience the 5th edition of VVS Lagos - Art, Fashion, and Cultural Extravaganza.",
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({

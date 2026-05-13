@@ -53,21 +53,24 @@ export default function Designers() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.05 }}
-                            className="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-vvs-gold/10 hover:border-vvs-gold/40 transition-all bg-vvs-white/[0.02]"
+                            className="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-vvs-gold/10 hover:border-vvs-gold/50 transition-all duration-500 bg-vvs-white/[0.02] hover:bg-vvs-gold/[0.05] hover:shadow-[0_0_30px_rgba(212,175,55,0.1)]"
                         >
-                            {/* Image */}
-                            <div className="aspect-[3/4] overflow-hidden">
+                            {/* Image Container */}
+                            <div className="aspect-[3/4] overflow-hidden relative">
                                 <img
                                     src={designer.image}
                                     alt={designer.name}
-                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                                    className="w-full h-full object-cover grayscale brightness-75 contrast-125 group-hover:grayscale-0 group-hover:brightness-100 group-hover:contrast-100 group-hover:scale-110 transition-all duration-1000 ease-in-out"
                                 />
+                                {/* Overlay gradient that fades on hover */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-vvs-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-30 transition-opacity duration-700" />
                             </div>
                             {/* Info */}
-                            <div className="p-3 sm:p-4">
-                                <h3 className="text-[11px] sm:text-sm font-serif font-extrabold text-vvs-white uppercase tracking-tight group-hover:text-vvs-gold transition-colors">
+                            <div className="p-4 sm:p-5 relative">
+                                <h3 className="text-[11px] sm:text-sm md:text-base font-serif font-extrabold text-vvs-white uppercase tracking-[0.1em] group-hover:text-vvs-gold transition-colors duration-300">
                                     {designer.name}
                                 </h3>
+                                <div className="h-[1px] w-0 group-hover:w-full bg-vvs-gold transition-all duration-500 mt-2" />
                             </div>
                         </motion.div>
                     ))}

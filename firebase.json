@@ -1,0 +1,14 @@
+{
+  "hosting": [
+    {
+      "target": "web",
+      "source": "apps/web",
+      "frameworksBackend": {}
+    },
+    {
+      "target": "admin",
+      "source": "apps/admin",
+      "frameworksBackend": {}
+    }
+  ]
+}

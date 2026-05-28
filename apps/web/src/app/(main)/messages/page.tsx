@@ -33,42 +33,56 @@ export default function MessagesPage() {
     }, []);
 
     return (
-        <div className="mx-auto max-w-3xl p-4">
-            <h1 className="mb-4 text-2xl font-bold text-vvs-primary">Messages</h1>
+        <div className="mx-auto max-w-3xl p-6 space-y-8">
+            {/* Header */}
+            <div className="border-b border-white/10 pb-6">
+                <span className="mono-caps text-[10px] text-vvs-blue tracking-widest block mb-1">SECURE ENCRYPTED // CHANNELS</span>
+                <h1 className="text-3xl font-extrabold tracking-tight text-white">Messages</h1>
+            </div>
 
             {loading && (
-                <div className="space-y-3">
-                    <LoadingSkeleton className="h-16" />
-                    <LoadingSkeleton className="h-16" />
+                <div className="space-y-4">
+                    <LoadingSkeleton className="h-20 bg-white/5 border border-white/5" />
+                    <LoadingSkeleton className="h-20 bg-white/5 border border-white/5" />
                 </div>
             )}
 
             {!loading && conversations.length === 0 && (
-                <EmptyState message="No conversations yet. Start one from a member's profile." />
+                <div className="glass-panel rounded-xl p-12 text-center border border-white/5 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-white/10" />
+                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-white/10" />
+                    <div className="text-4xl mb-4 text-white/20">💬</div>
+                    <p className="text-white/60 font-medium mb-1">No active handshakes found.</p>
+                    <p className="text-xs text-white/40 font-mono uppercase tracking-wider">Start a secure conversation from a creative's profile</p>
+                </div>
             )}
 
             {!loading && conversations.length > 0 && (
-                <div className="space-y-1">
+                <div className="space-y-2">
                     {conversations.map((conv) => (
                         <Link
                             key={conv.id}
                             href={`/messages/${conv.id}`}
-                            className="flex items-center gap-3 rounded-lg p-3 transition-colors hover:bg-gray-50"
+                            className="glass-card flex items-center gap-4 rounded-xl p-4 transition-all relative overflow-hidden group border border-white/5"
                         >
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-lg">
-                                👤
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/5 border border-white/10 text-xl font-semibold text-white group-hover:border-vvs-accent/50 group-hover:text-vvs-accent transition-all duration-300">
+                                {conv.otherUserName.charAt(0)}
                             </div>
-                            <div className="flex-1 min-w-0">
+                            <div className="flex-1 min-w-0 space-y-1">
                                 <div className="flex items-center justify-between">
-                                    <span className="font-medium truncate">{conv.otherUserName}</span>
-                                    <span className="text-xs text-gray-400 ml-2 shrink-0">
+                                    <span className="font-bold text-white group-hover:text-vvs-accent transition-colors truncate">
+                                        {conv.otherUserName}
+                                    </span>
+                                    <span className="text-[10px] font-mono text-white/40 ml-2 shrink-0">
                                         {new Date(conv.lastMessageAt).toLocaleDateString()}
                                     </span>
                                 </div>
-                                <p className="text-sm text-gray-500 truncate">{conv.lastMessage}</p>
+                                <p className="text-sm text-white/60 truncate group-hover:text-white/80 transition-colors">
+                                    {conv.lastMessage}
+                                </p>
                             </div>
                             {conv.unreadCount > 0 && (
-                                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-vvs-accent text-xs text-white">
+                                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-vvs-accent text-[10px] font-bold text-white animate-pulse glow-accent">
                                     {conv.unreadCount}
                                 </span>
                             )}
@@ -79,3 +93,4 @@ export default function MessagesPage() {
         </div>
     );
 }
+

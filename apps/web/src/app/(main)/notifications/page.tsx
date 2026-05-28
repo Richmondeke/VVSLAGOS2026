@@ -62,10 +62,14 @@ export default function NotificationsPage() {
 
     if (loading) {
         return (
-            <div className="mx-auto max-w-3xl space-y-3 p-4">
-                <LoadingSkeleton className="h-16" />
-                <LoadingSkeleton className="h-16" />
-                <LoadingSkeleton className="h-16" />
+            <div className="mx-auto max-w-3xl space-y-4 p-6">
+                <div className="flex justify-between items-center mb-6">
+                    <div className="h-8 w-48 bg-white/5 animate-pulse rounded-md" />
+                    <div className="h-5 w-24 bg-white/5 animate-pulse rounded-md" />
+                </div>
+                <LoadingSkeleton className="h-20 bg-white/5 border border-white/5" />
+                <LoadingSkeleton className="h-20 bg-white/5 border border-white/5" />
+                <LoadingSkeleton className="h-20 bg-white/5 border border-white/5" />
             </div>
         );
     }
@@ -74,41 +78,83 @@ export default function NotificationsPage() {
     const hasUnread = notifications.some((n) => !n.read);
 
     return (
-        <div className="mx-auto max-w-3xl p-4">
-            <div className="mb-4 flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-vvs-primary">Notifications</h1>
+        <div className="mx-auto max-w-3xl p-6 space-y-8">
+            {/* Header Telemetry */}
+            <div className="flex items-end justify-between border-b border-white/10 pb-6">
+                <div>
+                    <span className="mono-caps text-[10px] text-vvs-accent tracking-widest block mb-1">TELEMETRY // ALERTS</span>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+                        Notifications
+                        <span className="text-xs px-2 py-0.5 rounded border border-white/10 bg-white/5 text-white/60 font-mono">
+                            {notifications.length} total
+                        </span>
+                    </h1>
+                </div>
                 {hasUnread && (
-                    <button onClick={markAllRead} className="text-sm text-vvs-accent hover:underline">
+                    <button 
+                        onClick={markAllRead} 
+                        className="mono-caps text-xs text-vvs-blue hover:text-white border border-vvs-blue/30 hover:border-white px-3 py-1.5 rounded bg-vvs-blue/5 hover:bg-white/5 transition-all"
+                    >
                         Mark all as read
                     </button>
                 )}
             </div>
 
             {notifications.length === 0 && (
-                <p className="py-8 text-center text-sm text-gray-500">No notifications yet.</p>
+                <div className="glass-panel rounded-xl p-12 text-center border border-white/5 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-white/10" />
+                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-white/10" />
+                    <div className="text-4xl mb-4 text-white/20">🔔</div>
+                    <p className="text-white/60 font-medium">Your telemetry channel is quiet.</p>
+                    <p className="text-xs text-white/40 mt-1 font-mono uppercase tracking-wider">No active signals detected at this coordinates</p>
+                </div>
             )}
 
             {Object.entries(groups).map(([label, items]) =>
                 items.length > 0 ? (
-                    <div key={label} className="mb-6">
-                        <h2 className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">{label}</h2>
-                        <div className="space-y-1">
+                    <div key={label} className="space-y-4">
+                        <div className="flex items-center gap-3">
+                            <h2 className="mono-caps text-xs font-semibold text-white/50 tracking-widest">{label}</h2>
+                            <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                        </div>
+                        
+                        <div className="space-y-2">
                             {items.map((n) => {
-                                const cls = `block rounded-lg p-3 transition-colors hover:bg-gray-50 ${
-                                    n.read ? "" : "bg-vvs-accent/5"
+                                const cls = `glass-card block rounded-xl p-4 transition-all relative overflow-hidden group ${
+                                    n.read ? "opacity-75" : "border-l-2 border-l-vvs-accent"
                                 }`;
+                                
                                 const inner = (
-                                    <div className="flex items-start gap-2">
-                                        {!n.read && <span className="mt-1.5 h-2 w-2 rounded-full bg-vvs-accent shrink-0" />}
-                                        <div>
-                                            <div className="text-sm font-medium">{n.title}</div>
-                                            <div className="text-sm text-gray-500">{n.body}</div>
-                                            <div className="mt-1 text-xs text-gray-400">
-                                                {new Date(n.createdAt).toLocaleString()}
+                                    <div className="flex items-start gap-4">
+                                        {!n.read && (
+                                            <span className="mt-2 h-2.5 w-2.5 rounded-full bg-vvs-accent shrink-0 animate-pulse glow-accent" />
+                                        )}
+                                        <div className="flex-1 space-y-1">
+                                            <div className="flex items-center justify-between gap-4">
+                                                <div className="text-sm font-bold text-white group-hover:text-vvs-accent transition-colors">
+                                                    {n.title}
+                                                </div>
+                                                <div className="text-[10px] font-mono text-white/40 shrink-0">
+                                                    {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                </div>
+                                            </div>
+                                            <div className="text-sm text-white/70 line-clamp-2 font-medium">
+                                                {n.body}
+                                            </div>
+                                            <div className="pt-2 flex items-center justify-between">
+                                                <div className="text-[10px] font-mono text-white/30">
+                                                    {new Date(n.createdAt).toLocaleDateString()}
+                                                </div>
+                                                {n.link && (
+                                                    <span className="mono-caps text-[9px] text-vvs-blue group-hover:underline flex items-center gap-1">
+                                                        View Details <span className="transform group-hover:translate-x-0.5 transition-transform">→</span>
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
                                 );
+                                
                                 return n.link ? (
                                     <Link key={n.id} href={n.link} className={cls}>
                                         {inner}
@@ -126,3 +172,4 @@ export default function NotificationsPage() {
         </div>
     );
 }
+

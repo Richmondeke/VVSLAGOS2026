@@ -1,22 +1,150 @@
 @import "tailwindcss";
 
 @theme {
-    /* VVS Brand Colors */
-    --color-vvs-primary: #1a1a2e;
-    --color-vvs-accent: #e94560;
-    --color-vvs-gold: #d4a843;
-    --color-vvs-blue: #3b82f6;
-    --color-vvs-green: #22c55e;
-    --color-vvs-yellow: #eab308;
-    --color-vvs-grey: #6b7280;
+    /* VVS Cinematic Premium Design System Tokens */
+    --color-vvs-bg: #000000;
+    --color-vvs-card: #090a0f;
+    --color-vvs-card-elevated: #11131a;
+    --color-vvs-accent: #FF3B5C; /* VVS Ruby/Magenta - hot, vibrant, African fashion */
+    --color-vvs-blue: #0099FF; /* VVS Electric Blue - technical, collaboration */
+    --color-vvs-gold: #D4AF37; /* VVS 24K Gold - prestige, high status */
+    --color-vvs-green: #00E676; /* VVS Neon Green - verified, active */
+    --color-vvs-yellow: #FFD600; /* VVS Warning */
+    
+    /* Typographic text colors */
+    --color-text-primary: #FFFFFF;
+    --color-text-secondary: #8E8F94;
+    --color-text-muted: #494A50;
 
-    /* Tier Colors */
-    --color-tier-free: #9ca3af;
-    --color-tier-verified: #3b82f6;
-    --color-tier-pro: #d4a843;
+    /* Status badge colors */
+    --color-tier-free: #8E8F94;
+    --color-tier-verified: #0099FF;
+    --color-tier-pro: #D4AF37;
 
-    /* Availability Colors */
-    --color-avail-available: #22c55e;
-    --color-avail-busy: #eab308;
-    --color-avail-unavailable: #9ca3af;
+    /* Availability states */
+    --color-avail-available: #00E676;
+    --color-avail-busy: #FFD600;
+    --color-avail-unavailable: #494A50;
+
+    /* Rounded corner scales */
+    --radius-vvs-sm: 4px;
+    --radius-vvs-md: 8px;
+    --radius-vvs-lg: 14px;
+    --radius-vvs-xl: 20px;
+    --radius-vvs-pill: 9999px;
+
+    /* Micro-Animations */
+    --animate-float: float 6s ease-in-out infinite;
+    --animate-pulse-glow: pulseGlow 2s ease-in-out infinite;
+    --animate-shimmer: shimmer 2s infinite linear;
+}
+
+@layer utilities {
+    .glass-panel {
+        background: rgba(9, 10, 15, 0.6);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 
+            0 4px 30px rgba(0, 0, 0, 0.4),
+            0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
+    }
+
+    .glass-card {
+        background: rgba(17, 19, 26, 0.5);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 
+            0 8px 32px 0 rgba(0, 0, 0, 0.3),
+            0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-card:hover {
+        background: rgba(17, 19, 26, 0.7);
+        border-color: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 
+            0 12px 40px 0 rgba(0, 0, 0, 0.5),
+            0 0 0 1px rgba(255, 59, 92, 0.15),
+            0 1px 0 0 rgba(255, 255, 255, 0.1) inset;
+    }
+
+    .glass-input {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        color: #FFFFFF;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) inset;
+        transition: all 0.2s ease;
+    }
+
+    .glass-input:focus {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(0, 153, 255, 0.4);
+        box-shadow: 
+            0 0 0 1px rgba(0, 153, 255, 0.4),
+            0 0 12px rgba(0, 153, 255, 0.15);
+        outline: none;
+    }
+
+    .glow-accent {
+        box-shadow: 0 0 20px rgba(255, 59, 92, 0.2);
+    }
+
+    .glow-blue {
+        box-shadow: 0 0 20px rgba(0, 153, 255, 0.2);
+    }
+
+    .glow-gold {
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+    }
+
+    /* Technical Monospace caps style inspired by Bugatti */
+    .mono-caps {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+    }
+
+    /* Custom elegant thin scrollbars */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+@keyframes pulseGlow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Base Body Styles Overrides for Cinematic feel */
+body {
+    background-color: #000000;
+    color: #FFFFFF;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss03", "ss07";
+    letter-spacing: 0.015em;
+    overflow-x: hidden;
 }

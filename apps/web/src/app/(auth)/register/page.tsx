@@ -22,7 +22,7 @@ export default function RegisterPage() {
     async function handleInviteSubmit(e: React.FormEvent) {
         e.preventDefault();
         if (!inviteCode.trim()) {
-            setError("Please enter your invite code");
+            setError("PLEASE PROVIDE A VALID REFERRAL KEY");
             return;
         }
         setError(null);
@@ -39,9 +39,9 @@ export default function RegisterPage() {
             setStep("pending");
         } catch (err) {
             if (err instanceof ApiError) {
-                setError(err.message);
+                setError(err.message.toUpperCase());
             } else {
-                setError("Something went wrong. Please try again.");
+                setError("REGISTRATION CRITICAL FAULT // RETRY");
             }
         } finally {
             setLoading(false);
@@ -50,43 +50,47 @@ export default function RegisterPage() {
 
     if (step === "pending") {
         return (
-            <>
-                <div className="text-center">
-                    <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-vvs-accent/10 text-3xl">
-                        ⏳
-                    </div>
-                    <h1 className="mb-2 text-2xl font-bold text-vvs-primary">Approval Pending</h1>
-                    <p className="mb-6 text-gray-600">
-                        Your account has been created. You&#39;ll receive a notification once your
-                        membership is approved.
-                    </p>
+            <div className="text-center space-y-6">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-vvs-gold/10 border border-vvs-gold/20 text-vvs-gold text-2xl animate-bounce">
+                    ⚡
+                </div>
+                <div className="space-y-1">
+                    <h1 className="text-xl font-bold text-white uppercase tracking-wider">SECURE LINK PENDING</h1>
+                    <p className="mono-caps text-[9px] text-vvs-gold tracking-widest">DECRYPTING CREATIVE CREDENTIALS</p>
+                </div>
+                <p className="text-xs text-text-secondary leading-relaxed px-2">
+                    Your application packet has been registered under access key <span className="font-mono text-white bg-white/5 px-1.5 py-0.5 rounded border border-white/5">{inviteCode}</span>. VVS node validators are examining your professional reputation.
+                </p>
+                <div className="pt-2">
                     <Link
                         href="/login"
-                        className="text-vvs-accent hover:underline"
+                        className="inline-block w-full text-center rounded-vvs-md bg-vvs-accent hover:shadow-[0_0_15px_rgba(255,59,92,0.3)] px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-white transition-all"
                     >
-                        Back to sign in
+                        RETURN TO LOGIN
                     </Link>
                 </div>
-            </>
+            </div>
         );
     }
 
     if (step === "invite") {
         return (
-            <>
-                <h1 className="mb-2 text-center text-2xl font-bold text-vvs-primary">Join VVS</h1>
-                <p className="mb-6 text-center text-sm text-gray-600">
-                    VVS is referral-only. Enter the invite code you received.
-                </p>
+            <div className="space-y-6">
+                <div className="text-center space-y-1">
+                    <h1 className="text-xl font-bold text-white uppercase tracking-tight">VERIFY INVITATION KEY</h1>
+                    <p className="text-xs text-text-secondary">Enter your selective referral code to open credentials setup.</p>
+                </div>
 
                 {error && (
-                    <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+                    <div className="relative overflow-hidden rounded-vvs-md border border-vvs-accent/20 bg-vvs-accent/5 px-4 py-3 text-xs text-vvs-accent font-mono tracking-wide flex gap-2 items-center">
+                        <span className="animate-pulse">●</span> {error}
+                    </div>
                 )}
 
                 <form onSubmit={handleInviteSubmit} className="space-y-4">
-                    <div>
-                        <label htmlFor="inviteCode" className="mb-1 block text-sm font-medium text-gray-700">
-                            Invite Code
+                    <div className="space-y-1">
+                        <label htmlFor="inviteCode" className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest block">
+                            DECRYPT ACCESS KEY
                         </label>
                         <input
                             id="inviteCode"
@@ -94,45 +98,47 @@ export default function RegisterPage() {
                             required
                             value={inviteCode}
                             onChange={(e) => setInviteCode(e.target.value)}
-                            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-vvs-accent focus:outline-none focus:ring-1 focus:ring-vvs-accent"
-                            placeholder="Enter your invite code"
+                            className="w-full rounded-vvs-md glass-input px-4 py-2.5 text-sm placeholder:text-text-muted focus:border-vvs-accent focus:ring-1 focus:ring-vvs-accent font-mono uppercase tracking-widest text-center"
+                            placeholder="VVS-XXXX-XXXX"
                         />
                     </div>
 
                     <button
                         type="submit"
-                        className="w-full rounded-lg bg-vvs-accent px-4 py-2.5 font-medium text-white transition-colors hover:bg-vvs-accent/90"
+                        className="relative w-full overflow-hidden rounded-vvs-md bg-vvs-accent px-4 py-3 font-semibold text-xs tracking-wider uppercase text-white transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,59,92,0.4)] active:scale-[0.98]"
                     >
-                        Continue
+                        CONTINUE REGISTRATION
                     </button>
                 </form>
 
-                <p className="mt-4 text-center text-sm text-gray-600">
-                    Already have an account?{" "}
-                    <Link href="/login" className="text-vvs-accent hover:underline">
-                        Sign in
+                <p className="text-center text-xs text-text-secondary">
+                    Already authenticated?{" "}
+                    <Link href="/login" className="text-vvs-accent hover:underline font-semibold tracking-wide">
+                        SIGN IN
                     </Link>
                 </p>
-            </>
+            </div>
         );
     }
 
     // step === "account"
     return (
-        <>
-            <h1 className="mb-2 text-center text-2xl font-bold text-vvs-primary">Create Account</h1>
-            <p className="mb-6 text-center text-sm text-gray-600">
-                Set up your credentials to continue.
-            </p>
+        <div className="space-y-6">
+            <div className="text-center space-y-1">
+                <h1 className="text-xl font-bold text-white uppercase tracking-tight">CREATE MEMBER PROFILE</h1>
+                <p className="text-xs text-text-secondary">Establish your credentials on the network.</p>
+            </div>
 
             {error && (
-                <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+                <div className="relative overflow-hidden rounded-vvs-md border border-vvs-accent/20 bg-vvs-accent/5 px-4 py-3 text-xs text-vvs-accent font-mono tracking-wide flex gap-2 items-center">
+                    <span className="animate-pulse">●</span> {error}
+                </div>
             )}
 
             <form onSubmit={handleAccountSubmit} className="space-y-4">
-                <div>
-                    <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
-                        Email
+                <div className="space-y-1">
+                    <label htmlFor="email" className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest block">
+                        SECURE TERMINAL EMAIL
                     </label>
                     <input
                         id="email"
@@ -140,14 +146,14 @@ export default function RegisterPage() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-vvs-accent focus:outline-none focus:ring-1 focus:ring-vvs-accent"
-                        placeholder="you@example.com"
+                        className="w-full rounded-vvs-md glass-input px-4 py-2.5 text-sm placeholder:text-text-muted focus:border-vvs-accent focus:ring-1 focus:ring-vvs-accent font-mono"
+                        placeholder="yourname@vvs.co"
                     />
                 </div>
 
-                <div>
-                    <label htmlFor="password" className="mb-1 block text-sm font-medium text-gray-700">
-                        Password
+                <div className="space-y-1">
+                    <label htmlFor="password" className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest block">
+                        PASSPHRASE ENCRYPTION
                     </label>
                     <input
                         id="password"
@@ -156,7 +162,7 @@ export default function RegisterPage() {
                         minLength={8}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-vvs-accent focus:outline-none focus:ring-1 focus:ring-vvs-accent"
+                        className="w-full rounded-vvs-md glass-input px-4 py-2.5 text-sm placeholder:text-text-muted focus:border-vvs-accent focus:ring-1 focus:ring-vvs-accent font-mono"
                         placeholder="At least 8 characters"
                     />
                 </div>
@@ -164,18 +170,19 @@ export default function RegisterPage() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-lg bg-vvs-accent px-4 py-2.5 font-medium text-white transition-colors hover:bg-vvs-accent/90 disabled:opacity-50"
+                    className="relative w-full overflow-hidden rounded-vvs-md bg-vvs-accent px-4 py-3 font-semibold text-xs tracking-wider uppercase text-white transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,59,92,0.4)] active:scale-[0.98] disabled:opacity-50"
                 >
-                    {loading ? "Creating account..." : "Create Account"}
+                    <span className="relative z-10">{loading ? "PROCESSING HANDSHAKE..." : "INITIALIZE MEMBERSHIP"}</span>
                 </button>
             </form>
 
             <button
                 onClick={() => setStep("invite")}
-                className="mt-4 w-full text-center text-sm text-gray-500 hover:text-gray-700"
+                className="w-full text-center text-xs text-text-muted hover:text-text-secondary mono-caps tracking-widest"
             >
-                Back
+                ← BACK TO DECRYPT KEY
             </button>
-        </>
+        </div>
     );
 }
+

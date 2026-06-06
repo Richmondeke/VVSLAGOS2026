@@ -55,16 +55,16 @@ export default function RegisterPage() {
                     ⚡
                 </div>
                 <div className="space-y-1">
-                    <h1 className="text-xl font-bold text-white uppercase tracking-wider">SECURE LINK PENDING</h1>
+                    <h1 className="text-xl font-bold text-text-primary uppercase tracking-wider">SECURE LINK PENDING</h1>
                     <p className="mono-caps text-[9px] text-vvs-gold tracking-widest">DECRYPTING CREATIVE CREDENTIALS</p>
                 </div>
                 <p className="text-xs text-text-secondary leading-relaxed px-2">
-                    Your application packet has been registered under access key <span className="font-mono text-white bg-white/5 px-1.5 py-0.5 rounded border border-white/5">{inviteCode}</span>. VVS node validators are examining your professional reputation.
+                    Your application packet has been registered under access key <span className="font-mono text-text-primary bg-text-secondary/5 px-1.5 py-0.5 rounded border border-text-secondary/10">{inviteCode}</span>. VVS node validators are examining your professional reputation.
                 </p>
                 <div className="pt-2">
                     <Link
                         href="/login"
-                        className="inline-block w-full text-center rounded-vvs-md bg-vvs-accent hover:shadow-[0_0_15px_rgba(255,59,92,0.3)] px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-white transition-all"
+                        className="inline-block w-full text-center rounded-vvs-md bg-vvs-accent hover:shadow-[0_0_15px_rgba(255,59,92,0.3)] px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-text-primary transition-all"
                     >
                         RETURN TO LOGIN
                     </Link>
@@ -77,7 +77,7 @@ export default function RegisterPage() {
         return (
             <div className="space-y-6">
                 <div className="text-center space-y-1">
-                    <h1 className="text-xl font-bold text-white uppercase tracking-tight">VERIFY INVITATION KEY</h1>
+                    <h1 className="text-xl font-bold text-text-primary uppercase tracking-tight">VERIFY INVITATION KEY</h1>
                     <p className="text-xs text-text-secondary">Enter your selective referral code to open credentials setup.</p>
                 </div>
 
@@ -105,7 +105,7 @@ export default function RegisterPage() {
 
                     <button
                         type="submit"
-                        className="relative w-full overflow-hidden rounded-vvs-md bg-vvs-accent px-4 py-3 font-semibold text-xs tracking-wider uppercase text-white transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,59,92,0.4)] active:scale-[0.98]"
+                        className="relative w-full overflow-hidden rounded-vvs-md bg-vvs-accent px-4 py-3 font-semibold text-xs tracking-wider uppercase text-text-primary transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,59,92,0.4)] active:scale-[0.98]"
                     >
                         CONTINUE REGISTRATION
                     </button>
@@ -125,7 +125,7 @@ export default function RegisterPage() {
     return (
         <div className="space-y-6">
             <div className="text-center space-y-1">
-                <h1 className="text-xl font-bold text-white uppercase tracking-tight">CREATE MEMBER PROFILE</h1>
+                <h1 className="text-xl font-bold text-text-primary uppercase tracking-tight">CREATE MEMBER PROFILE</h1>
                 <p className="text-xs text-text-secondary">Establish your credentials on the network.</p>
             </div>
 
@@ -170,7 +170,7 @@ export default function RegisterPage() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="relative w-full overflow-hidden rounded-vvs-md bg-vvs-accent px-4 py-3 font-semibold text-xs tracking-wider uppercase text-white transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,59,92,0.4)] active:scale-[0.98] disabled:opacity-50"
+                    className="relative w-full overflow-hidden rounded-vvs-md bg-vvs-accent px-4 py-3 font-semibold text-xs tracking-wider uppercase text-text-primary transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,59,92,0.4)] active:scale-[0.98] disabled:opacity-50"
                 >
                     <span className="relative z-10">{loading ? "PROCESSING HANDSHAKE..." : "INITIALIZE MEMBERSHIP"}</span>
                 </button>

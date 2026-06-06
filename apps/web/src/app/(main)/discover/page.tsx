@@ -18,12 +18,25 @@ type Opportunity = {
     description: string;
 };
 
+type Creative = {
+    id: string;
+    name: string;
+    avatarUrl: string;
+    discipline: string;
+    location: string;
+    status: string;
+    steez: number;
+    bio: string;
+    skills: string[];
+    links: Array<{ title: string; url: string; type: "link" | "file" | "pdf" | "website" | "reel" | "document" }>;
+};
+
 const MOCK_OPPORTUNITIES: Opportunity[] = [
     {
         id: "opp-1",
         title: "Lead Stylist for VVS Lagos Runway Activation",
         brand: "VVS Lagos",
-        brandLogo: "⚡",
+        brandLogo: "https://www.vvslagos.com/assets/VVSMASCOT7.png",
         isVerifiedBrand: true,
         type: "Castings",
         category: "Fashion",
@@ -31,97 +44,225 @@ const MOCK_OPPORTUNITIES: Opportunity[] = [
         deadline: "June 15, 2026",
         budget: "₦450,000",
         xpReward: "+150 XP",
-        description: "Seeking an avant-garde lead stylist to direct styling for the upcoming high-fashion capsule drop. Experience with premium African labels is highly preferred."
+        description: "We are hunting for a super creative lead stylist to direct styling for the upcoming VVS Lagos high-fashion capsule drop. Bring your A-game fashion presence."
     },
     {
         id: "opp-2",
-        title: "CoraPay Creator Grant 2026",
-        brand: "CoraPay",
-        brandLogo: "💳",
+        title: "Technical Design Assistant (Afromodernist Outerwear)",
+        brand: "TJ-WHO",
+        brandLogo: "https://www.vvslagos.com/assets/TJ %20WHO.webp",
         isVerifiedBrand: true,
-        type: "Grants",
-        category: "Tech",
-        location: "Remote / Pan-African",
-        deadline: "July 01, 2026",
-        budget: "₦2,500,000",
-        xpReward: "+300 XP",
-        description: "Sponsoring 3 digital creatives building open source libraries, plugins, or tools targeting the next generation of African digital artists."
+        type: "Gigs",
+        category: "Fashion",
+        location: "Lagos, Nigeria",
+        deadline: "June 25, 2026",
+        budget: "₦650,000",
+        xpReward: "+200 XP",
+        description: "Join TJ-WHO to assist with pattern cutting and structural styling of their upcoming SS27 minimalist afromodern utilitarian collection. High craft, no copy-copy."
     },
     {
         id: "opp-3",
-        title: "Visual Director for Nike Pan-African Campaign",
-        brand: "Nike Africa",
-        brandLogo: "✔️",
+        title: "Creative Lead for Capsule Showcase Campaign",
+        brand: "Hertunba",
+        brandLogo: "https://www.vvslagos.com/assets/HERTUNBA.avif",
         isVerifiedBrand: true,
-        type: "Brand Activations",
+        type: "Collaborations",
         category: "Film",
-        location: "Nairobi, Kenya",
-        deadline: "June 20, 2026",
-        budget: "₦1,800,000",
-        xpReward: "+200 XP",
-        description: "A collaborative film campaign highlighting runner subcultures across East Africa. Seeking a director with strong cinematic storytelling and grainy, authentic film textures."
+        location: "Lekki, Lagos",
+        deadline: "July 02, 2026",
+        budget: "₦1,200,000",
+        xpReward: "+250 XP",
+        description: "Directing the visual narrative and lookbook videography for Hertunba's new collection. Tell a story that will make viewers choke with pure cultural intelligence."
     },
     {
         id: "opp-4",
-        title: "Music Producer Residency: Johannesburg Sound Lab",
-        brand: "Soma Records",
-        brandLogo: "🎹",
+        title: "Apparel Styling Associate & Showroom Curator",
+        brand: "In Official",
+        brandLogo: "https://www.vvslagos.com/assets/IN%20OFFICIAL.png",
         isVerifiedBrand: true,
-        type: "Residencies",
-        category: "Music",
-        location: "Johannesburg, South Africa",
-        deadline: "August 10, 2026",
-        budget: "Fully Funded + Stipend",
-        xpReward: "+250 XP",
-        description: "A 4-week intensive studio residency focusing on fusion of Amapiano with global electronic subgenres. Includes access to state-of-the-art synthesizers."
+        type: "Gigs",
+        category: "Fashion",
+        location: "Ikoyi, Lagos",
+        deadline: "June 20, 2026",
+        budget: "₦350,000",
+        xpReward: "+100 XP",
+        description: "Help curate and coordinate the premium showroom and client styling sessions for In Official's upcoming exclusive private collectors drop."
     },
     {
         id: "opp-5",
-        title: "Exhibition Space at VVS Private Showcase",
-        brand: "The Gallery",
-        brandLogo: "🎨",
+        title: "Avant-Garde Accessory Design Partnership",
+        brand: "LFJ Official",
+        brandLogo: "https://www.vvslagos.com/assets/LFJ%20OFFICIAL.webp",
         isVerifiedBrand: true,
-        type: "Competitions",
+        type: "Collaborations",
         category: "Culture",
-        location: "Accra, Ghana",
-        deadline: "June 18, 2026",
-        budget: "₦600,000 Prize Pool",
-        xpReward: "+120 XP",
-        description: "Submit your latest digital artwork or high-fashion photography. Top 5 selections will receive featured physical exhibition space and travel stipends."
+        location: "Remote / Lagos",
+        deadline: "July 12, 2026",
+        budget: "₦850,000",
+        xpReward: "+180 XP",
+        description: "Collaborative design gig to co-create custom 3D printed structural brass accessories for the LFJ runway. Show us why your creative skill choke, no caps."
     },
     {
         id: "opp-6",
-        title: "Model Casting: Orange Culture SS27 Campaign",
-        brand: "Orange Culture",
-        brandLogo: "🍊",
+        title: "Model Casting: Tokyo James Runway Campaign",
+        brand: "Tokyo James",
+        brandLogo: "https://www.vvslagos.com/assets/TOKYO%20JAMEs.webp",
         isVerifiedBrand: true,
         type: "Castings",
         category: "Fashion",
         location: "Lagos, Nigeria",
-        deadline: "June 12, 2026",
-        budget: "₦300,000",
-        xpReward: "+100 XP",
-        description: "Looking for non-conforming gender-neutral models for the SS27 editorial shoot. No formal experience required, agency models and street-scouted welcome."
+        deadline: "June 18, 2026",
+        budget: "₦500,000",
+        xpReward: "+150 XP",
+        description: "Street-scouted and seasoned professional models wanted to walk the Tokyo James SS27 showcase. Looking for candidates with pure, raw attitude and unmatched presence."
+    }
+];
+
+const MOCK_CREATIVES: Creative[] = [
+    {
+        id: "cr-1",
+        name: "Amina Yusuf",
+        avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+        discipline: "Afromodernist Textile Designer",
+        location: "Lagos, Nigeria",
+        status: "Vanguard Elite",
+        steez: 98,
+        bio: "Weaving Yoruba architectural geometries into high-fashion structural textiles. Featured in SS25 Paris Showcases.",
+        skills: ["Textile Design", "Geometric Weaving", "Creative Direction"],
+        links: [
+            { title: "Portfolio Reel 🎥", url: "https://vvs.is/amina-reel", type: "reel" },
+            { title: "SS26 Lookbook.pdf 📄", url: "https://vvs.is/amina-lookbook", type: "pdf" }
+        ]
+    },
+    {
+        id: "cr-2",
+        name: "Tunde Olayinka",
+        avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+        discipline: "Utilitarian Outerwear Architect",
+        location: "Yaba, Lagos",
+        status: "Pro",
+        steez: 95,
+        bio: "Specializing in heavy brass-buckled canvas outerwear and modular pocket structures. Functional garments only.",
+        skills: ["Pattern Cutting", "Utility Outerwear", "3D Drafting"],
+        links: [
+            { title: "Technical Folio", url: "https://vvs.is/tunde-folio", type: "link" },
+            { title: "Brand Concept", url: "https://vvs.is/tunde-brand", type: "website" }
+        ]
+    },
+    {
+        id: "cr-3",
+        name: "Zara Coker",
+        avatarUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80",
+        discipline: "Art Director & Lead Stylist",
+        location: "Ikoyi, Lagos",
+        status: "Visionary",
+        steez: 99,
+        bio: "Curating high-contrast editorial concepts that bridge Nigerian archive photography with luxury street aesthetics.",
+        skills: ["Editorial Styling", "Art Direction", "Set Design"],
+        links: [
+            { title: "Creative Reel ⚡", url: "https://vvs.is/zara-reel", type: "reel" },
+            { title: "Editorial Deck.pdf 📄", url: "https://vvs.is/zara-deck", type: "pdf" }
+        ]
+    },
+    {
+        id: "cr-4",
+        name: "Kofi Mensah",
+        avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+        discipline: "Avant-Garde Jewelry Maker",
+        location: "Accra / Lagos",
+        status: "Member",
+        steez: 91,
+        bio: "Sculpting wearable art out of recycled brass, bronze, and raw crystal clusters. Inspired by cosmic geometries.",
+        skills: ["Jewelry Craft", "3D Printing", "Metal Forging"],
+        links: [
+            { title: "Jewelry Showroom", url: "https://vvs.is/kofi-shop", type: "website" }
+        ]
+    },
+    {
+        id: "cr-5",
+        name: "Nneka Okafor",
+        avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80",
+        discipline: "Visual Storyteller & Filmmaker",
+        location: "Lekki, Lagos",
+        status: "Pro",
+        steez: 94,
+        bio: "Documenting subcultures of Lagos through high-contrast film-grain reels and digital-art activations.",
+        skills: ["Cinematography", "Subculture Research", "Color Grading"],
+        links: [
+            { title: "Director's Cut 🎥", url: "https://vvs.is/nneka-cut", type: "reel" },
+            { title: "Lagos Subculture PDF 📄", url: "https://vvs.is/nneka-doc", type: "pdf" }
+        ]
     }
 ];
 
 const OPPORTUNITY_TYPES = ["All", "Gigs", "Grants", "Castings", "Brand Activations", "Residencies", "Competitions"] as const;
 const CATEGORIES = ["All", "Fashion", "Film", "Photography", "Music", "Tech", "Culture"] as const;
 
+const BANNER_ADS = [
+    {
+        id: "ad-1",
+        tag: "Nike Africa // Gbedu Sound Lab",
+        title: "Submit your Amapiano-Electronic fusion track before June 15",
+        cta: "Claim +250 XP",
+        tagColor: "text-vvs-accent",
+        imageUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=400&q=80",
+        description: "Show us what your sound style is made of. Stand out from the crowd and let your beats choke. Zero copy-paste vibes."
+    },
+    {
+        id: "ad-2",
+        tag: "Orange Culture // SS27 Campaign",
+        title: "We are casting street-scouted and gender-neutral models",
+        cta: "No portfolio? No problem",
+        tagColor: "text-vvs-gold",
+        imageUrl: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=400&q=80",
+        description: "Walk the runway of your dreams. No formal experience needed, just pure raw creative energy. Let's make magic."
+    },
+    {
+        id: "ad-3",
+        tag: "CoraPay // Clean Escrow",
+        title: "Securing all creative contract deposits on-chain for you",
+        cta: "Secure Your Bag",
+        tagColor: "text-vvs-gold",
+        imageUrl: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=400&q=80",
+        description: "Clean contracts, timely payouts. We lock your deposits in secure smart escrows so nobody can run you street. Pure peace of mind."
+    }
+];
+
+// Helper to compute relative days left from May 28, 2026
+const getDaysLeft = (deadlineStr: string) => {
+    const current = new Date("2026-05-28");
+    const target = new Date(deadlineStr);
+    const diffTime = target.getTime() - current.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays > 0 ? `${diffDays} days left` : "Expired";
+};
+
 export default function DiscoverPage() {
     const { user, addXp } = useAuth();
+    const [currentView, setCurrentTab] = useState<"opportunities" | "creatives">("opportunities");
     const [opportunities, setOpportunities] = useState<Opportunity[]>(MOCK_OPPORTUNITIES);
     const [selectedType, setSelectedType] = useState<string>("All");
     const [selectedCategory, setSelectedCategory] = useState<string>("All");
     const [searchQuery, setSearchQuery] = useState("");
-    const [savedOpps, setSavedOpps] = useState<string[]>([]);
     
-    // Application checkout flow states
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    
+    // Application CV flow states
     const [applyingOpp, setApplyingOpp] = useState<Opportunity | null>(null);
-    const [portfolioUrl, setPortfolioUrl] = useState("");
-    const [pitchText, setPitchText] = useState("");
+    const [coverPitch, setCoverPitch] = useState("");
     const [isApplied, setIsApplied] = useState(false);
     const [isApplying, setIsApplying] = useState(false);
+
+    // Banner ad slide state
+    const [activeAd, setActiveAd] = useState(0);
+
+    // Auto-scroll the banner ads
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setActiveAd((prev) => (prev + 1) % BANNER_ADS.length);
+        }, 6000);
+        return () => clearInterval(timer);
+    }, []);
 
     // Filter logic
     const filteredOpportunities = opportunities.filter((opp) => {
@@ -134,314 +275,490 @@ export default function DiscoverPage() {
         return matchesType && matchesCategory && matchesSearch;
     });
 
-    const toggleSave = (id: string) => {
-        setSavedOpps((prev) => 
-            prev.includes(id) ? prev.filter((oId) => oId !== id) : [...prev, id]
-        );
-    };
+    const filteredCreatives = MOCK_CREATIVES.filter((c) => {
+        const matchesSearch = 
+            c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            c.discipline.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            c.bio.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            c.skills.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
+        return matchesSearch;
+    });
 
     const handleApplyClick = (opp: Opportunity) => {
         setApplyingOpp(opp);
         setIsApplied(false);
-        setPortfolioUrl("");
-        setPitchText("");
+        setCoverPitch("");
     };
 
     const handleApplySubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsApplying(true);
 
-        // Simulate secure API submission
+        // Simulate secure API/escrow submission of user's CV Profile
         await new Promise((resolve) => setTimeout(resolve, 1500));
         
         setIsApplying(false);
         setIsApplied(true);
-        addXp(50); // Reward the user for applying
+        addXp(100); // Reward the user with VVS Status XP
 
         // Close after brief delay
         setTimeout(() => {
             setApplyingOpp(null);
             setIsApplied(false);
-        }, 2000);
+        }, 2200);
     };
 
     return (
-        <div className="mx-auto max-w-5xl px-6 py-8">
+        <div className="mx-auto max-w-5xl py-10 px-4 md:px-0">
             {/* Page Header */}
-            <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div>
-                    <span className="mono-caps text-xs text-vvs-accent font-semibold tracking-widest">Opportunity Core</span>
-                    <h1 className="mt-2 text-4xl font-extrabold tracking-tight md:text-5xl">DISCOVER GIGS & CREATIVES</h1>
-                    <p className="mt-2 text-text-secondary max-w-xl text-sm leading-relaxed">
-                        Curated daily high-value opportunities, casting briefs, visual grants, and brand activations across Africa. Apply directly with your VVS digital reputation.
+            <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <div className="space-y-2">
+                    <p className="section-eyebrow">Creative Gateway</p>
+                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-text-primary leading-none">
+                        Discover
+                    </h1>
+                    <p className="text-text-secondary max-w-xl text-sm leading-relaxed">
+                        Gigs, grants, and everything sweet. We source the finest design roles, high-fashion casting briefs, and global creative grants.
                     </p>
                 </div>
 
                 {/* Search Bar */}
-                <div className="w-full max-w-xs">
+                <div className="w-full max-w-md md:max-w-xs">
                     <div className="relative">
                         <input
                             type="text"
-                            placeholder="Search opportunities..."
+                            placeholder={currentView === "opportunities" ? "Search opportunities..." : "Search creatives..."}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="glass-input w-full rounded-lg px-4 py-2.5 pl-10 text-xs text-white placeholder-text-muted focus:outline-none"
+                            className="glass-input w-full rounded-full px-5 py-3 pl-11 text-sm text-text-primary placeholder-text-muted focus:outline-none"
                         />
-                        <span className="absolute left-3.5 top-3.5 text-xs opacity-50">🔍</span>
+                        <span className="absolute left-4 top-3.5 text-sm opacity-50">🔍</span>
                     </div>
                 </div>
             </div>
 
-            {/* Quick Profile Summary Card */}
-            {user && (
-                <div className="glass-card glow-accent mb-10 p-6 rounded-xl flex flex-col md:flex-row gap-6 items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="h-16 w-16 rounded-full bg-vvs-accent/20 flex items-center justify-center text-3xl border border-vvs-accent/30 shadow-[0_0_15px_rgba(255,59,92,0.2)]">
-                            ⚡
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <h3 className="text-lg font-bold">{user.name}</h3>
-                                <span className="mono-caps text-[9px] bg-vvs-gold/15 text-vvs-gold border border-vvs-gold/30 px-2 py-0.5 rounded">
-                                    {user.reputationLevel ?? "Visionary"}
-                                </span>
-                            </div>
-                            <p className="text-xs text-text-secondary mt-0.5">{user.discipline ?? "Creative Director"}</p>
-                            
-                            {/* Streak Progression Bar */}
-                            <div className="mt-3 flex items-center gap-3">
-                                <span className="text-[10px] text-text-secondary font-mono">Streak Momentum:</span>
-                                <div className="h-1.5 w-32 bg-white/5 rounded-full overflow-hidden">
-                                    <div className="h-full bg-vvs-accent" style={{ width: "60%" }}></div>
-                                </div>
-                                <span className="text-[10px] text-vvs-accent font-bold font-mono">3 Days 🔥</span>
-                            </div>
-                        </div>
+
+            {/* ── Diamond-Cut Brand Banner (Reference-style) ── */}
+            <div className="mb-10">
+                <div
+                    className="relative overflow-hidden rounded-2xl bg-vvs-gold text-vvs-black p-6 md:p-8 flex items-center justify-between shadow-lg"
+                    style={{
+                        background: "linear-gradient(135deg, #FFD500 0%, #F5A623 100%)"
+                    }}
+                >
+                    {/* Left content - Title and Description only */}
+                    <div className="space-y-1.5 max-w-[65%] z-10">
+                        <h2 className="text-xl md:text-2xl font-bold leading-tight tracking-tight text-vvs-black">
+                            {BANNER_ADS[activeAd].title}
+                        </h2>
+                        <p className="text-xs text-vvs-black/75 hidden md:block">
+                            {BANNER_ADS[activeAd].description}
+                        </p>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-6 text-center divide-x divide-white/5 w-full md:w-auto">
-                        <div className="px-4">
-                            <div className="text-xl font-bold font-mono text-white">450</div>
-                            <div className="text-[9px] text-text-secondary mono-caps mt-1">Total XP</div>
-                        </div>
-                        <div className="px-4">
-                            <div className="text-xl font-bold font-mono text-vvs-gold">Lv. 4</div>
-                            <div className="text-[9px] text-text-secondary mono-caps mt-1">Tier Level</div>
-                        </div>
-                        <div className="px-4">
-                            <div className="text-xl font-bold font-mono text-vvs-blue">14</div>
-                            <div className="text-[9px] text-text-secondary mono-caps mt-1">Applications</div>
-                        </div>
+                    {/* Right content - View button cleanly pushed right, with large overlaid diamond shape */}
+                    <div className="flex items-center gap-4 shrink-0 z-10">
+                        {/* View Button */}
+                        <button className="px-5 py-2.5 bg-white text-vvs-black rounded-full text-xs font-extrabold flex items-center gap-1.5 hover:bg-white/95 transition-all shadow-md cursor-pointer z-10">
+                            View <span className="font-sans font-black">»</span>
+                        </button>
                     </div>
-                </div>
-            )}
 
-            {/* Filter Tabs */}
-            <div className="mb-8 space-y-4">
-                {/* Type Filters */}
-                <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-                    {OPPORTUNITY_TYPES.map((type) => (
-                        <button
-                            key={type}
-                            onClick={() => setSelectedType(type)}
-                            className={`mono-caps text-[10px] font-semibold tracking-wider px-4 py-2 rounded-full transition-all whitespace-nowrap ${
-                                selectedType === type 
-                                    ? "bg-white text-black font-extrabold" 
-                                    : "bg-white/5 text-text-secondary border border-white/5 hover:text-white hover:bg-white/10"
-                            }`}
-                        >
-                            {type}
-                        </button>
-                    ))}
+                    {/* Overlaid Diamond emblem positioned in the bottom right corner */}
+                    <div className="absolute right-[-20px] bottom-[-20px] w-36 h-36 text-white/15 select-none pointer-events-none z-0 transform rotate-12">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+                            <path d="M12 2L2 9l10 13 10-13-10-7zm0 2.8L18.4 9H5.6L12 4.8zM4.7 10.5h14.6L12 19.3l-7.3-8.8z"/>
+                        </svg>
+                    </div>
+
+                    {/* Subtle design overlays */}
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
                 </div>
 
-                {/* Category Filters */}
-                <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-white/5">
-                    {CATEGORIES.map((category) => (
+                {/* Navigation Dots */}
+                <div className="flex justify-center gap-2 mt-4">
+                    {BANNER_ADS.map((_, i) => (
                         <button
-                            key={category}
-                            onClick={() => setSelectedCategory(category)}
-                            className={`text-xs px-3.5 py-1.5 rounded-md transition-all whitespace-nowrap ${
-                                selectedCategory === category 
-                                    ? "text-vvs-accent bg-vvs-accent/10 font-bold border border-vvs-accent/25" 
-                                    : "text-text-secondary hover:text-white hover:bg-white/5"
+                            key={i}
+                            onClick={() => setActiveAd(i)}
+                            className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                                activeAd === i ? "w-8 bg-text-primary" : "w-2 bg-text-muted/30"
                             }`}
-                        >
-                            {category}
-                        </button>
+                        />
                     ))}
                 </div>
             </div>
 
-            {/* Opportunities Feed Grid */}
-            {filteredOpportunities.length === 0 ? (
-                <div className="glass-panel text-center py-20 rounded-xl max-w-xl mx-auto">
-                    <span className="text-4xl">📭</span>
-                    <h3 className="text-lg font-bold mt-4">No Opportunities Found</h3>
-                    <p className="text-xs text-text-secondary mt-1">Try tweaking your category or active search filters.</p>
+            {/* View Switcher and Filter Trigger Row */}
+            <div className="mb-8 flex items-center justify-between gap-4">
+                <div className="flex bg-vvs-card rounded-full p-1.5 w-fit">
+                    <button
+                        onClick={() => { setCurrentTab("opportunities"); setSearchQuery(""); }}
+                        className={`px-6 py-2 text-xs font-bold rounded-full transition-all cursor-pointer ${
+                            currentView === "opportunities"
+                                ? "bg-text-primary text-vvs-bg shadow-sm font-extrabold"
+                                : "text-text-muted hover:text-text-primary"
+                        }`}
+                    >
+                        Opportunities
+                    </button>
+                    <button
+                        onClick={() => { setCurrentTab("creatives"); setSearchQuery(""); }}
+                        className={`px-6 py-2 text-xs font-bold rounded-full transition-all cursor-pointer ${
+                            currentView === "creatives"
+                                ? "bg-text-primary text-vvs-bg shadow-sm font-extrabold"
+                                : "text-text-muted hover:text-text-primary"
+                        }`}
+                    >
+                        Creatives
+                    </button>
                 </div>
-            ) : (
-                <div className="grid gap-6 md:grid-cols-2">
-                    {filteredOpportunities.map((opp) => (
-                        <div key={opp.id} className="glass-card p-6 rounded-xl flex flex-col justify-between h-full relative group">
-                            {/* Accent indicator glow */}
-                            <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:via-vvs-accent/45 transition-all duration-300" />
-                            
-                            <div>
-                                <div className="flex items-start justify-between gap-4 mb-4">
-                                    <div className="flex items-center gap-2.5">
-                                        <div className="h-9 w-9 bg-white/5 rounded-lg border border-white/10 flex items-center justify-center text-lg shadow-[0_4px_10px_rgba(0,0,0,0.3)]">
-                                            {opp.brandLogo ?? "⚡"}
-                                        </div>
-                                        <div>
-                                            <div className="flex items-center gap-1.5">
-                                                <h4 className="text-xs font-bold text-white leading-none">{opp.brand}</h4>
-                                                {opp.isVerifiedBrand && (
-                                                    <span className="text-[9px] text-vvs-blue" title="Verified Creative Brand">✓</span>
-                                                )}
+
+                {currentView === "opportunities" && (
+                    <button
+                        onClick={() => setIsFilterOpen(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-vvs-card border border-text-secondary/10 hover:border-text-secondary/20 rounded-full text-xs font-bold text-text-primary transition-all cursor-pointer"
+                    >
+                        <span>🎛️</span>
+                        <span>Filter</span>
+                        {(selectedType !== "All" || selectedCategory !== "All") && (
+                            <span className="w-2 h-2 rounded-full bg-vvs-gold" />
+                        )}
+                    </button>
+                )}
+            </div>
+
+            {/* VIEW 1: Opportunities Feed View */}
+            {currentView === "opportunities" && (
+                <div className="space-y-8">
+                    {/* Opportunities Feed Grid */}
+                    {filteredOpportunities.length === 0 ? (
+                        <div className="text-center py-20 rounded-vvs-xl bg-vvs-card max-w-xl mx-auto">
+                            <span className="text-5xl">📭</span>
+                            <h3 className="text-lg font-bold mt-4 text-text-primary">Nothing here yet</h3>
+                            <p className="text-sm text-text-secondary mt-1">Try adjusting your filters or search keywords.</p>
+                        </div>
+                    ) : (
+                        <div className="grid gap-5 md:grid-cols-2">
+                            {filteredOpportunities.map((opp) => (
+                                <div key={opp.id} className="rounded-vvs-xl bg-vvs-card p-6 flex flex-col justify-between h-full group hover:bg-vvs-card-hover transition-all duration-300">
+                                    <div>
+                                        <div className="flex items-start justify-between gap-4 mb-5">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-10 w-10 bg-vvs-card-elevated rounded-vvs-md flex items-center justify-center overflow-hidden shrink-0">
+                                                    {opp.brandLogo && (opp.brandLogo.startsWith("http") || opp.brandLogo.startsWith("/")) ? (
+                                                        <img src={opp.brandLogo} alt={opp.brand} className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <span className="text-xl">{opp.brandLogo ?? "⚡"}</span>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <h4 className="text-sm font-bold text-text-primary leading-none">{opp.brand}</h4>
+                                                        {opp.isVerifiedBrand && (
+                                                            <span className="text-xs text-vvs-gold" title="Verified">✓</span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-xs text-text-muted mt-1">{opp.location}</p>
+                                                </div>
                                             </div>
-                                            <p className="text-[10px] text-text-secondary mt-1 leading-none">{opp.location}</p>
+                                            <span className="pill-tag text-[10px]">{opp.type}</span>
                                         </div>
+
+                                        <h3 className="text-base font-bold leading-snug text-text-primary group-hover:text-vvs-accent transition-colors">
+                                            {opp.title}
+                                        </h3>
+                                        <p className="text-sm text-text-secondary mt-2.5 line-clamp-3 leading-relaxed">
+                                            {opp.description}
+                                        </p>
                                     </div>
-                                    
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-[9px] mono-caps bg-white/5 text-text-secondary border border-white/5 px-2 py-0.5 rounded">
-                                            {opp.type}
-                                        </span>
-                                        <button 
-                                            onClick={() => toggleSave(opp.id)}
-                                            className="text-sm p-1.5 rounded-full hover:bg-white/5 transition-all"
-                                            title="Save for later"
+
+                                    <div className="mt-6 pt-4 border-t border-text-secondary/8 flex flex-col gap-4">
+                                        <div className="flex items-center justify-between text-xs">
+                                            <div>
+                                                <span className="text-text-muted">Budget</span>
+                                                <span className="text-vvs-gold font-bold ml-1.5">{opp.budget}</span>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className="text-text-muted">Deadline</span>
+                                                <span className="text-text-secondary font-semibold ml-1.5">
+                                                    {getDaysLeft(opp.deadline)}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            onClick={() => handleApplyClick(opp)}
+                                            className="w-full text-center text-sm font-semibold py-3 bg-text-primary text-vvs-bg rounded-full transition-all duration-200 hover:bg-vvs-accent cursor-pointer"
                                         >
-                                            {savedOpps.includes(opp.id) ? "💖" : "🖤"}
+                                            Quick Apply →
                                         </button>
                                     </div>
                                 </div>
-
-                                <h3 className="text-base font-bold leading-snug text-white hover:text-vvs-accent transition-colors">
-                                    {opp.title}
-                                </h3>
-                                <p className="text-xs text-text-secondary mt-2.5 line-clamp-3 leading-relaxed">
-                                    {opp.description}
-                                </p>
-                            </div>
-
-                            <div className="mt-6 pt-4 border-t border-white/5 flex flex-col gap-4">
-                                <div className="flex items-center justify-between text-[11px] font-mono">
-                                    <div>
-                                        <span className="text-text-muted">Budget:</span>
-                                        <span className="text-vvs-gold font-bold ml-1">{opp.budget}</span>
-                                    </div>
-                                    <div>
-                                        <span className="text-text-muted">Reward:</span>
-                                        <span className="text-vvs-blue font-bold ml-1">{opp.xpReward}</span>
-                                    </div>
-                                    <div>
-                                        <span className="text-text-muted">Deadline:</span>
-                                        <span className="text-text-secondary font-semibold ml-1">{opp.deadline}</span>
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={() => handleApplyClick(opp)}
-                                    className="w-full text-center mono-caps text-[10px] font-bold py-3 bg-white text-black rounded-lg transition-all duration-300 hover:bg-vvs-accent hover:text-white glow-accent hover:scale-[1.01]"
-                                >
-                                    Quick Apply Via Reputation
-                                </button>
-                            </div>
+                            ))}
                         </div>
-                    ))}
+                    )}
                 </div>
             )}
 
-            {/* Application Flow Dialog overlay (CoraPay embedded) */}
-            {applyingOpp && (
+            {/* VIEW 2: Creatives Directory View */}
+            {currentView === "creatives" && (
+                <div className="space-y-6">
+                    {filteredCreatives.length === 0 ? (
+                        <div className="glass-panel text-center py-20 rounded-2xl max-w-xl mx-auto border border-text-secondary/5">
+                            <span className="text-4xl">👥</span>
+                            <h3 className="text-base font-bold mt-4 text-text-primary">No creative minds found</h3>
+                            <p className="text-xs text-text-secondary mt-1">Try searching another discipline, name, or design style.</p>
+                        </div>
+                    ) : (
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {filteredCreatives.map((creative) => (
+                                <div key={creative.id} className="glass-card p-6 rounded-2xl flex flex-col justify-between h-full relative border border-text-secondary/5 group">
+                                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-text-primary/5 to-transparent group-hover:via-vvs-gold/40 transition-all duration-300" />
+                                    
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-14 w-16 rounded-full overflow-hidden border border-text-secondary/15 shrink-0 bg-text-primary/5">
+                                                <img src={creative.avatarUrl} alt={creative.name} className="h-full w-full object-cover" />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <h3 className="text-sm font-bold text-text-primary truncate">{creative.name}</h3>
+                                                <p className="text-[10px] text-vvs-gold font-mono font-bold leading-none mt-1">{creative.status}</p>
+                                                <p className="text-[10px] text-text-muted mt-1 leading-none truncate">{creative.location}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <p className="text-[11px] font-bold text-text-primary leading-tight">{creative.discipline}</p>
+                                            <p className="text-xs text-text-secondary leading-relaxed line-clamp-3">{creative.bio}</p>
+                                        </div>
+
+                                        {/* Skill Tags */}
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {creative.skills.map((s, idx) => (
+                                                <span key={idx} className="text-[8px] mono-caps bg-text-primary/5 border border-text-secondary/5 px-2 py-0.5 rounded-full font-bold text-text-secondary">
+                                                    {s}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Link in bio nodes */}
+                                    <div className="mt-5 pt-4 border-t border-text-secondary/5 space-y-3">
+                                        <span className="block text-[8px] text-text-muted font-bold mono-caps tracking-widest">Active Proof Nodes:</span>
+                                        <div className="space-y-1.5">
+                                            {creative.links.map((link, idx) => (
+                                                <a
+                                                    key={idx}
+                                                    href={link.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center justify-between p-2.5 rounded-lg bg-text-primary/5 border border-text-secondary/5 text-[10px] text-text-primary hover:text-vvs-accent hover:border-vvs-accent/35 hover:bg-vvs-accent/5 transition-all"
+                                                >
+                                                    <span className="font-semibold truncate">{link.title}</span>
+                                                    <span className="text-[8px] mono-caps font-mono tracking-widest opacity-60 uppercase">{link.type}</span>
+                                                </a>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Application Flow Dialog overlay (Submit completed VVS Profile CV) */}
+            {applyingOpp && user && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
-                    <div className="glass-panel max-w-md w-full p-8 rounded-xl relative overflow-hidden animate-float">
-                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-vvs-accent via-vvs-blue to-vvs-gold" />
+                    <div className="glass-panel max-w-md w-full p-8 rounded-2xl relative overflow-hidden animate-float border border-text-secondary/15 shadow-2xl">
+                        <div className="absolute top-0 left-0 right-0 h-1.5 bg-vvs-accent" />
                         
                         <button
                             onClick={() => setApplyingOpp(null)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-all text-sm"
+                            className="absolute top-4 right-4 text-text-secondary hover:text-text-primary transition-all text-sm cursor-pointer"
                         >
                             ✕
                         </button>
 
                         {!isApplied ? (
                             <form onSubmit={handleApplySubmit} className="space-y-6">
-                                <div className="text-center">
-                                    <span className="mono-caps text-[9px] text-vvs-gold font-bold tracking-widest border border-vvs-gold/30 px-2.5 py-1 rounded bg-vvs-gold/5">
-                                        CoraPay Secured Application
+                                <div className="text-center space-y-1.5">
+                                    <span className="mono-caps text-[9px] text-vvs-gold font-bold tracking-widest border border-vvs-gold/25 px-3 py-1 rounded-full bg-vvs-gold/5">
+                                        Core Apply
                                     </span>
-                                    <h2 className="text-xl font-bold mt-3 leading-tight">Apply to Opportunity</h2>
-                                    <p className="text-xs text-vvs-accent font-semibold mt-1 font-mono">{applyingOpp.title}</p>
+                                    <h2 className="text-xl font-bold text-text-primary mt-1">Apply with Profile CV</h2>
+                                    <p className="text-xs text-vvs-accent font-semibold font-mono">{applyingOpp.title}</p>
                                 </div>
 
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="block text-[10px] mono-caps text-text-secondary mb-1">Reputation Verification</label>
-                                        <div className="bg-white/5 rounded-lg border border-white/5 p-3.5 flex items-center justify-between text-xs">
-                                            <div className="flex items-center gap-2">
-                                                <span>✓</span>
-                                                <span className="text-white font-semibold">Reputation Level Verified</span>
-                                            </div>
-                                            <span className="text-[10px] text-vvs-blue font-mono">Lv. 4 Status</span>
+                                {/* Precompiled Profile CV Summary */}
+                                <div className="p-4 rounded-xl bg-text-primary/5 border border-text-secondary/10 space-y-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-12 w-12 rounded-full border border-text-secondary/15 overflow-hidden bg-text-primary/5">
+                                            {user.avatarUrl ? (
+                                                <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
+                                            ) : (
+                                                <span className="text-lg">⚡</span>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <h4 className="text-xs font-bold text-text-primary">{user.name || "Amina Osei"}</h4>
+                                            <p className="text-[10px] text-vvs-gold font-mono leading-none mt-1 uppercase">{user.reputationLevel ?? "Visionary"}</p>
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <label htmlFor="portfolio" className="block text-[10px] mono-caps text-text-secondary mb-1">Portfolio Link</label>
-                                        <input
-                                            id="portfolio"
-                                            type="url"
-                                            required
-                                            value={portfolioUrl}
-                                            onChange={(e) => setPortfolioUrl(e.target.value)}
-                                            placeholder="https://behance.net/yourprofile"
-                                            className="glass-input w-full rounded-lg px-3.5 py-2.5 text-xs text-white"
-                                        />
+                                    <div className="space-y-1">
+                                        <span className="block text-[8px] text-text-muted mono-caps">Discipline Focus</span>
+                                        <p className="text-xs font-semibold text-text-primary">{user.discipline ?? "Editorial Director & Stylist"}</p>
                                     </div>
 
-                                    <div>
-                                        <label htmlFor="pitch" className="block text-[10px] mono-caps text-text-secondary mb-1">Creative Pitch</label>
-                                        <textarea
-                                            id="pitch"
-                                            required
-                                            rows={3}
-                                            value={pitchText}
-                                            onChange={(e) => setPitchText(e.target.value)}
-                                            placeholder="Briefly state why you're a fit for this campaign..."
-                                            className="glass-input w-full rounded-lg px-3.5 py-2.5 text-xs text-white resize-none"
-                                        />
+                                    {user.bio && (
+                                        <div className="space-y-1">
+                                            <span className="block text-[8px] text-text-muted mono-caps">Profile Bio</span>
+                                            <p className="text-[11px] text-text-secondary leading-relaxed line-clamp-2 italic">"{user.bio}"</p>
+                                        </div>
+                                    )}
+
+                                    {/* Pre-attached Link-in-Bio node proofs */}
+                                    <div className="space-y-2">
+                                        <span className="block text-[8px] text-text-muted mono-caps">Verified Portfolio Proofs (Links in Bio)</span>
+                                        {user.links && user.links.length > 0 ? (
+                                            <div className="grid grid-cols-1 gap-1.5 max-h-24 overflow-y-auto">
+                                                {user.links.map((link, idx) => (
+                                                    <div key={idx} className="p-2 rounded bg-text-secondary/5 border border-text-secondary/5 flex items-center justify-between text-[10px]">
+                                                        <span className="font-medium truncate text-text-primary">{link.title}</span>
+                                                        <span className="text-[8px] uppercase font-mono opacity-60 text-vvs-gold">{link.type ?? "link"}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="p-2.5 rounded bg-vvs-accent/5 border border-vvs-accent/20 text-[10px] text-vvs-accent">
+                                                ⚠️ No portfolio links active in your bio. Go to profile to register them.
+                                            </div>
+                                        )}
                                     </div>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label htmlFor="cover-pitch" className="block text-[10px] mono-caps text-text-secondary font-bold">Quick Pitch (Optional Cover Note)</label>
+                                    <textarea
+                                        id="cover-pitch"
+                                        rows={2}
+                                        value={coverPitch}
+                                        onChange={(e) => setCoverPitch(e.target.value)}
+                                        placeholder="Add a snappy cover note for the brand team..."
+                                        className="glass-input w-full rounded-xl px-4 py-3 text-xs text-text-primary resize-none placeholder:text-text-muted focus:outline-none"
+                                    />
                                 </div>
 
                                 <button
                                     type="submit"
                                     disabled={isApplying}
-                                    className="w-full text-center mono-caps text-[11px] font-bold py-3.5 bg-white text-black hover:bg-vvs-accent hover:text-white rounded-lg transition-all glow-accent flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="w-full text-center mono-caps text-[10px] font-bold py-3.5 bg-text-primary text-vvs-bg hover:bg-vvs-accent hover:text-text-primary rounded-full transition-all glow-accent flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                                 >
                                     {isApplying ? (
                                         <>
                                             <span className="animate-spin text-sm">⚡</span>
-                                            Signing Contract...
+                                            Securing Contract on CoraPay...
                                         </>
                                     ) : (
-                                        "Sign & Submit Contract"
+                                        "Confirm & Submit Profile CV • +100 XP"
                                     )}
                                 </button>
                             </form>
                         ) : (
                             <div className="text-center py-10 space-y-4">
-                                <div className="h-16 w-16 bg-vvs-green/10 border border-vvs-green/30 rounded-full flex items-center justify-center text-3xl mx-auto shadow-[0_0_15px_rgba(0,230,118,0.2)]">
+                                <div className="h-16 w-16 bg-vvs-green/10 border border-vvs-green/30 rounded-full flex items-center justify-center text-3xl mx-auto shadow-[0_0_15px_rgba(0,230,118,0.15)] text-vvs-green">
                                     ✓
                                 </div>
-                                <h3 className="text-lg font-bold text-white">Application Submitted!</h3>
-                                <p className="text-xs text-text-secondary max-w-xs mx-auto">
-                                    Your profile, verified credentials, and pitch have been secured on-chain. You earned <span className="text-vvs-blue font-bold">+50 XP</span>.
+                                <h3 className="text-lg font-bold text-text-primary">Sent! Profile Delivered. 🚀</h3>
+                                <p className="text-xs text-text-secondary max-w-xs mx-auto leading-relaxed">
+                                    Your verified CV Profile and active link-in-bio proofs have been secured via CoraPay. We've notified the brand team. You earned <span className="text-vvs-gold font-bold">+100 XP</span>.
                                 </p>
                             </div>
                         )}
+                    </div>
+                </div>
+            )}
+            {/* Filter Modal Sheet */}
+            {isFilterOpen && (
+                <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm p-0 md:p-4">
+                    {/* Backdrop closer click */}
+                    <div className="absolute inset-0" onClick={() => setIsFilterOpen(false)} />
+                    
+                    {/* Panel Sheet */}
+                    <div className="glass-panel w-full md:max-w-md bg-vvs-bg border-t md:border border-text-secondary/15 rounded-t-3xl md:rounded-2xl p-6 md:p-8 space-y-6 relative overflow-hidden animate-slide-up md:animate-float z-10">
+                        {/* Drag indicator for mobile bottom sheet */}
+                        <div className="w-12 h-1 bg-text-secondary/20 rounded-full mx-auto md:hidden mb-2" />
+                        
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-base font-bold text-text-primary">Filter Opportunities</h3>
+                            <button
+                                onClick={() => setIsFilterOpen(false)}
+                                className="text-text-muted hover:text-text-primary text-sm cursor-pointer p-1"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Type Filters */}
+                        <div className="space-y-2.5">
+                            <span className="block text-[10px] font-bold text-text-muted uppercase tracking-wider">Opportunity Type</span>
+                            <div className="flex flex-wrap gap-2">
+                                {OPPORTUNITY_TYPES.map((type) => (
+                                    <button
+                                        key={type}
+                                        onClick={() => setSelectedType(type)}
+                                        className={`text-xs px-3.5 py-2 rounded-full font-semibold transition-all cursor-pointer ${
+                                            selectedType === type
+                                                ? "bg-text-primary text-vvs-bg"
+                                                : "bg-tag-bg text-text-secondary hover:bg-tag-bg-hover"
+                                        }`}
+                                    >
+                                        {type}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Category Filters */}
+                        <div className="space-y-2.5">
+                            <span className="block text-[10px] font-bold text-text-muted uppercase tracking-wider">Category</span>
+                            <div className="flex flex-wrap gap-2">
+                                {CATEGORIES.map((category) => (
+                                    <button
+                                        key={category}
+                                        onClick={() => setSelectedCategory(category)}
+                                        className={`text-xs px-3.5 py-2 rounded-full font-semibold transition-all cursor-pointer ${
+                                            selectedCategory === category
+                                                ? "bg-vvs-accent text-text-primary"
+                                                : "bg-tag-bg text-text-secondary hover:bg-tag-bg-hover"
+                                        }`}
+                                    >
+                                        {category}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="pt-4 border-t border-text-secondary/10 flex items-center gap-3">
+                            <button
+                                onClick={() => {
+                                    setSelectedType("All");
+                                    setSelectedCategory("All");
+                                }}
+                                className="flex-1 text-center py-3 border border-text-secondary/15 rounded-full text-xs font-bold text-text-secondary hover:text-text-primary transition-all cursor-pointer"
+                            >
+                                Reset All
+                            </button>
+                            <button
+                                onClick={() => setIsFilterOpen(false)}
+                                className="flex-1 text-center py-3 bg-text-primary text-vvs-bg rounded-full text-xs font-bold hover:bg-vvs-accent transition-all cursor-pointer"
+                            >
+                                Apply Filters
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

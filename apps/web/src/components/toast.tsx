@@ -17,9 +17,9 @@ type ToastContextType = {
 const ToastContext = createContext<ToastContextType | null>(null);
 
 const TYPE_STYLES: Record<ToastType, string> = {
-    success: "bg-green-600 text-white",
-    error: "bg-red-600 text-white",
-    info: "bg-gray-800 text-white",
+    success: "bg-green-600 text-text-primary",
+    error: "bg-red-600 text-text-primary",
+    info: "bg-gray-800 text-text-primary",
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {

@@ -136,9 +136,9 @@ export default function WalletPage() {
         <div className="mx-auto max-w-4xl p-4 md:p-8 space-y-8 pb-24 relative">
             
             {/* Header branding */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-text-secondary/10 pb-6">
                 <div className="space-y-1">
-                    <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight uppercase">CORAPAY COCKPIT</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold text-text-primary tracking-tight uppercase">CORAPAY COCKPIT</h1>
                     <p className="text-xs text-text-secondary">Premium creative financial ledger & escrow gateway.</p>
                 </div>
                 <div className="flex items-center gap-1.5 font-mono text-[10px] text-vvs-green bg-vvs-green/5 border border-vvs-green/15 px-3 py-1.5 rounded-full">
@@ -150,25 +150,25 @@ export default function WalletPage() {
             {/* Balance Card Grid with glass and glow accents */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Available Balance */}
-                <div className="relative rounded-vvs-xl border border-white/5 bg-vvs-card/40 p-6 md:p-8 overflow-hidden backdrop-blur-md shadow-2xl">
+                <div className="relative rounded-vvs-xl border border-text-secondary/10 bg-vvs-card/40 p-6 md:p-8 overflow-hidden backdrop-blur-md">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-vvs-accent/5 blur-2xl pointer-events-none rounded-full" />
-                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20" />
+                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-text-secondary/20" />
                     
                     <div className="space-y-3 z-10 relative">
                         <span className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest block">AVAILABLE LIQUID FUNDS</span>
-                        <div className="text-3xl md:text-4xl font-black font-mono text-white tracking-tight">
+                        <div className="text-3xl md:text-4xl font-bold font-mono text-text-primary tracking-tight">
                             ₦{((currentWallet.availableKobo) / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
                         <div className="flex gap-2.5 pt-2">
                             <button 
                                 onClick={() => setActiveTab("deposit")}
-                                className="flex-1 rounded-vvs-md bg-vvs-accent hover:shadow-[0_0_15px_rgba(255,59,92,0.3)] py-2.5 text-xs font-bold mono-caps tracking-widest text-white transition-all text-center"
+                                className="flex-1 rounded-vvs-md bg-vvs-accent py-2.5 text-xs font-bold mono-caps tracking-widest text-text-primary transition-all text-center"
                             >
                                 ADD FUNDS
                             </button>
                             <button 
                                 onClick={() => setActiveTab("withdraw")}
-                                className="flex-1 rounded-vvs-md bg-white/5 hover:bg-white/10 py-2.5 text-xs font-bold mono-caps tracking-widest text-white border border-white/5 transition-all text-center"
+                                className="flex-1 rounded-vvs-md bg-text-secondary/5 hover:bg-text-secondary/10 py-2.5 text-xs font-bold mono-caps tracking-widest text-text-primary border border-text-secondary/10 transition-all text-center"
                             >
                                 PAYOUT
                             </button>
@@ -177,16 +177,16 @@ export default function WalletPage() {
                 </div>
 
                 {/* Held In Escrow */}
-                <div className="relative rounded-vvs-xl border border-white/5 bg-vvs-card/20 p-6 md:p-8 overflow-hidden backdrop-blur-md shadow-lg group">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-vvs-blue/5 blur-2xl pointer-events-none rounded-full" />
-                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20" />
+                <div className="relative rounded-vvs-xl border border-text-secondary/10 bg-vvs-card/20 p-6 md:p-8 overflow-hidden backdrop-blur-md group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-vvs-gold/5 blur-2xl pointer-events-none rounded-full" />
+                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-text-secondary/20" />
                     
                     <div className="space-y-3 z-10 relative">
                         <div className="flex items-center gap-1.5">
                             <span className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest block">ACTIVE ORDERS IN ESCROW</span>
                             <span className="cursor-help text-text-muted text-[10px]" title="CoraPay holds these funds securely until both creators and brands sign off on project milestones.">ⓘ</span>
                         </div>
-                        <div className="text-3xl md:text-4xl font-black font-mono text-vvs-blue tracking-tight">
+                        <div className="text-3xl md:text-4xl font-bold font-mono text-vvs-gold tracking-tight">
                             ₦{((currentWallet.inOrdersKobo) / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </div>
                         <p className="text-[11px] text-text-muted leading-relaxed font-sans pt-1">
@@ -198,13 +198,13 @@ export default function WalletPage() {
 
             {/* Ledger logs */}
             <div className="space-y-4">
-                <div className="flex items-center justify-between border-b border-white/5 pb-2">
+                <div className="flex items-center justify-between border-b border-text-secondary/10 pb-2">
                     <span className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest block">TRANSACTION LEDGER</span>
                     <span className="text-[10px] font-mono text-text-muted">{transactions.length} ACTIONS LOGGED</span>
                 </div>
 
                 {transactions.length === 0 ? (
-                    <div className="rounded-vvs-lg border border-dashed border-white/5 bg-transparent p-12 text-center">
+                    <div className="rounded-vvs-lg border border-dashed border-text-secondary/10 bg-transparent p-12 text-center">
                         <span className="text-xs text-text-muted uppercase tracking-wider font-mono">No Ledger Records Found</span>
                     </div>
                 ) : (
@@ -212,14 +212,14 @@ export default function WalletPage() {
                         {transactions.map((tx) => {
                             const isPositive = tx.amountKobo > 0;
                             return (
-                                <div key={tx.id} className="flex items-center justify-between rounded-vvs-lg border border-white/5 bg-vvs-card/10 hover:bg-vvs-card/20 p-4 transition-all duration-200">
+                                <div key={tx.id} className="flex items-center justify-between rounded-vvs-lg border border-text-secondary/10 bg-vvs-card/10 hover:bg-vvs-card/20 p-4 transition-all duration-200">
                                     <div className="space-y-0.5">
-                                        <div className="text-xs font-bold text-white uppercase tracking-wide">{tx.description}</div>
+                                        <div className="text-xs font-bold text-text-primary uppercase tracking-wide">{tx.description}</div>
                                         <div className="text-[10px] font-mono text-text-muted uppercase">
                                             {new Date(tx.createdAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
                                         </div>
                                     </div>
-                                    <div className={`font-mono text-xs md:text-sm font-black ${isPositive ? "text-vvs-green" : "text-vvs-accent"}`}>
+                                    <div className={`font-mono text-xs md:text-sm font-bold ${isPositive ? "text-vvs-green" : "text-vvs-accent"}`}>
                                         {isPositive ? "+" : "-"}₦{(Math.abs(tx.amountKobo) / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                     </div>
                                 </div>
@@ -232,19 +232,19 @@ export default function WalletPage() {
             {/* Overlay Deposit/Withdraw Dialog Modal */}
             {activeModal !== "none" && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-                    <div className="relative w-full max-w-md rounded-vvs-xl glass-panel p-6 md:p-8 shadow-[0_24px_80px_rgba(0,0,0,0.9)] border border-white/5">
+                    <div className="relative w-full max-w-md rounded-vvs-xl glass-panel p-6 md:p-8 border border-text-secondary/10">
                         {/* Technical accents */}
                         <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-vvs-accent/40" />
                         <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-vvs-accent/40" />
 
                         <div className="space-y-4">
-                            <div className="flex justify-between items-center pb-2 border-b border-white/5">
-                                <h3 className="mono-caps text-[11px] font-black text-white tracking-widest">
+                            <div className="flex justify-between items-center pb-2 border-b border-text-secondary/10">
+                                <h3 className="mono-caps text-[11px] font-bold text-text-primary tracking-widest">
                                     CORAPAY INTERFACE // {activeModal === "deposit" ? "DEPOSIT" : "WITHDRAWAL"}
                                 </h3>
                                 <button 
                                     onClick={() => { setActiveTab("none"); setAmountInput(""); }}
-                                    className="text-text-secondary hover:text-white font-mono text-sm"
+                                    className="text-text-secondary hover:text-text-primary font-mono text-sm"
                                 >
                                     [ESC]
                                 </button>
@@ -256,7 +256,7 @@ export default function WalletPage() {
                                         ENTER AMOUNT IN NAIRA (₦)
                                     </label>
                                     <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 font-mono font-bold text-white/50 text-sm">₦</span>
+                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 font-mono font-bold text-text-primary/50 text-sm">₦</span>
                                         <input
                                             id="amount"
                                             type="number"
@@ -279,7 +279,7 @@ export default function WalletPage() {
                                 <button
                                     type="submit"
                                     disabled={modalLoading || !amountInput}
-                                    className="w-full rounded-vvs-md bg-vvs-accent hover:shadow-[0_0_15px_rgba(255,59,92,0.4)] py-3 text-xs font-bold mono-caps tracking-widest text-white transition-all disabled:opacity-40"
+                                    className="w-full rounded-vvs-md bg-vvs-accent py-3 text-xs font-bold mono-caps tracking-widest text-text-primary transition-all disabled:opacity-40"
                                 >
                                     {modalLoading ? "ESTABLISHING CORE HANDSHAKE..." : `INITIALIZE ${activeModal === "deposit" ? "DEPOSIT" : "SETTLEMENT"}`}
                                 </button>

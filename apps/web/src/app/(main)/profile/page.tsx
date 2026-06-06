@@ -5,8 +5,6 @@ import Link from "next/link";
 import { apiClient } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
 import { TierBadge } from "@/components/tier-badge";
-import { AvailabilityIndicator } from "@/components/availability-indicator";
-import { RatingDisplay } from "@/components/rating-display";
 import { LoadingSkeleton } from "@/components/loading-skeleton";
 import type { MemberTier } from "@vvs/contracts";
 
@@ -30,6 +28,18 @@ type Profile = {
     badges?: string[];
 };
 
+type LinkItem = {
+    title: string;
+    url: string;
+    type: "link" | "file" | "pdf";
+};
+
+const DEFAULT_LINKS: LinkItem[] = [
+    { title: "Runway Collection SS27 Portfolio", url: "https://vvs.lagos/aura-ss27", type: "link" },
+    { title: "Brand Identity Architecture Guide", url: "https://vvs.lagos/brand-identity-vvs.pdf", type: "pdf" },
+    { title: "Creative Agency Showreel Video", url: "https://vvs.lagos/showreel", type: "link" }
+];
+
 const MOCK_PROFILE: Profile = {
     id: "vvs-profile-001",
     userId: "mock-user-id",
@@ -38,7 +48,7 @@ const MOCK_PROFILE: Profile = {
     profession: "Editorial Director & Fashion Designer",
     category: "Fashion & Styling",
     skills: ["Creative Direction", "Editorial Styling", "3D Visualizations", "Sustainable Textiles", "Identity Systems"],
-    avatarUrl: null, // Let's use a beautiful SVG placeholder or initials
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
     tier: "pro" as MemberTier,
     availability: "available",
     rating: 5.0,
@@ -72,11 +82,11 @@ const MOCK_PROJECTS = [
 ];
 
 export default function ProfilePage() {
-    const { user } = useAuth();
+    const { user, xp } = useAuth();
     const [profile, setProfile] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);
     const [availability, setAvailability] = useState("available");
-    const [activeTab, setActiveTab] = useState<"portfolio" | "reputation" | "about">("portfolio");
+    const [activeTab, setActiveTab] = useState<"portfolio" | "about" | "reputation">("portfolio");
 
     useEffect(() => {
         (async () => {
@@ -85,7 +95,6 @@ export default function ProfilePage() {
                 setProfile({ ...MOCK_PROFILE, ...data });
                 setAvailability(data.availability ?? "available");
             } catch {
-                // If it fails (such as in local setup/mock), use full high-fidelity Mock Profile
                 setProfile(MOCK_PROFILE);
                 setAvailability(MOCK_PROFILE.availability);
             } finally {
@@ -105,7 +114,6 @@ export default function ProfilePage() {
                 body: { availability: next },
             });
         } catch {
-            // Revert state if backend call fails
             setAvailability(availability);
             setProfile({ ...profile, availability });
         }
@@ -113,226 +121,253 @@ export default function ProfilePage() {
 
     if (loading) {
         return (
-            <div className="mx-auto max-w-4xl space-y-6 p-6">
+            <div className="mx-auto max-w-4xl space-y-8 py-10 px-4">
                 <div className="flex items-center gap-6">
-                    <LoadingSkeleton className="h-24 w-24 rounded-full" />
-                    <div className="space-y-2 flex-1">
-                        <LoadingSkeleton className="h-8 w-1/3" />
-                        <LoadingSkeleton className="h-4 w-1/4" />
+                    <LoadingSkeleton className="h-28 w-28 rounded-full" />
+                    <div className="space-y-3 flex-1">
+                        <LoadingSkeleton className="h-8 w-1/3 rounded-vvs-md" />
+                        <LoadingSkeleton className="h-4 w-1/4 rounded-vvs-sm" />
                     </div>
                 </div>
-                <LoadingSkeleton className="h-48 rounded-vvs-lg" />
+                <LoadingSkeleton className="h-56 rounded-vvs-xl" />
             </div>
         );
     }
 
     const currentProfile = profile ?? MOCK_PROFILE;
-    const proThreshold = 10;
-    const remaining = Math.max(0, proThreshold - currentProfile.transactionCount);
-    
-    // XP level calculation parameters
+
+    const displayName = user?.name || currentProfile.displayName;
+    const profession = user?.discipline || currentProfile.profession;
+    const bio = user?.bio || currentProfile.bio;
+    const avatarUrl = user?.avatarUrl || currentProfile.avatarUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80";
+    const userLinks = (user?.links as LinkItem[]) || DEFAULT_LINKS;
+    const userXp = xp || user?.xp || currentProfile.xp || 6420;
+    const streak = user?.streak || currentProfile.streak || 18;
+
     const nextLevelXP = 10000;
-    const xpProgressPercent = Math.min(100, Math.round((currentProfile.xp ?? 0) / nextLevelXP * 100));
+    const xpProgressPercent = Math.min(100, Math.round((userXp / nextLevelXP) * 100));
 
     return (
-        <div className="mx-auto max-w-4xl p-4 md:p-8 space-y-8 pb-24">
-            {/* Header / Premium Banner Card */}
-            <div className="relative rounded-vvs-xl border border-white/5 bg-vvs-card/40 p-6 md:p-8 overflow-hidden backdrop-blur-md shadow-2xl">
-                {/* Ambient glow backing */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-vvs-accent/5 blur-3xl pointer-events-none rounded-full" />
-                <div className="absolute -bottom-10 left-10 w-48 h-48 bg-vvs-blue/5 blur-3xl pointer-events-none rounded-full" />
-
-                {/* Corner Technical Accents */}
-                <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20" />
-                <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/20" />
-                
-                <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-8 z-10 relative">
-                    {/* Premium Avatar Circle */}
-                    <div className="relative group">
-                        <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-vvs-accent via-vvs-blue to-vvs-gold opacity-40 blur group-hover:opacity-75 transition duration-500" />
-                        <div className="relative h-24 w-24 rounded-full bg-vvs-card-elevated flex items-center justify-center text-4xl overflow-hidden border border-white/10">
-                            {currentProfile.avatarUrl ? (
-                                <img src={currentProfile.avatarUrl} alt="" className="h-full w-full object-cover" />
+        <div className="mx-auto max-w-4xl py-10 px-4 space-y-10 pb-28">
+            {/* ── Hero Profile Card ── */}
+            <div className="rounded-vvs-xl bg-vvs-card p-8 md:p-10">
+                <div className="flex flex-col md:flex-row md:items-center gap-7">
+                    {/* Avatar */}
+                    <div className="relative shrink-0">
+                        <div className="h-28 w-28 rounded-full overflow-hidden bg-vvs-card-elevated">
+                            {avatarUrl ? (
+                                <img src={avatarUrl} alt={displayName} className="h-full w-full object-cover" />
                             ) : (
-                                <span className="font-bold text-transparent bg-clip-text bg-gradient-to-br from-white via-text-secondary to-text-muted">
-                                    {currentProfile.displayName.substring(0, 2).toUpperCase()}
-                                </span>
+                                <div className="h-full w-full flex items-center justify-center text-3xl font-bold text-text-secondary">
+                                    {displayName.substring(0, 2).toUpperCase()}
+                                </div>
                             )}
                         </div>
-                        {/* Status availability dot over avatar */}
-                        <span className={`absolute bottom-1 right-1 block h-4 w-4 rounded-full border-2 border-vvs-bg ${
-                            availability === "available" ? "bg-vvs-green" : availability === "busy" ? "bg-vvs-yellow" : "bg-text-secondary"
+                        <span className={`absolute bottom-1 right-1 block h-4 w-4 rounded-full border-[3px] border-vvs-card ${
+                            availability === "available" ? "bg-vvs-green" : availability === "busy" ? "bg-vvs-yellow" : "bg-text-muted"
                         }`} />
                     </div>
 
+                    {/* Name & Info */}
                     <div className="flex-1 space-y-3">
                         <div className="space-y-1">
-                            <div className="flex flex-wrap items-center gap-2.5">
-                                <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight leading-none">
-                                    {currentProfile.displayName}
+                            <div className="flex flex-wrap items-center gap-3">
+                                <h1 className="text-3xl md:text-4xl font-bold text-text-primary tracking-tight leading-none">
+                                    {displayName}
                                 </h1>
                                 <TierBadge tier={currentProfile.tier} size="lg" />
                             </div>
-                            <p className="text-sm font-mono text-vvs-blue font-semibold uppercase tracking-wider">
-                                {currentProfile.profession}
+                            <p className="text-sm text-text-secondary font-medium">
+                                {profession}
                             </p>
                         </div>
 
-                        {/* Fast telemetry stats */}
-                        <div className="flex flex-wrap gap-4 text-xs font-mono text-text-secondary pt-1">
-                            <button onClick={toggleAvailability} className="flex items-center gap-2 bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full transition-colors border border-white/5">
+                        {/* Pill tags row */}
+                        <div className="flex flex-wrap gap-2 pt-1">
+                            <button onClick={toggleAvailability} className="pill-tag cursor-pointer">
                                 <span className={`inline-block h-2 w-2 rounded-full ${
-                                    availability === "available" ? "bg-vvs-green" : availability === "busy" ? "bg-vvs-yellow" : "bg-text-secondary"
+                                    availability === "available" ? "bg-vvs-green" : availability === "busy" ? "bg-vvs-yellow" : "bg-text-muted"
                                 }`} />
-                                <span className="mono-caps text-[10px] tracking-widest text-white">{availability}</span>
+                                <span className="capitalize">{availability}</span>
                             </button>
 
-                            <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
+                            <span className="pill-tag">
                                 <span className="text-vvs-accent">🔥</span>
-                                <span className="mono-caps text-[10px] tracking-widest text-white">{currentProfile.streak ?? 12} DAY STREAK</span>
-                            </div>
+                                {streak} Day Streak
+                            </span>
 
-                            <div className="flex items-center gap-1.5 bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
+                            <span className="pill-tag">
                                 <span className="text-vvs-gold">★</span>
-                                <span className="mono-caps text-[10px] tracking-widest text-white">LEVEL 4 // {currentProfile.level}</span>
-                            </div>
+                                Level 4 · {currentProfile.level}
+                            </span>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 self-start md:self-auto">
-                        <Link
-                            href="/settings"
-                            className="rounded-vvs-md bg-white/5 hover:bg-white/10 px-4 py-2.5 text-xs mono-caps tracking-widest font-semibold border border-white/5 text-white transition-colors"
-                        >
-                            SETTINGS
+                    {/* Actions */}
+                    <div className="flex items-center gap-3 self-start md:self-auto shrink-0">
+                        <Link href="/settings" className="pill-btn pill-btn-ghost text-xs">
+                            Settings
                         </Link>
-                        <Link
-                            href="/profile/edit"
-                            className="rounded-vvs-md bg-vvs-accent hover:shadow-[0_0_15px_rgba(255,59,92,0.3)] px-4 py-2.5 text-xs mono-caps tracking-widest font-semibold text-white transition-all"
-                        >
-                            EDIT SYSTEM
+                        <Link href="/profile/edit" className="pill-btn pill-btn-accent text-xs">
+                            Edit Profile
                         </Link>
                     </div>
                 </div>
             </div>
 
-            {/* Main Content Splits */}
+            {/* ── Main Content Grid ── */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Left Side: Gamification & Metadata Sidecar */}
-                <div className="space-y-6 lg:col-span-1">
-                    {/* XP & Reputation Cockpit */}
-                    <div className="rounded-vvs-lg border border-white/5 bg-vvs-card/30 p-5 space-y-4">
-                        <h3 className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest">REPUTATION TELEMETRY</h3>
-                        
-                        <div className="space-y-2">
+                {/* Left Sidebar — Stats & Badges */}
+                <div className="space-y-5 lg:col-span-1">
+                    {/* Reputation Card */}
+                    <div className="rounded-vvs-xl bg-vvs-card p-6 space-y-5">
+                        <p className="section-eyebrow">Reputation</p>
+
+                        <div className="space-y-3">
                             <div className="flex justify-between items-end">
-                                <span className="text-2xl font-black font-mono text-white leading-none">{currentProfile.xp ?? 2450} <span className="text-xs text-text-secondary font-medium">XP</span></span>
-                                <span className="text-[10px] font-mono text-text-muted">{nextLevelXP} XP FOR ICON</span>
+                                <span className="text-3xl font-bold text-text-primary leading-none tracking-tight">
+                                    {userXp.toLocaleString()}
+                                    <span className="text-sm text-text-muted font-medium ml-1">pts</span>
+                                </span>
+                                <span className="text-[11px] text-text-muted">{nextLevelXP.toLocaleString()} to level up</span>
                             </div>
-                            
-                            {/* Modern technical progress bar */}
-                            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                <div 
-                                    className="h-full bg-gradient-to-r from-vvs-accent to-vvs-blue rounded-full transition-all duration-1000"
+
+                            {/* Progress bar */}
+                            <div className="h-2 w-full bg-tag-bg rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-vvs-accent rounded-full transition-all duration-1000 ease-out"
                                     style={{ width: `${xpProgressPercent}%` }}
                                 />
                             </div>
                         </div>
 
-                        {/* Transaction & Escrow Statistics */}
-                        <div className="grid grid-cols-2 gap-2 pt-2">
-                            <div className="bg-white/2 rounded-vvs-md p-3 border border-white/5 text-center">
-                                <div className="text-lg font-black font-mono text-white leading-none">{currentProfile.transactionCount}</div>
-                                <div className="text-[9px] mono-caps text-text-muted tracking-wider mt-1">TRANSACTIONS</div>
+                        {/* Stats row */}
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="rounded-vvs-lg bg-vvs-card-elevated p-4 text-center">
+                                <div className="text-xl font-bold text-text-primary leading-none">{currentProfile.transactionCount}</div>
+                                <div className="text-[10px] text-text-muted font-medium mt-1.5 uppercase tracking-wide">Transactions</div>
                             </div>
-                            <div className="bg-white/2 rounded-vvs-md p-3 border border-white/5 text-center">
-                                <div className="text-lg font-black font-mono text-vvs-gold leading-none">{currentProfile.rating.toFixed(1)}</div>
-                                <div className="text-[9px] mono-caps text-text-muted tracking-wider mt-1">VVS RATING</div>
+                            <div className="rounded-vvs-lg bg-vvs-card-elevated p-4 text-center">
+                                <div className="text-xl font-bold text-vvs-gold leading-none">{currentProfile.rating.toFixed(1)}</div>
+                                <div className="text-[10px] text-text-muted font-medium mt-1.5 uppercase tracking-wide">VVS Rating</div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Verified Cultural Badges Showcase */}
-                    <div className="rounded-vvs-lg border border-white/5 bg-vvs-card/30 p-5 space-y-3">
-                        <h3 className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest">SYSTEM BADGES</h3>
+                    {/* Badges Card */}
+                    <div className="rounded-vvs-xl bg-vvs-card p-6 space-y-4">
+                        <p className="section-eyebrow">Badges</p>
                         <div className="flex flex-col gap-2">
                             {(currentProfile.badges ?? ["VVS Verified"]).map((badge) => (
-                                <div key={badge} className="flex items-center gap-2.5 px-3 py-2 rounded-vvs-md border border-white/5 bg-white/2 hover:bg-white/5 transition-colors">
-                                    <span className="h-2 w-2 rounded-full bg-vvs-accent animate-pulse" />
-                                    <span className="text-xs font-mono font-bold tracking-wide text-white uppercase">{badge}</span>
+                                <div key={badge} className="flex items-center gap-3 px-4 py-3 rounded-vvs-lg bg-vvs-card-elevated hover:bg-vvs-card-hover transition-colors">
+                                    <span className="h-2.5 w-2.5 rounded-full bg-vvs-accent" />
+                                    <span className="text-sm font-semibold text-text-primary">{badge}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Network Referral Data */}
+                    {/* Referral */}
                     {currentProfile.referredBy && (
-                        <div className="rounded-vvs-lg border border-white/5 bg-vvs-card/20 p-5 text-center">
-                            <span className="text-[9px] mono-caps text-text-muted tracking-widest block">AUTHENTICATED REFERRAL NODE</span>
-                            <span className="text-xs font-mono font-bold text-vvs-blue uppercase mt-1 inline-block bg-vvs-blue/5 border border-vvs-blue/10 px-3 py-1 rounded">
+                        <div className="rounded-vvs-xl bg-vvs-card p-6 text-center space-y-2">
+                            <p className="section-eyebrow">Referred By</p>
+                            <span className="inline-block text-sm font-bold text-vvs-gold bg-vvs-gold/8 px-4 py-1.5 rounded-full">
                                 @{currentProfile.referredBy}
                             </span>
                         </div>
                     )}
                 </div>
 
-                {/* Right Side: Tabbed Dynamic Panel (Portfolio showcase first) */}
+                {/* Right Content — Tabbed Panel */}
                 <div className="space-y-6 lg:col-span-2">
-                    {/* Navigation tabs */}
-                    <div className="flex border-b border-white/5 gap-6">
+                    {/* Tab Navigation */}
+                    <div className="flex gap-1 bg-vvs-card rounded-full p-1.5 w-fit">
                         {(["portfolio", "about", "reputation"] as const).map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`pb-3 text-xs mono-caps tracking-widest font-bold transition-all relative ${
-                                    activeTab === tab ? "text-white" : "text-text-muted hover:text-text-secondary"
+                                className={`px-5 py-2 text-sm font-semibold rounded-full transition-all cursor-pointer capitalize ${
+                                    activeTab === tab
+                                        ? "bg-text-primary text-vvs-bg shadow-sm"
+                                        : "text-text-muted hover:text-text-primary"
                                 }`}
                             >
                                 {tab}
-                                {activeTab === tab && (
-                                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-vvs-accent" />
-                                )}
                             </button>
                         ))}
                     </div>
 
+                    {/* ── Portfolio Tab ── */}
                     {activeTab === "portfolio" && (
-                        <div className="space-y-6">
-                            {/* Grid of high-fidelity showcases */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {MOCK_PROJECTS.map((proj, idx) => (
-                                    <div key={idx} className="group rounded-vvs-lg overflow-hidden border border-white/5 bg-vvs-card/20 hover:border-white/10 transition-all shadow-md relative">
-                                        <div className="aspect-[4/3] w-full overflow-hidden bg-vvs-card relative">
-                                            {/* Beautiful dark image filter */}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-vvs-bg via-transparent to-transparent opacity-85 z-10" />
-                                            <img 
-                                                src={proj.image} 
-                                                alt={proj.title} 
-                                                className="h-full w-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
-                                            />
-                                            <div className="absolute bottom-3 left-3 right-3 z-20 space-y-0.5">
-                                                <span className="text-[9px] font-mono text-vvs-accent uppercase tracking-widest font-bold bg-vvs-accent/10 border border-vvs-accent/20 px-2 py-0.5 rounded">{proj.category}</span>
-                                                <h4 className="text-xs font-bold text-white uppercase tracking-wide pt-1">{proj.title}</h4>
-                                            </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {MOCK_PROJECTS.map((proj, idx) => (
+                                <div key={idx} className="group rounded-vvs-xl overflow-hidden bg-vvs-card hover:bg-vvs-card-hover transition-all cursor-pointer">
+                                    <div className="aspect-[4/3] w-full overflow-hidden relative">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
+                                        <img
+                                            src={proj.image}
+                                            alt={proj.title}
+                                            className="h-full w-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700 ease-out"
+                                        />
+                                        <div className="absolute bottom-4 left-4 right-4 z-20 space-y-1.5">
+                                            <span className="inline-block text-[10px] font-semibold text-white/80 uppercase tracking-wider bg-white/15 backdrop-blur-sm px-2.5 py-1 rounded-full">
+                                                {proj.category}
+                                            </span>
+                                            <h4 className="text-sm font-bold text-white leading-snug">{proj.title}</h4>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+                                </div>
+                            ))}
                         </div>
                     )}
 
+                    {/* ── About Tab ── */}
                     {activeTab === "about" && (
-                        <div className="rounded-vvs-lg border border-white/5 bg-vvs-card/20 p-6 space-y-6">
+                        <div className="rounded-vvs-xl bg-vvs-card p-7 space-y-7">
                             <div className="space-y-2">
-                                <h3 className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest">ABOUT THE DESIGNER</h3>
-                                <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-wrap">{currentProfile.bio}</p>
+                                <p className="section-eyebrow">About the Designer</p>
+                                <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-wrap">{bio}</p>
                             </div>
 
-                            <div className="space-y-3 pt-2">
-                                <h3 className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest">ENGINEERED SKILLS</h3>
+                            {/* Link-in-Bio */}
+                            <div className="space-y-3 pt-4 border-t border-text-secondary/8">
+                                <p className="section-eyebrow">Link in Bio</p>
+                                <div className="grid gap-2.5 sm:grid-cols-2">
+                                    {userLinks.map((link, idx) => (
+                                        <a
+                                            key={idx}
+                                            href={link.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center justify-between p-4 rounded-vvs-lg bg-vvs-card-elevated hover:bg-vvs-card-hover transition-all group"
+                                        >
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <span className="text-lg transition-transform duration-300 group-hover:scale-110">
+                                                    {link.type === "pdf" ? "📄" : link.type === "file" ? "📁" : "🔗"}
+                                                </span>
+                                                <div className="min-w-0">
+                                                    <span className="font-semibold text-xs text-text-primary group-hover:text-vvs-accent transition-colors block truncate">
+                                                        {link.title}
+                                                    </span>
+                                                    <span className="text-[10px] text-text-muted block mt-0.5 uppercase tracking-wide">
+                                                        {link.type?.toUpperCase() || "LINK"}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <span className="text-text-muted group-hover:text-vvs-accent transition-all transform translate-x-0 group-hover:translate-x-1 text-sm">
+                                                →
+                                            </span>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Skills */}
+                            <div className="space-y-3 pt-4 border-t border-text-secondary/8">
+                                <p className="section-eyebrow">Skills</p>
                                 <div className="flex flex-wrap gap-2">
                                     {currentProfile.skills.map((skill) => (
-                                        <span key={skill} className="rounded-full border border-white/5 bg-white/2 hover:bg-white/5 transition-colors px-3 py-1 text-xs text-text-secondary">
+                                        <span key={skill} className="pill-tag">
                                             {skill}
                                         </span>
                                     ))}
@@ -341,33 +376,24 @@ export default function ProfilePage() {
                         </div>
                     )}
 
+                    {/* ── Reputation Tab ── */}
                     {activeTab === "reputation" && (
-                        <div className="rounded-vvs-lg border border-white/5 bg-vvs-card/20 p-6 space-y-6">
-                            <div className="space-y-4">
-                                <h3 className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest">REPUTATION LOGS</h3>
-                                <div className="space-y-3">
-                                    <div className="flex items-start justify-between p-3 rounded-vvs-md bg-white/2 border border-white/5">
+                        <div className="rounded-vvs-xl bg-vvs-card p-7 space-y-5">
+                            <p className="section-eyebrow">Status Logs</p>
+                            <div className="space-y-3">
+                                {[
+                                    { title: "Joined VVS Community", desc: "Onboarding completed via referrer", pts: "+1,000" },
+                                    { title: "7-Day Login Streak Secured", desc: "Maintained consistent terminal activity", pts: "+500" },
+                                    { title: "CoraPay Wallet Linked", desc: "Established secure escrow contract paths", pts: "+1,500" },
+                                ].map((log, idx) => (
+                                    <div key={idx} className="flex items-start justify-between p-4 rounded-vvs-lg bg-vvs-card-elevated">
                                         <div>
-                                            <h4 className="text-xs font-bold text-white uppercase">COMMUNITY ONBOARDING COMPLETED</h4>
-                                            <p className="text-[10px] text-text-muted mt-0.5">VERIFIED INVITATION LINK VIA REFERRER</p>
+                                            <h4 className="text-sm font-semibold text-text-primary">{log.title}</h4>
+                                            <p className="text-xs text-text-muted mt-0.5">{log.desc}</p>
                                         </div>
-                                        <span className="text-xs font-mono font-bold text-vvs-green">+1000 XP</span>
+                                        <span className="text-sm font-bold text-vvs-green whitespace-nowrap ml-4">{log.pts} pts</span>
                                     </div>
-                                    <div className="flex items-start justify-between p-3 rounded-vvs-md bg-white/2 border border-white/5">
-                                        <div>
-                                            <h4 className="text-xs font-bold text-white uppercase">WEEKLY STREAK REWARD</h4>
-                                            <p className="text-[10px] text-text-muted mt-0.5">MAINTAINED TERMINAL HEARTBEAT FOR 7 DAYS</p>
-                                        </div>
-                                        <span className="text-xs font-mono font-bold text-vvs-green">+500 XP</span>
-                                    </div>
-                                    <div className="flex items-start justify-between p-3 rounded-vvs-md bg-white/2 border border-white/5">
-                                        <div>
-                                            <h4 className="text-xs font-bold text-white uppercase">CORAPAY GATEWAY INTEGRATION</h4>
-                                            <p className="text-[10px] text-text-muted mt-0.5">LINKED ESCROW WALLET DEPOSIT MECHANISMS</p>
-                                        </div>
-                                        <span className="text-xs font-mono font-bold text-vvs-green">+1500 XP</span>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     )}
@@ -376,4 +402,3 @@ export default function ProfilePage() {
         </div>
     );
 }
-

@@ -22,7 +22,7 @@ export function ConnectionStatusBanner() {
     if (online) return null;
 
     return (
-        <div className="fixed left-0 right-0 top-14 z-50 bg-yellow-500 px-4 py-2 text-center text-sm font-medium text-white">
+        <div className="fixed left-0 right-0 top-14 z-50 bg-yellow-500 px-4 py-2 text-center text-sm font-medium text-text-primary">
             You&#39;re offline. Some features may be unavailable.
         </div>
     );

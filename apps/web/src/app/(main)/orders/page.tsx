@@ -46,15 +46,15 @@ const MOCK_ORDERS_PROVIDER: OrderSummary[] = [
 ];
 
 const STATUS_THEMES: Record<string, { bg: string; text: string; border: string; label: string }> = {
-    draft: { bg: "bg-white/5", text: "text-text-secondary", border: "border-white/10", label: "DRAFT" },
+    draft: { bg: "bg-text-secondary/5", text: "text-text-secondary", border: "border-text-secondary/15", label: "DRAFT" },
     pending_funding: { bg: "bg-vvs-yellow/10", text: "text-vvs-yellow", border: "border-vvs-yellow/20", label: "AWAITING FUNDING" },
-    funded: { bg: "bg-vvs-blue/10", text: "text-vvs-blue", border: "border-vvs-blue/20", label: "ESCROW SECURED" },
-    in_progress: { bg: "bg-vvs-blue/10", text: "text-vvs-blue", border: "border-vvs-blue/20", label: "IN PROGRESS" },
+    funded: { bg: "bg-vvs-gold/10", text: "text-vvs-gold", border: "border-vvs-gold/20", label: "ESCROW SECURED" },
+    in_progress: { bg: "bg-vvs-gold/10", text: "text-vvs-gold", border: "border-vvs-gold/20", label: "IN PROGRESS" },
     delivered: { bg: "bg-vvs-gold/10", text: "text-vvs-gold", border: "border-vvs-gold/20", label: "DELIVERED" },
     pending_approval: { bg: "bg-vvs-yellow/10", text: "text-vvs-yellow", border: "border-vvs-yellow/20", label: "PENDING APPROVAL" },
     completed: { bg: "bg-vvs-green/10", text: "text-vvs-green", border: "border-vvs-green/20", label: "COMPLETED" },
     disputed: { bg: "bg-vvs-accent/10", text: "text-vvs-accent", border: "border-vvs-accent/20", label: "DISPUTED" },
-    cancelled: { bg: "bg-white/5", text: "text-text-muted", border: "border-white/5", label: "CANCELLED" },
+    cancelled: { bg: "bg-text-secondary/5", text: "text-text-muted", border: "border-text-secondary/10", label: "CANCELLED" },
 };
 
 export default function OrdersPage() {
@@ -92,29 +92,29 @@ export default function OrdersPage() {
         <div className="relative min-h-[85vh] px-6 py-12 overflow-hidden">
             {/* Ambient Background Glows */}
             <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-vvs-accent/5 blur-[120px] pointer-events-none animate-pulse-glow" />
-            <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 rounded-full bg-vvs-blue/5 blur-[120px] pointer-events-none animate-pulse-glow" style={{ animationDelay: "1s" }} />
+            <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 rounded-full bg-vvs-gold/5 blur-[120px] pointer-events-none animate-pulse-glow" style={{ animationDelay: "1s" }} />
 
             <div className="mx-auto max-w-4xl relative space-y-8">
                 {/* Tech header telemetry */}
                 <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>
                         <span className="mono-caps text-xs text-vvs-accent font-semibold tracking-widest">TRANSACTIONAL // ESCROWS</span>
-                        <h1 className="mt-2 text-4xl font-extrabold tracking-tight md:text-5xl">ESCROW CONTRACTS</h1>
+                        <h1 className="mt-2 text-4xl font-bold tracking-tight md:text-5xl">ESCROW CONTRACTS</h1>
                         <p className="mt-2 text-text-secondary text-sm max-w-xl">
                             Secured bookings, creative commissions, and professional service orders tracked inside the CoraPay escrow vault system.
                         </p>
                     </div>
 
                     {/* Tabs */}
-                    <div className="glass-panel p-1 rounded-lg flex border border-white/5 shrink-0 min-w-[240px]">
+                    <div className="glass-panel p-1 rounded-lg flex border border-text-secondary/10 shrink-0 min-w-[240px]">
                         {(["client", "provider"] as const).map((t) => (
                             <button
                                 key={t}
                                 onClick={() => setTab(t)}
                                 className={`flex-1 rounded-md py-2 text-xs font-bold transition-all duration-300 mono-caps tracking-wider cursor-pointer ${
                                     tab === t 
-                                        ? "bg-vvs-accent text-white shadow-[0_0_12px_rgba(255,59,92,0.3)]" 
-                                        : "text-text-secondary hover:text-white"
+                                        ? "bg-vvs-accent text-text-primary" 
+                                        : "text-text-secondary hover:text-text-primary"
                                 }`}
                             >
                                 {t === "client" ? "As Buyer" : "As Seller"}
@@ -131,7 +131,7 @@ export default function OrdersPage() {
                 )}
 
                 {!loading && orders.length === 0 && (
-                    <div className="glass-panel p-12 text-center rounded-xl border border-white/5">
+                    <div className="glass-panel p-12 text-center rounded-xl border border-text-secondary/10">
                         <div className="text-3xl mb-4">📂</div>
                         <h3 className="text-lg font-bold mb-2">No active escrow records</h3>
                         <p className="text-text-secondary text-xs max-w-md mx-auto mb-6">
@@ -141,7 +141,7 @@ export default function OrdersPage() {
                         </p>
                         <Link
                             href={tab === "client" ? "/discover" : "/listings/new"}
-                            className="inline-block rounded-lg bg-vvs-blue px-6 py-2.5 text-xs font-bold text-white tracking-widest mono-caps hover:shadow-[0_0_15px_rgba(0,153,255,0.3)]"
+                            className="inline-block rounded-lg bg-vvs-accent px-6 py-2.5 text-xs font-bold text-text-primary tracking-widest mono-caps hover:bg-white hover:text-black transition-all"
                         >
                             {tab === "client" ? "BROWSE_CATALOG" : "CREATE_LISTING"}
                         </Link>
@@ -151,20 +151,20 @@ export default function OrdersPage() {
                 {!loading && orders.length > 0 && (
                     <div className="space-y-4">
                         {orders.map((order) => {
-                            const theme = STATUS_THEMES[order.status] ?? { bg: "bg-white/5", text: "text-white", border: "border-white/5", label: "RECORD" };
+                            const theme = STATUS_THEMES[order.status] ?? { bg: "bg-text-secondary/5", text: "text-text-primary", border: "border-text-secondary/10", label: "RECORD" };
                             return (
                                 <Link
                                     key={order.id}
                                     href={`/orders/${order.id}`}
-                                    className="block glass-panel rounded-xl p-6 border border-white/5 hover:border-white/10 transition-all duration-300 relative group overflow-hidden"
+                                    className="block glass-panel rounded-xl p-6 border border-text-secondary/10 hover:border-text-secondary/15 transition-all duration-300 relative group overflow-hidden"
                                 >
-                                    <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-white/10 -translate-x-[1px] -translate-y-[1px]" />
-                                    <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t border-r border-white/10 translate-x-[1px] -translate-y-[1px]" />
+                                    <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-text-secondary/15 -translate-x-[1px] -translate-y-[1px]" />
+                                    <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t border-r border-text-secondary/15 translate-x-[1px] -translate-y-[1px]" />
 
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2.5">
-                                                <h3 className="font-extrabold text-lg text-white group-hover:text-vvs-accent transition-colors">
+                                                <h3 className="font-bold text-lg text-text-primary group-hover:text-vvs-accent transition-colors">
                                                     {order.listingTitle}
                                                 </h3>
                                                 {actionNeeded(order.status) && (
@@ -173,17 +173,17 @@ export default function OrdersPage() {
                                             </div>
                                             <div className="flex items-center gap-2 text-xs text-text-secondary">
                                                 <span>Contractor:</span>
-                                                <span className="font-semibold text-white">{order.counterpartyName}</span>
+                                                <span className="font-semibold text-text-primary">{order.counterpartyName}</span>
                                                 <span className="text-text-muted font-mono">•</span>
                                                 <span className="font-mono text-[10px]">ID: {order.id}</span>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center justify-between md:text-right md:flex-col gap-2 shrink-0 border-t border-white/5 pt-4 md:pt-0 md:border-t-0">
+                                        <div className="flex items-center justify-between md:text-right md:flex-col gap-2 shrink-0 border-t border-text-secondary/10 pt-4 md:pt-0 md:border-t-0">
                                             <span className={`inline-block rounded px-2.5 py-0.5 text-[9px] font-bold border mono-caps tracking-widest ${theme.bg} ${theme.text} ${theme.border}`}>
                                                 {theme.label}
                                             </span>
-                                            <div className="font-mono font-black text-white text-base md:text-lg">
+                                            <div className="font-mono font-bold text-text-primary text-base md:text-lg">
                                                 ₦{(order.totalKobo / 100).toLocaleString()}
                                             </div>
                                         </div>

@@ -139,7 +139,7 @@ export default function OrderDetailPage() {
                 {isProvider && order.status === "draft" && (
                     <div className="flex gap-3">
                         <button onClick={() => doAction("accept")} disabled={actionLoading}
-                            className="flex-1 rounded-lg bg-vvs-accent px-4 py-3 font-medium text-white hover:bg-vvs-accent/90 disabled:opacity-50">
+                            className="flex-1 rounded-lg bg-vvs-accent px-4 py-3 font-medium text-text-primary hover:bg-vvs-accent/90 disabled:opacity-50">
                             Accept Order
                         </button>
                         <button onClick={() => doAction("decline")} disabled={actionLoading}
@@ -150,7 +150,7 @@ export default function OrderDetailPage() {
                 )}
                 {isProvider && order.status === "in_progress" && (
                     <button onClick={() => doAction("deliver")} disabled={actionLoading}
-                        className="w-full rounded-lg bg-vvs-accent px-4 py-3 font-medium text-white hover:bg-vvs-accent/90 disabled:opacity-50">
+                        className="w-full rounded-lg bg-vvs-accent px-4 py-3 font-medium text-text-primary hover:bg-vvs-accent/90 disabled:opacity-50">
                         Submit Deliverables
                     </button>
                 )}
@@ -158,14 +158,14 @@ export default function OrderDetailPage() {
                 {/* Client actions */}
                 {isClient && order.status === "pending_funding" && (
                     <button onClick={() => doAction("fund")} disabled={actionLoading}
-                        className="w-full rounded-lg bg-vvs-green px-4 py-3 font-medium text-white hover:bg-vvs-green/90 disabled:opacity-50">
+                        className="w-full rounded-lg bg-vvs-green px-4 py-3 font-medium text-text-primary hover:bg-vvs-green/90 disabled:opacity-50">
                         Pay Now — &#8358;{(order.totalKobo / 100).toLocaleString()}
                     </button>
                 )}
                 {isClient && order.status === "delivered" && (
                     <div className="flex gap-3">
                         <button onClick={() => setShowApproveDialog(true)} disabled={actionLoading}
-                            className="flex-1 rounded-lg bg-vvs-green px-4 py-3 font-medium text-white hover:bg-vvs-green/90 disabled:opacity-50">
+                            className="flex-1 rounded-lg bg-vvs-green px-4 py-3 font-medium text-text-primary hover:bg-vvs-green/90 disabled:opacity-50">
                             Approve & Release
                         </button>
                         <button onClick={() => doAction("revise", { notes: "Revision needed" })} disabled={actionLoading}

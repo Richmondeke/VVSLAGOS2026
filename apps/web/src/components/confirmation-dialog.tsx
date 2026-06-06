@@ -17,15 +17,15 @@ type Props = {
 
 const VARIANT_STYLES: Record<Variant, { button: string; border: string }> = {
     default: {
-        button: "bg-vvs-accent hover:bg-vvs-accent/90 text-white",
+        button: "bg-vvs-accent hover:bg-vvs-accent/90 text-text-primary",
         border: "border-gray-200",
     },
     destructive: {
-        button: "bg-red-600 hover:bg-red-700 text-white",
+        button: "bg-red-600 hover:bg-red-700 text-text-primary",
         border: "border-red-200",
     },
     money: {
-        button: "bg-vvs-green hover:bg-vvs-green/90 text-white",
+        button: "bg-vvs-green hover:bg-vvs-green/90 text-text-primary",
         border: "border-green-200",
     },
 };

@@ -79,7 +79,7 @@ export default function CreateListingPage() {
         <div className="relative min-h-[85vh] px-4 py-12 overflow-hidden">
             {/* Ambient Background Glows */}
             <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-vvs-accent/5 blur-[120px] pointer-events-none animate-pulse-glow" />
-            <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 rounded-full bg-vvs-blue/5 blur-[120px] pointer-events-none animate-pulse-glow" style={{ animationDelay: "1s" }} />
+            <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-96 h-96 rounded-full bg-vvs-gold/5 blur-[120px] pointer-events-none animate-pulse-glow" style={{ animationDelay: "1s" }} />
 
             <div className="mx-auto max-w-3xl relative">
                 {/* Tech Telemetry Row */}
@@ -104,11 +104,11 @@ export default function CreateListingPage() {
                                         s <= step 
                                             ? s === step 
                                                 ? "bg-vvs-accent shadow-[0_0_8px_rgba(255,59,92,0.8)]" 
-                                                : "bg-vvs-blue"
-                                            : "bg-white/5"
+                                                : "bg-vvs-gold"
+                                            : "bg-text-secondary/5"
                                     }`}
                                 />
-                                <span className={`text-[8px] font-bold mono-caps tracking-wider text-center mt-1 transition-colors ${s === step ? "text-white" : "text-text-secondary/50"}`}>
+                                <span className={`text-[8px] font-bold mono-caps tracking-wider text-center mt-1 transition-colors ${s === step ? "text-text-primary" : "text-text-secondary/50"}`}>
                                     {labels[s - 1]}
                                 </span>
                             </div>
@@ -124,19 +124,19 @@ export default function CreateListingPage() {
                 )}
 
                 {/* Main Glass Card Form Container */}
-                <div className="glass-panel rounded-xl p-8 border border-white/5 shadow-2xl relative">
+                <div className="glass-panel rounded-xl p-8 border border-text-secondary/10 shadow-2xl relative">
                     {/* Corner decorative ticks */}
-                    <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white/10 -translate-x-[1px] -translate-y-[1px]" />
-                    <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-white/10 translate-x-[1px] -translate-y-[1px]" />
-                    <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-white/10 -translate-x-[1px] translate-y-[1px]" />
-                    <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-white/10 translate-x-[1px] translate-y-[1px]" />
+                    <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-text-secondary/15 -translate-x-[1px] -translate-y-[1px]" />
+                    <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-text-secondary/15 translate-x-[1px] -translate-y-[1px]" />
+                    <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-text-secondary/15 -translate-x-[1px] translate-y-[1px]" />
+                    <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-text-secondary/15 translate-x-[1px] translate-y-[1px]" />
 
                     {/* Step 1: Basics */}
                     {step === 1 && (
                         <div className="space-y-6">
                             <div>
                                 <span className="mono-caps text-[10px] text-vvs-accent font-bold tracking-widest">STEP 01</span>
-                                <h1 className="text-3xl font-black tracking-tight mt-1">CORE LISTING CONFIG</h1>
+                                <h1 className="text-3xl font-bold tracking-tight mt-1">CORE LISTING CONFIG</h1>
                                 <p className="text-text-secondary text-xs mt-1">Specify your professional service and creative discipline.</p>
                             </div>
 
@@ -147,7 +147,7 @@ export default function CreateListingPage() {
                                         type="text"
                                         value={title}
                                         onChange={(e) => setTitle(e.target.value)}
-                                        className="w-full rounded-lg px-4 py-3 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-blue focus:border-transparent transition-all placeholder:text-text-muted"
+                                        className="w-full rounded-lg px-4 py-3 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-accent focus:border-transparent transition-all placeholder:text-text-muted"
                                         placeholder="e.g. Cinematic Editorial Campaign & Art Direction"
                                     />
                                 </div>
@@ -157,7 +157,7 @@ export default function CreateListingPage() {
                                     <select
                                         value={category}
                                         onChange={(e) => setCategory(e.target.value)}
-                                        className="w-full rounded-lg px-4 py-3 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-blue focus:border-transparent transition-all text-white bg-vvs-card"
+                                        className="w-full rounded-lg px-4 py-3 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-accent focus:border-transparent transition-all text-text-primary bg-vvs-card"
                                     >
                                         <option value="" className="bg-vvs-bg text-text-secondary">Select category</option>
                                         <option value="design" className="bg-vvs-bg">Design & Spatial Design</option>
@@ -176,7 +176,7 @@ export default function CreateListingPage() {
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         rows={6}
-                                        className="w-full rounded-lg px-4 py-3 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-blue focus:border-transparent transition-all placeholder:text-text-muted"
+                                        className="w-full rounded-lg px-4 py-3 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-accent focus:border-transparent transition-all placeholder:text-text-muted"
                                         placeholder="Outline your creative method, specialized deliverables, client requirements, and technical pipelines in full detail..."
                                     />
                                 </div>
@@ -184,7 +184,7 @@ export default function CreateListingPage() {
                                 <button
                                     onClick={() => setStep(2)}
                                     disabled={!title || !category || !description}
-                                    className="w-full rounded-lg bg-vvs-blue py-3.5 font-bold text-white transition-all duration-200 hover:shadow-[0_0_20px_rgba(0,153,255,0.3)] disabled:opacity-30 disabled:pointer-events-none text-sm tracking-wider"
+                                    className="w-full rounded-lg bg-vvs-accent py-3.5 font-bold text-text-primary transition-all duration-200 hover:shadow-[0_0_20px_rgba(255,59,92,0.3)] disabled:opacity-30 disabled:pointer-events-none text-sm tracking-wider"
                                 >
                                     PROCEED TO PRICING
                                 </button>
@@ -198,20 +198,20 @@ export default function CreateListingPage() {
                             <div className="flex justify-between items-end">
                                 <div>
                                     <span className="mono-caps text-[10px] text-vvs-accent font-bold tracking-widest">STEP 02</span>
-                                    <h1 className="text-3xl font-black tracking-tight mt-1">PRICING STRUCTURE</h1>
+                                    <h1 className="text-3xl font-bold tracking-tight mt-1">PRICING STRUCTURE</h1>
                                     <p className="text-text-secondary text-xs mt-1">Add up to 3 flexible tiered pricing structures (e.g., Basic, Pro, Elite).</p>
                                 </div>
                             </div>
 
                             <div className="space-y-5">
                                 {tiers.map((tier, i) => (
-                                    <div key={i} className="rounded-xl border border-white/5 bg-white/[0.01] p-5 relative">
+                                    <div key={i} className="rounded-xl border border-text-secondary/10 bg-white/[0.01] p-5 relative">
                                         <div className="mb-4 flex items-center justify-between">
                                             <input
                                                 type="text"
                                                 value={tier.name}
                                                 onChange={(e) => updateTier(i, { name: e.target.value })}
-                                                className="bg-transparent text-white font-bold text-lg border-b border-white/10 focus:border-vvs-blue focus:outline-none pb-0.5"
+                                                className="bg-transparent text-text-primary font-bold text-lg border-b border-text-secondary/15 focus:border-vvs-accent focus:outline-none pb-0.5"
                                                 placeholder="Tier Name (e.g. Basic)"
                                             />
                                             {tiers.length > 1 && (
@@ -231,7 +231,7 @@ export default function CreateListingPage() {
                                                     type="number"
                                                     value={tier.priceKobo || ""}
                                                     onChange={(e) => updateTier(i, { priceKobo: Number(e.target.value) })}
-                                                    className="w-full rounded-lg px-3 py-2 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-blue"
+                                                    className="w-full rounded-lg px-3 py-2 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-accent"
                                                     placeholder="e.g. 250000"
                                                     min={0}
                                                 />
@@ -242,7 +242,7 @@ export default function CreateListingPage() {
                                                     type="number"
                                                     value={tier.deliveryDays}
                                                     onChange={(e) => updateTier(i, { deliveryDays: Number(e.target.value) })}
-                                                    className="w-full rounded-lg px-3 py-2 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-blue"
+                                                    className="w-full rounded-lg px-3 py-2 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-accent"
                                                     min={1}
                                                 />
                                             </div>
@@ -254,7 +254,7 @@ export default function CreateListingPage() {
                                                 value={tier.deliverables}
                                                 onChange={(e) => updateTier(i, { deliverables: e.target.value })}
                                                 rows={3}
-                                                className="w-full rounded-lg px-3 py-2 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-blue placeholder:text-text-muted"
+                                                className="w-full rounded-lg px-3 py-2 text-sm glass-input focus:outline-none focus:ring-2 focus:ring-vvs-accent placeholder:text-text-muted"
                                                 placeholder="e.g. 5x Editorial Looks&#10;Hi-Res Digital Prints&#10;Full Color Grading"
                                             />
                                         </div>
@@ -264,7 +264,7 @@ export default function CreateListingPage() {
                                 {tiers.length < 3 && (
                                     <button
                                         onClick={addTier}
-                                        className="w-full rounded-xl border border-dashed border-white/15 bg-white/[0.01] hover:bg-white/[0.02] hover:border-white/30 py-4 text-xs font-bold text-text-secondary hover:text-white transition-all duration-300 cursor-pointer mono-caps tracking-wider"
+                                        className="w-full rounded-xl border border-dashed border-white/15 bg-white/[0.01] hover:bg-white/[0.02] hover:border-white/30 py-4 text-xs font-bold text-text-secondary hover:text-text-primary transition-all duration-300 cursor-pointer mono-caps tracking-wider"
                                     >
                                         + ADD EXTRA SERVICE LEVEL
                                     </button>
@@ -273,13 +273,13 @@ export default function CreateListingPage() {
                                 <div className="flex gap-4 pt-2">
                                     <button
                                         onClick={() => setStep(1)}
-                                        className="flex-1 rounded-lg border border-white/10 py-3 font-semibold text-text-secondary hover:text-white hover:bg-white/[0.02] transition-all text-sm tracking-wider"
+                                        className="flex-1 rounded-lg border border-text-secondary/15 py-3 font-semibold text-text-secondary hover:text-text-primary hover:bg-white/[0.02] transition-all text-sm tracking-wider"
                                     >
                                         BACK
                                     </button>
                                     <button
                                         onClick={() => setStep(3)}
-                                        className="flex-1 rounded-lg bg-vvs-blue py-3 font-bold text-white transition-all duration-200 hover:shadow-[0_0_20px_rgba(0,153,255,0.3)] text-sm tracking-wider"
+                                        className="flex-1 rounded-lg bg-vvs-accent py-3 font-bold text-text-primary transition-all duration-200 hover:shadow-[0_0_20px_rgba(255,59,92,0.3)] text-sm tracking-wider"
                                     >
                                         NEXT: PREVIEW
                                     </button>
@@ -293,12 +293,12 @@ export default function CreateListingPage() {
                         <div className="space-y-6">
                             <div>
                                 <span className="mono-caps text-[10px] text-vvs-accent font-bold tracking-widest">STEP 03</span>
-                                <h1 className="text-3xl font-black tracking-tight mt-1">EDITORIAL REVIEW</h1>
+                                <h1 className="text-3xl font-bold tracking-tight mt-1">EDITORIAL REVIEW</h1>
                                 <p className="text-text-secondary text-xs mt-1">Review your service presentation before committing to live catalog deployment.</p>
                             </div>
 
                             {/* Presentation Card */}
-                            <div className="rounded-xl border border-white/10 bg-gradient-to-b from-vvs-card to-black p-6 relative overflow-hidden shadow-2xl">
+                            <div className="rounded-xl border border-text-secondary/15 bg-gradient-to-b from-vvs-card to-black p-6 relative overflow-hidden shadow-2xl">
                                 <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-vvs-accent/5 blur-3xl pointer-events-none" />
                                 
                                 <div className="flex items-center justify-between mb-4">
@@ -308,15 +308,15 @@ export default function CreateListingPage() {
                                     <span className="mono-caps text-[9px] text-text-muted font-bold">REPUTATION GAIN // +200 XP</span>
                                 </div>
 
-                                <h3 className="text-2xl font-black tracking-tight text-white mb-3">{title || "Untitled Listing"}</h3>
+                                <h3 className="text-2xl font-bold tracking-tight text-text-primary mb-3">{title || "Untitled Listing"}</h3>
                                 <p className="text-text-secondary text-xs leading-relaxed mb-6 whitespace-pre-wrap">{description || "No description provided."}</p>
                                 
                                 <div className="space-y-2">
                                     <div className="text-[9px] font-bold text-text-muted mono-caps mb-2 tracking-wider">CATALOG STRUCTURES & RATES</div>
                                     {tiers.map((tier) => (
-                                        <div key={tier.name} className="flex items-center justify-between rounded-lg bg-white/[0.02] border border-white/5 p-4 text-xs">
+                                        <div key={tier.name} className="flex items-center justify-between rounded-lg bg-white/[0.02] border border-text-secondary/10 p-4 text-xs">
                                             <div>
-                                                <span className="font-bold text-white">{tier.name || "Custom Tier"}</span>
+                                                <span className="font-bold text-text-primary">{tier.name || "Custom Tier"}</span>
                                                 <p className="text-[10px] text-text-secondary mt-0.5">Timeline: {tier.deliveryDays}d delivery</p>
                                             </div>
                                             <span className="text-vvs-gold font-bold font-mono text-sm">₦{(tier.priceKobo || 0).toLocaleString()}</span>
@@ -328,7 +328,7 @@ export default function CreateListingPage() {
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => setStep(2)}
-                                    className="flex-1 rounded-lg border border-white/10 py-3 font-semibold text-text-secondary hover:text-white hover:bg-white/[0.02] transition-all text-sm tracking-wider"
+                                    className="flex-1 rounded-lg border border-text-secondary/15 py-3 font-semibold text-text-secondary hover:text-text-primary hover:bg-white/[0.02] transition-all text-sm tracking-wider"
                                 >
                                     BACK
                                 </button>

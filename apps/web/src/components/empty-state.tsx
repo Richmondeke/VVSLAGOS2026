@@ -14,7 +14,7 @@ export function EmptyState({ message, ctaLabel, ctaHref }: Props) {
             {ctaLabel && ctaHref && (
                 <Link
                     href={ctaHref}
-                    className="rounded-lg bg-vvs-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-vvs-accent/90"
+                    className="rounded-lg bg-vvs-accent px-4 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-vvs-accent/90"
                 >
                     {ctaLabel}
                 </Link>

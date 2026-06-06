@@ -12,6 +12,9 @@ type User = {
     discipline?: string;
     streak?: number;
     xp?: number;
+    avatarUrl?: string;
+    bio?: string;
+    links?: Array<{ title: string; url: string; type?: "link" | "file" | "pdf" }>;
 };
 
 type AuthState = {
@@ -22,6 +25,7 @@ type AuthState = {
     logout: () => Promise<void>;
     addXp: (amount: number) => void;
     xp: number;
+    updateUser: (updates: Partial<User>) => void;
 };
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -43,22 +47,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         (async () => {
             try {
-                const data = await apiClient<{ user: User; accessToken: string }>("/auth/refresh", {
-                    method: "POST",
-                });
-                setAccessToken(data.accessToken);
-                setUser(data.user);
-                document.cookie = "vvs_logged_in=1; path=/; max-age=2592000";
-            } catch (err) {
-                // Check localStorage for mock session fallback
-                const mockSession = localStorage.getItem("mock_session");
-                if (mockSession) {
-                    setUser(JSON.parse(mockSession));
+                try {
+                    const data = await apiClient<{ user: User; accessToken: string }>("/auth/refresh", {
+                        method: "POST",
+                    });
+                    setAccessToken(data.accessToken);
+                    setUser(data.user);
                     document.cookie = "vvs_logged_in=1; path=/; max-age=2592000";
-                } else {
-                    setAccessToken(null);
-                    setUser(null);
-                    document.cookie = "vvs_logged_in=; path=/; max-age=0";
+                } catch (err) {
+                    console.warn("Session restore from backend failed. Trying local storage mock session.", err);
+                    // Check localStorage for mock session fallback
+                    const mockSession = localStorage.getItem("mock_session");
+                    if (mockSession) {
+                        const parsed = JSON.parse(mockSession);
+                        if (!parsed.avatarUrl) {
+                            parsed.avatarUrl = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80";
+                            localStorage.setItem("mock_session", JSON.stringify(parsed));
+                        }
+                        setUser(parsed);
+                        document.cookie = "vvs_logged_in=1; path=/; max-age=2592000";
+                    } else {
+                        setAccessToken(null);
+                        setUser(null);
+                        document.cookie = "vvs_logged_in=; path=/; max-age=0";
+                    }
                 }
             } finally {
                 setLoading(false);
@@ -87,7 +99,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 reputationLevel: "Visionary",
                 discipline: "Editorial Director & Fashion Designer",
                 streak: 18,
-                xp: 6420
+                xp: 6420,
+                avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
             };
             setUser(mockUser);
             document.cookie = "vvs_logged_in=1; path=/; max-age=2592000";
@@ -115,7 +128,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 reputationLevel: "Visionary",
                 discipline: "Editorial Director & Fashion Designer",
                 streak: 18,
-                xp: 6420
+                xp: 6420,
+                avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
             };
             setUser(mockUser);
             document.cookie = "vvs_logged_in=1; path=/; max-age=2592000";
@@ -143,8 +157,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
     }, []);
 
+    const updateUser = useCallback((updates: Partial<User>) => {
+        setUser((prev) => {
+            if (!prev) return null;
+            const next = { ...prev, ...updates };
+            localStorage.setItem("mock_session", JSON.stringify(next));
+            return next;
+        });
+    }, []);
+
     return (
-        <AuthContext.Provider value={{ user, loading, login, register, logout, addXp, xp }}>
+        <AuthContext.Provider value={{ user, loading, login, register, logout, addXp, xp, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

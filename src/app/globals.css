@@ -39,10 +39,9 @@ h5,
 h6 {
   font-family: var(--font-serif);
   font-weight: 800;
-  letter-spacing: -0.05em;
-  transform: scaleY(1.15);
+  letter-spacing: 0.02em;
+  transform: scaleY(1.05);
   transform-origin: center bottom;
-  -webkit-text-stroke: 0.4px currentColor;
 }
 
 /* Luxury Scroller */

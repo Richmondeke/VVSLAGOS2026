@@ -15,7 +15,7 @@ const spaceMono = Space_Mono({
 });
 
 const oldEnglish = localFont({
-  src: "./fonts/DSCaslonGotisch.ttf",
+  src: "./fonts/Blackiron.ttf",
   variable: "--font-old-english",
 });
 

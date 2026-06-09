@@ -22,10 +22,10 @@ export default function Hero() {
 
     // Staggered top-to-bottom scroll fade opacities (stays active when scrolling back up)
     const countdownOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
-    const labelOpacity = useTransform(scrollYProgress, [0.15, 0.4], [1, 0]);
-    const titleOpacity = useTransform(scrollYProgress, [0.3, 0.55], [1, 0]);
-    const subtitleOpacity = useTransform(scrollYProgress, [0.45, 0.7], [1, 0]);
-    const ctaOpacity = useTransform(scrollYProgress, [0.6, 0.85], [1, 0]);
+    const labelOpacity = useTransform(scrollYProgress, [0, 0.15, 0.4], [1, 1, 0]);
+    const titleOpacity = useTransform(scrollYProgress, [0, 0.3, 0.55], [1, 1, 0]);
+    const subtitleOpacity = useTransform(scrollYProgress, [0, 0.45, 0.7], [1, 1, 0]);
+    const ctaOpacity = useTransform(scrollYProgress, [0, 0.6, 0.85], [1, 1, 0]);
     const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
     return (

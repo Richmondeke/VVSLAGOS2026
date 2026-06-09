@@ -422,9 +422,9 @@ export default function GuestsPage() {
                                             initial={{ opacity: 0, scale: 0, x: 0 }}
                                             animate={{ 
                                                 opacity: isVisible ? 1 : 0, 
-                                                scale: isVisible ? ((scales[activeTimelineIndex]?.[extraIndex] || 0) * 0.45) : 0,
+                                                scale: isVisible ? ((scales[activeTimelineIndex]?.[extraIndex] || 0) * 0.35) : 0,
                                                 x: isMerged ? 0 : (positions[activeTimelineIndex]?.[extraIndex]?.x || 0),
-                                                y: isMerged ? 0 : (activeTimelineIndex === 4 ? 0 : -220)
+                                                y: isMerged ? 0 : (activeTimelineIndex === 4 ? 0 : -320)
                                             }}
                                             transition={{ type: "spring", damping: 20, stiffness: 100 }}
                                         >
@@ -448,9 +448,9 @@ export default function GuestsPage() {
                                             150,
                                             0
                                         ][activeTimelineIndex],
-                                        y: isMerged ? 0 : (activeTimelineIndex === 4 ? 0 : -220),
+                                        y: isMerged ? 0 : (activeTimelineIndex === 4 ? 0 : -320),
                                         scale: isMerged ? 1 : (
-                                            [1.5, 1.2, 1.5, 1.3, 1.5][activeTimelineIndex] / 3.5
+                                            [1.5, 1.2, 1.5, 1.3, 1.5][activeTimelineIndex] / 4.5
                                         )
                                     }}
                                     transition={{ type: "spring", damping: 20, stiffness: 100 }}
@@ -517,7 +517,7 @@ export default function GuestsPage() {
                                     className="absolute w-[85vw] sm:w-[600px] h-[180px] sm:h-[300px] rounded-xl overflow-hidden shadow-2xl border border-white/10 z-10"
                                     animate={{
                                         opacity: showCarousel ? 1 : 0,
-                                        y: isMerged ? 0 : 0,
+                                        y: isMerged ? 0 : 20,
                                         scale: showCarousel ? 1 : 0.8
                                     }}
                                     transition={{ type: "spring", damping: 20, stiffness: 100 }}

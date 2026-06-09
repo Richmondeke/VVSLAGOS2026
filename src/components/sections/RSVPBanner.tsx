@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { triggerHaptic } from "@/utils/haptic";
 
 export default function RSVPBanner() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,6 +20,7 @@ export default function RSVPBanner() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        triggerHaptic("success");
         // Since backend isn't wired up yet, we'll just show the success state
         setIsSubmitted(true);
         setTimeout(() => {
@@ -41,7 +43,7 @@ export default function RSVPBanner() {
                     Secure your spot for an unforgettable celebration of culture, design, and Afrofuturism.
                 </p>
                 <button
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => { triggerHaptic("medium"); setIsModalOpen(true); }}
                     className="px-8 sm:px-10 py-3 sm:py-4 bg-[#111111] text-white text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold rounded-full hover:bg-black/80 transition-all transform hover:scale-[1.02] shadow-xl"
                 >
                     Reserve Your Ticket
@@ -56,7 +58,7 @@ export default function RSVPBanner() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            onClick={() => setIsModalOpen(false)}
+                            onClick={() => { triggerHaptic("light"); setIsModalOpen(false); }}
                             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
                         />
                         <motion.div
@@ -67,7 +69,7 @@ export default function RSVPBanner() {
                         >
                             <div className="relative p-6 sm:p-12">
                                 <button
-                                    onClick={() => setIsModalOpen(false)}
+                                    onClick={() => { triggerHaptic("light"); setIsModalOpen(false); }}
                                     className="absolute top-4 right-4 sm:top-6 sm:right-6 text-black/50 hover:text-black transition-colors"
                                 >
                                     <X size={24} />

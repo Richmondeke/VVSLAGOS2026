@@ -28,11 +28,35 @@ const triggerHaptic = (type: "light" | "medium" | "success") => {
 
 export default function GuestsPage() {
     const containerRef = useRef<HTMLDivElement>(null);
+    const trackRef = useRef<HTMLDivElement>(null);
+    const viewportRef = useRef<HTMLDivElement>(null);
+    const hasClickedHaptic = useRef(false);
     const [mounted, setMounted] = useState(false);
+    const [maxScrollDistance, setMaxScrollDistance] = useState(0);
 
     useEffect(() => {
         setMounted(true);
     }, []);
+
+    useEffect(() => {
+        if (!mounted) return;
+        const calculateDistance = () => {
+            if (trackRef.current && viewportRef.current) {
+                const trackWidth = trackRef.current.scrollWidth;
+                const viewportWidth = viewportRef.current.clientWidth;
+                // Add some extra padding on the right before it clicks
+                const extraPadding = window.innerWidth * 0.15; // 15vw
+                setMaxScrollDistance(Math.max(0, trackWidth - viewportWidth + extraPadding));
+            }
+        };
+
+        const timer = setTimeout(calculateDistance, 150);
+        window.addEventListener("resize", calculateDistance);
+        return () => {
+            clearTimeout(timer);
+            window.removeEventListener("resize", calculateDistance);
+        };
+    }, [mounted]);
 
     // Scroll progress bindings for merge transition
     const { scrollYProgress } = useScroll({ container: containerRef });
@@ -69,8 +93,15 @@ export default function GuestsPage() {
     // Timeline visibility
     const timelineOpacity = useTransform(smoothProgress, [0.08, 0.093, 0.453, 0.473], [0, 1, 1, 0]);
 
-    // Horizontal scroll for designers in Section 4
-    const designersX = useTransform(smoothProgress, [0.666, 1.0], ["0vw", "-150vw"]);
+    // Horizontal scroll for designers in Section 4 (ends at 0.93 to allow resting/padding before unpinning)
+    const designersX = useTransform(smoothProgress, (value) => {
+        const start = 0.666;
+        const end = 0.93;
+        if (value <= start) return 0;
+        if (value >= end) return -maxScrollDistance;
+        const p = (value - start) / (end - start);
+        return -p * maxScrollDistance;
+    });
 
     const [activeTimelineIndex, setActiveTimelineIndex] = useState(0);
     const [isMerged, setIsMerged] = useState(false);
@@ -88,6 +119,16 @@ export default function GuestsPage() {
 
         if (latest >= 0.52 && latest < 0.66) setShowEventCalendar(true);
         else setShowEventCalendar(false);
+
+        // Haptic click when reaching the end of the designers scroll track
+        const threshold = 0.93;
+        if (latest >= threshold && !hasClickedHaptic.current) {
+            triggerHaptic("medium");
+            hasClickedHaptic.current = true;
+        } else if (latest < threshold - 0.02 && hasClickedHaptic.current) {
+            triggerHaptic("light");
+            hasClickedHaptic.current = false;
+        }
     });
 
     const handleReset = () => {
@@ -597,8 +638,9 @@ export default function GuestsPage() {
                             </div>
                         </div>
                         
-                        <div className="w-full relative z-10 overflow-hidden">
+                        <div ref={viewportRef} className="w-full relative z-10 overflow-hidden">
                             <motion.div 
+                                ref={trackRef}
                                 className="flex gap-4 sm:gap-6 pb-32 w-max pl-5 sm:pl-8 xl:pl-[calc((100vw-80rem)/2+2rem)] pr-5 sm:pr-8 xl:pr-[calc((100vw-80rem)/2+2rem)]"
                                 style={{ x: designersX }}
                             >

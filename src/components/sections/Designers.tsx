@@ -2,6 +2,7 @@
 
 import React, { useRef } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
+import { triggerHaptic } from "@/utils/haptic";
 
 export const designers = [
     { name: "IN OFFICIAL", image: "/assets/IN OFFICIAL.png" },
@@ -53,6 +54,7 @@ export function DesignerCard({ designer, index }: { designer: typeof designers[0
                 ref={cardRef}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
+                onClick={() => triggerHaptic("light")}
                 style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

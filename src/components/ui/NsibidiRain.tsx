@@ -42,7 +42,7 @@ export default function NsibidiRain() {
         // Precompile Path2D objects for high performance
         const compiledPaths = NSIBIDI_PATHS.map((p) => new Path2D(p));
 
-        // Setup matrix columns
+        // Setup columns
         const fontSize = 24;
         const columnsCount = Math.floor(canvas.width / fontSize) + 1;
         
@@ -54,42 +54,62 @@ export default function NsibidiRain() {
             size: number;
             opacity: number;
             glow: boolean;
+            depth: number; // 3D depth layer factor (0.2 to 1.0)
         }
 
         const streams: RainDrop[] = [];
 
-        // Initialize streams
+        // Initialize streams with 3D depth layering
         for (let i = 0; i < columnsCount; i++) {
-            const size = Math.random() * 10 + 14; // random symbol sizes (14px to 24px)
+            const depth = Math.random() * 0.8 + 0.2; // depth layer (0.2 = background, 1.0 = foreground)
+            const size = depth * 14 + 10; // size based on depth (12.8px to 24px)
+            const speed = depth * 2.5 + 1.0; // speed based on depth (1.5px to 3.5px per frame)
+            const opacity = depth * 0.35 + 0.1; // opacity based on depth
+
             streams.push({
                 x: i * fontSize + (Math.random() * 6 - 3),
                 y: Math.random() * -canvas.height - 100,
-                speed: Math.random() * 3 + 1.5,
+                speed,
                 symbols: Array.from({ length: 15 }, () => Math.floor(Math.random() * compiledPaths.length)),
                 size,
-                opacity: Math.random() * 0.4 + 0.15, // moderate opacity so it stays in background
-                glow: Math.random() > 0.85
+                opacity,
+                glow: depth > 0.8 && Math.random() > 0.7, // Only foreground drops can glow
+                depth
             });
         }
 
         let animationFrameId: number;
+        let lastScrollY = typeof window !== "undefined" ? window.scrollY : 0;
+        let scrollSpeed = 0;
 
         // Draw loop
         const draw = () => {
-            // Draw semi-transparent black rect to clear canvas and create trail effect
+            // Calculate scroll speed for velocity acceleration
+            const currentScrollY = typeof window !== "undefined" ? window.scrollY : 0;
+            const deltaScroll = Math.abs(currentScrollY - lastScrollY);
+            scrollSpeed = scrollSpeed * 0.9 + deltaScroll * 0.1; // Smooth decay
+            lastScrollY = currentScrollY;
+
+            // Clear canvas with trail overlay
             ctx.fillStyle = "rgba(0, 0, 0, 0.12)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            // Compute dynamic 3D scroll shift
+            const scrollOffset = -currentScrollY;
+
             streams.forEach((stream) => {
-                // Periodically mutate symbol sequence for dynamic feel
+                // Mutate symbol sequence for organic feel
                 if (Math.random() > 0.98) {
                     stream.symbols.shift();
                     stream.symbols.push(Math.floor(Math.random() * compiledPaths.length));
                 }
 
-                // Draw symbols in the stream column
-                stream.symbols.forEach((symbolIdx, depth) => {
-                    const symbolY = stream.y - depth * (stream.size * 1.3);
+                // Scroll shift scales with column depth (deeper elements move slower)
+                const streamScrollShift = scrollOffset * stream.depth * 0.45;
+
+                // Draw symbols
+                stream.symbols.forEach((symbolIdx, depthIndex) => {
+                    const symbolY = (stream.y - depthIndex * (stream.size * 1.3)) + streamScrollShift;
                     if (symbolY < -50 || symbolY > canvas.height + 50) return;
 
                     ctx.save();
@@ -99,13 +119,13 @@ export default function NsibidiRain() {
                     const scale = stream.size / 80;
                     ctx.scale(scale, scale);
 
-                    // Fade symbols at the top of their own trail
-                    const trailFade = 1 - depth / stream.symbols.length;
+                    // Fade symbols at the top of the trail
+                    const trailFade = 1 - depthIndex / stream.symbols.length;
                     const finalOpacity = stream.opacity * trailFade;
 
                     ctx.fillStyle = `rgba(197, 160, 89, ${finalOpacity})`; // Gold: #C5A059
                     
-                    if (stream.glow && depth === 0) {
+                    if (stream.glow && depthIndex === 0) {
                         ctx.shadowColor = "#c5a059";
                         ctx.shadowBlur = 12;
                     }
@@ -114,14 +134,15 @@ export default function NsibidiRain() {
                     ctx.restore();
                 });
 
-                // Update stream vertical position
-                stream.y += stream.speed;
+                // Acceleration draft proportional to scroll velocity and depth
+                const dynamicSpeed = stream.speed + (scrollSpeed * 0.12 * stream.depth);
+                stream.y += dynamicSpeed;
 
-                // Reset stream to top when it falls past screen bounds
-                if (stream.y - stream.symbols.length * (stream.size * 1.3) > canvas.height) {
-                    stream.y = -50;
-                    stream.speed = Math.random() * 3 + 1.5;
-                    stream.opacity = Math.random() * 0.4 + 0.15;
+                // Reset stream to top of viewport when it falls past screen bounds
+                const topSymbolY = stream.y - stream.symbols.length * (stream.size * 1.3) + streamScrollShift;
+                if (topSymbolY > canvas.height) {
+                    stream.y = -streamScrollShift - 100;
+                    stream.speed = stream.depth * 2.5 + 1.0;
                 }
             });
 

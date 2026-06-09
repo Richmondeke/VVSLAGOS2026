@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
-import { Syne, Outfit, Space_Mono } from "next/font/google";
+import { Jost, Space_Mono } from "next/font/google";
 import "./globals.css";
 
-const syne = Syne({
-  variable: "--font-syne",
-  subsets: ["latin"],
-});
-
-const outfit = Outfit({
-  variable: "--font-outfit",
+const jost = Jost({
+  variable: "--font-jost",
   subsets: ["latin"],
 });
 
@@ -17,7 +12,6 @@ const spaceMono = Space_Mono({
   subsets: ["latin"],
   weight: ["400", "700"],
 });
-
 
 export const metadata: Metadata = {
   title: "VVS Lagos | Afromodernism",
@@ -32,7 +26,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${syne.variable} ${outfit.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${jost.variable} ${spaceMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-vvs-black text-vvs-white">
         {children}

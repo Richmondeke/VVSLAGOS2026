@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const timelineData = [
+export const timelineData = [
     {
         year: "2022",
         title: "THE DEBUT",
@@ -35,6 +35,14 @@ const timelineData = [
         venue: "Nahouse · British Council · Alliance Française · John Randle Museum",
         description: "The fire within. A cross-cultural explosion across multiple iconic Lagos venues.",
         image: "/assets/evolution/VVS20255.png",
+    },
+    {
+        year: "2026",
+        title: "The 5th Edition: Afromodernism",
+        theme: "Afromodernism",
+        venue: "Multiple Locations, Lagos",
+        description: "The conscious reconstruction of African identities using the tools of the future, while remaining deeply rooted in the soil of our past.",
+        image: "/assets/evolution/VVS20255.png", // reusing last year's image if 2026 is missing, but you can swap it
     },
 ];
 

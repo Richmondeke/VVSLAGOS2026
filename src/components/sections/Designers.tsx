@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 
-const designers = [
+export const designers = [
     { name: "IN OFFICIAL", image: "/assets/IN OFFICIAL.png" },
     { name: "HERTUNBA", image: "/assets/HERTUNBA.avif" },
     { name: "LFJ OFFICIAL", image: "/assets/LFJ OFFICIAL.webp" },
@@ -17,7 +17,7 @@ const designers = [
     { name: "TZAR STUDIOS", image: "/assets/TZAR STUDIOS.webp" },
 ];
 
-function DesignerCard({ designer, index }: { designer: typeof designers[0]; index: number }) {
+export function DesignerCard({ designer, index }: { designer: typeof designers[0]; index: number }) {
     const cardRef = useRef<HTMLDivElement>(null);
     const x = useMotionValue(0);
     const y = useMotionValue(0);

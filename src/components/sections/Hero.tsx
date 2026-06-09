@@ -1,13 +1,76 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Countdown from "../ui/Countdown";
 import NsibidiRain from "../ui/NsibidiRain";
 import ScrambleText from "../ui/ScrambleText";
 
+const triggerHaptic = (type: "light" | "medium") => {
+    if (typeof window !== "undefined" && typeof navigator !== "undefined" && navigator.vibrate) {
+        try {
+            if (type === "light") navigator.vibrate(15);
+            else if (type === "medium") navigator.vibrate(30);
+        } catch (e) {
+            console.warn("Haptic feedback not supported or blocked by browser:", e);
+        }
+    }
+};
+
 export default function Hero() {
     const ref = useRef<HTMLElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Dynamic volume control for smooth fade
+    const fadeVolume = (targetVolume: number) => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        if (fadeIntervalRef.current) {
+            clearInterval(fadeIntervalRef.current);
+            fadeIntervalRef.current = null;
+        }
+
+        // Unmute and ensure media starts unmuted if target > 0
+        if (targetVolume > 0) {
+            video.muted = false;
+        }
+
+        const step = 0.04;
+        const intervalTime = 30; // 30ms
+
+        fadeIntervalRef.current = setInterval(() => {
+            let nextVolume = video.volume;
+            if (video.volume < targetVolume) {
+                nextVolume = Math.min(video.volume + step, targetVolume);
+            } else if (video.volume > targetVolume) {
+                nextVolume = Math.max(video.volume - step, targetVolume);
+            }
+            
+            video.volume = nextVolume;
+
+            if (Math.abs(nextVolume - targetVolume) < 0.01) {
+                video.volume = targetVolume;
+                if (fadeIntervalRef.current) {
+                    clearInterval(fadeIntervalRef.current);
+                    fadeIntervalRef.current = null;
+                }
+                if (targetVolume === 0) {
+                    video.muted = true;
+                }
+            }
+        }, intervalTime);
+    };
+
+    // Clean up interval on unmount
+    useEffect(() => {
+        return () => {
+            if (fadeIntervalRef.current) {
+                clearInterval(fadeIntervalRef.current);
+            }
+        };
+    }, []);
 
     const { scrollYProgress } = useScroll({
         target: ref,
@@ -33,6 +96,22 @@ export default function Hero() {
             ref={ref}
             className="relative min-h-screen flex items-center justify-center pt-32 pb-20 overflow-hidden"
         >
+            {/* Background Video */}
+            <video
+                ref={videoRef}
+                src="/assets/hero.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-20 z-0"
+                onError={(e) => {
+                    // Hide the video element if it fails to load/is not present
+                    const target = e.currentTarget;
+                    target.style.display = "none";
+                }}
+            />
+
             {/* Animated Nsibidi Digital Rain */}
             <NsibidiRain />
 
@@ -101,7 +180,9 @@ export default function Hero() {
                     className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full"
                 >
                     <motion.button
-                        onClick={() => document.querySelector('#journey')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                        onClick={() => { triggerHaptic("medium"); document.querySelector('#journey')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
+                        onMouseEnter={() => fadeVolume(0.4)}
+                        onMouseLeave={() => fadeVolume(0.0)}
                         whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(197, 160, 89, 0.6)" }}
                         whileTap={{ scale: 0.98 }}
                         className="w-full sm:w-auto px-10 py-4 bg-vvs-gold text-vvs-black text-xs uppercase tracking-[0.2em] font-bold rounded-full cursor-pointer transition-colors shadow-[0_0_20px_rgba(197,160,89,0.3)]"
@@ -109,7 +190,7 @@ export default function Hero() {
                         Discover the Legacy
                     </motion.button>
                     <motion.button
-                        onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                        onClick={() => { triggerHaptic("light"); document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
                         whileHover={{ scale: 1.05, borderColor: "rgba(197, 160, 89, 0.6)", color: "#c5a059", backgroundColor: "rgba(197,160,89,0.05)" }}
                         whileTap={{ scale: 0.98 }}
                         className="w-full sm:w-auto px-10 py-4 border border-white/20 text-vvs-white text-xs uppercase tracking-[0.2em] font-bold rounded-full cursor-pointer transition-colors"

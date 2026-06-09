@@ -74,9 +74,9 @@ const Footer = () => {
                 </div>
             </div>
 
-            {/* Large Watermark */}
-            <div className="absolute -bottom-24 -right-24 opacity-[0.02] pointer-events-none select-none">
-                <img src="/assets/VVSMASCOT7.png" alt="" className="w-96 h-96 object-contain" />
+            {/* Half Mascot Watermark on the Right */}
+            <div className="absolute top-1/2 -translate-y-1/2 right-0 pointer-events-none select-none opacity-30">
+                <img src="/assets/VVSMASCOT7.png" alt="" className="w-64 h-64 sm:w-96 sm:h-96 md:w-[500px] md:h-[500px] object-contain translate-x-1/2" />
             </div>
         </footer>
     );

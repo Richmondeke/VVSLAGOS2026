@@ -11,6 +11,17 @@ const navLinks = [
     { name: "Designers", href: "#designers" },
 ];
 
+const triggerHaptic = (type: "light" | "medium") => {
+    if (typeof window !== "undefined" && typeof navigator !== "undefined" && navigator.vibrate) {
+        try {
+            if (type === "light") navigator.vibrate(15);
+            else if (type === "medium") navigator.vibrate(30);
+        } catch (e) {
+            console.warn("Haptic feedback not supported or blocked by browser:", e);
+        }
+    }
+};
+
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
@@ -25,6 +36,7 @@ export default function Navbar() {
 
     const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
         e.preventDefault();
+        triggerHaptic("light");
         setIsOpen(false);
         const el = document.querySelector(href);
         if (el) {
@@ -33,6 +45,7 @@ export default function Navbar() {
     };
 
     const scrollToSection = (id: string) => {
+        triggerHaptic("medium");
         const el = document.querySelector(id);
         if (el) {
             el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -49,7 +62,7 @@ export default function Navbar() {
             <div className="container mx-auto px-6 flex justify-between items-center">
                 <a
                     href="#"
-                    onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                    onClick={(e) => { e.preventDefault(); triggerHaptic("light"); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                     className="flex items-center space-x-4 group"
                 >
                     <div className="w-10 h-10 relative">
@@ -88,7 +101,7 @@ export default function Navbar() {
                 {/* Mobile Toggle */}
                 <button
                     className="md:hidden text-vvs-white"
-                    onClick={() => setIsOpen(!isOpen)}
+                    onClick={() => { triggerHaptic("light"); setIsOpen(!isOpen); }}
                 >
                     {isOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>

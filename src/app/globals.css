@@ -6,8 +6,8 @@
   --color-vvs-gold: #c5a059;
   --color-vvs-gold-muted: #8c6d3e;
 
-  --font-sans: var(--font-outfit);
-  --font-serif: var(--font-syne);
+  --font-sans: 'Futura', var(--font-jost), sans-serif;
+  --font-serif: 'Futura', var(--font-jost), sans-serif;
   --font-mono: var(--font-mono);
 }
 
@@ -27,7 +27,7 @@ html {
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-outfit), sans-serif;
+  font-family: var(--font-sans);
   overflow-x: hidden;
 }
 
@@ -37,7 +37,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-syne), sans-serif;
+  font-family: var(--font-serif);
   font-weight: 800;
   letter-spacing: -0.02em;
 }

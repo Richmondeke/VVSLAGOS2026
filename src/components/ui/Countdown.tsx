@@ -67,9 +67,10 @@ export default function Countdown({ targetDate, className = "", variant = "compa
         );
     }
 
-    if (variant === "hero") {
+    if (variant === "hero" || variant === "hero-light") {
+        const isLight = variant === "hero-light";
         return (
-            <div className={`inline-flex items-center justify-center gap-3 md:gap-6 px-6 py-3 rounded-full border border-vvs-white/10 bg-vvs-white/5 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.4)] ${className}`}>
+            <div className={`inline-flex items-center justify-center gap-3 md:gap-6 px-6 py-3 rounded-full border ${isLight ? 'border-black/10 bg-black/5 shadow-none' : 'border-vvs-white/10 bg-vvs-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.4)]'} backdrop-blur-md ${className}`}>
                 {[
                     { label: "Days", value: timeLeft.days },
                     { label: "Hrs", value: timeLeft.hours },
@@ -78,15 +79,15 @@ export default function Countdown({ targetDate, className = "", variant = "compa
                 ].map(({ label, value }, i) => (
                     <React.Fragment key={label}>
                         <span className="flex items-center">
-                            <span className="font-mono font-black text-vvs-white text-sm sm:text-base md:text-lg tabular-nums tracking-tight">
+                            <span className={`font-mono font-black ${isLight ? 'text-black' : 'text-vvs-white'} text-sm sm:text-base md:text-lg tabular-nums tracking-tight`}>
                                 {pad(value)}
                             </span>
-                            <span className="text-vvs-gold text-[8px] sm:text-[9px] uppercase tracking-widest ml-1 md:ml-1.5 font-mono font-bold opacity-80">
+                            <span className={`text-vvs-gold text-[8px] sm:text-[9px] uppercase tracking-widest ml-1 md:ml-1.5 font-mono font-bold ${isLight ? 'opacity-100' : 'opacity-80'}`}>
                                 {label}
                             </span>
                         </span>
                         {i < 3 && (
-                            <span className="text-vvs-white/20 text-xs sm:text-sm select-none font-light">|</span>
+                            <span className={`${isLight ? 'text-black/20' : 'text-vvs-white/20'} text-xs sm:text-sm select-none font-light`}>|</span>
                         )}
                     </React.Fragment>
                 ))}

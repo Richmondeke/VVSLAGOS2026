@@ -413,8 +413,9 @@ export default function GuestsPage() {
                                             initial={{ opacity: 0, scale: 0, x: 0 }}
                                             animate={{ 
                                                 opacity: isVisible ? 1 : 0, 
-                                                scale: isVisible ? (scales[activeTimelineIndex]?.[extraIndex] || 0) : 0,
-                                                x: isMerged ? 0 : (positions[activeTimelineIndex]?.[extraIndex]?.x || 0)
+                                                scale: isVisible ? ((scales[activeTimelineIndex]?.[extraIndex] || 0) * 0.7) : 0,
+                                                x: isMerged ? 0 : (positions[activeTimelineIndex]?.[extraIndex]?.x || 0),
+                                                y: isMerged ? 0 : -80
                                             }}
                                             transition={{ type: "spring", damping: 20, stiffness: 100 }}
                                         >
@@ -438,8 +439,9 @@ export default function GuestsPage() {
                                             150,
                                             0
                                         ][activeTimelineIndex],
+                                        y: isMerged ? 0 : -80,
                                         scale: isMerged ? 1 : (
-                                            [1.5, 1.2, 1.5, 1.3, 1.5][activeTimelineIndex] / 1.8
+                                            [1.5, 1.2, 1.5, 1.3, 1.5][activeTimelineIndex] / 2.5
                                         )
                                     }}
                                     transition={{ type: "spring", damping: 20, stiffness: 100 }}
@@ -499,6 +501,30 @@ export default function GuestsPage() {
                                             style={{ maxWidth: "none", clipPath: "polygon(50% 0, 100% 0, 100% 100%, 50% 100%)", opacity: glitchOpacity }}
                                         />
                                     </motion.div>
+                                </motion.div>
+
+                                {/* Evolution Carousel */}
+                                <motion.div 
+                                    className="absolute w-[85vw] sm:w-[600px] h-[180px] sm:h-[300px] rounded-xl overflow-hidden shadow-2xl border border-white/10 z-10"
+                                    animate={{
+                                        opacity: isMerged ? 0 : 1,
+                                        y: isMerged ? 0 : 140,
+                                        scale: isMerged ? 0 : 1
+                                    }}
+                                    transition={{ type: "spring", damping: 20, stiffness: 100 }}
+                                >
+                                    <AnimatePresence mode="wait">
+                                        <motion.img
+                                            key={`carousel-${activeTimelineIndex}`}
+                                            src={['/assets/evolution/VVS2022.png', '/assets/evolution/VVS2023.png', '/assets/evolution/VVS2024.png', '/assets/evolution/VVS2025.png', '/assets/evolution/VVS20255.png'][activeTimelineIndex] || '/assets/evolution/VVS2022.png'}
+                                            alt={`VVS Edition ${activeTimelineIndex + 1}`}
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 1.05 }}
+                                            transition={{ duration: 0.5 }}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </AnimatePresence>
                                 </motion.div>
                             </div>
                         </>
@@ -569,14 +595,15 @@ export default function GuestsPage() {
                             { date: "JULY 7", title: "Collectors Preview", time: "2:00 PM", venue: "Private Venue" },
                             { date: "JULY 8", title: "Public Opening", time: "12:00 PM", venue: "Nahous, Lagos" },
                             { date: "JULY 9-10", title: "Pop-Ups & Exhibitions", time: "11:00 AM", venue: "Nahous, Lagos" },
-                            { date: "JULY 11", title: "Film Day", time: "2:00 PM", venue: "Nahous, Lagos" }
+                            { date: "JULY 11", title: "Film Day", time: "2:00 PM", venue: "Nahous, Lagos" },
+                            { date: "JULY 12", title: "VVS Main Day", time: "All Day", venue: "Nahous, Lagos", isMain: true }
                         ].map((event, i) => (
-                            <div key={`mob-evt-${i}`} className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col gap-1">
+                            <div key={`mob-evt-${i}`} className={`bg-white/5 border rounded-xl p-4 flex flex-col gap-1 ${event.isMain ? 'border-vvs-gold shadow-[0_0_15px_rgba(197,160,89,0.3)]' : 'border-white/10'}`}>
                                 <div className="flex justify-between items-center">
                                     <p className="text-vvs-gold text-[10px] font-mono font-bold tracking-widest">{event.date}</p>
                                     <p className="text-white/40 text-[9px] font-mono">{event.time}</p>
                                 </div>
-                                <h3 className="text-white text-sm font-semibold">{event.title}</h3>
+                                <h3 className={`text-sm font-semibold ${event.isMain ? 'text-vvs-gold' : 'text-white'}`}>{event.title}</h3>
                                 <p className="text-white/50 text-[10px] font-sans">{event.venue}</p>
                             </div>
                         ))}
@@ -614,7 +641,8 @@ export default function GuestsPage() {
                                     { date: "JULY 7", title: "Collectors Preview", time: "2:00 PM", venue: "Private Venue" },
                                     { date: "JULY 8", title: "Public Opening", time: "12:00 PM", venue: "Nahous, Lagos" },
                                     { date: "JULY 9-10", title: "Pop-Ups & Exhibitions", time: "11:00 AM", venue: "Nahous, Lagos" },
-                                    { date: "JULY 11", title: "Film Day", time: "2:00 PM", venue: "Nahous, Lagos" }
+                                    { date: "JULY 11", title: "Film Day", time: "2:00 PM", venue: "Nahous, Lagos" },
+                                    { date: "JULY 12", title: "VVS Main Day", time: "All Day", venue: "Nahous, Lagos", isMain: true }
                                 ].map((event, i) => (
                                     <motion.div
                                         key={i}
@@ -622,13 +650,13 @@ export default function GuestsPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -20 }}
                                         transition={{ duration: 0.5, delay: 0.2 + i * 0.1, ease: "easeOut" }}
-                                        className="bg-white/5 backdrop-blur-sm border border-white/10 hover:border-vvs-gold/40 hover:bg-white/10 rounded-sm p-4 sm:p-5 text-left transition-all group"
+                                        className={`bg-white/5 backdrop-blur-sm border hover:border-vvs-gold/40 hover:bg-white/10 rounded-sm p-4 sm:p-5 text-left transition-all group ${event.isMain ? 'border-vvs-gold shadow-[0_0_15px_rgba(197,160,89,0.3)] col-span-2 md:col-span-3' : 'border-white/10'}`}
                                     >
                                         <div className="flex flex-col xl:flex-row xl:justify-between xl:items-start mb-2 gap-1">
                                             <p className="text-vvs-gold text-[10px] sm:text-xs font-mono font-bold tracking-widest">{event.date}</p>
                                             <p className="text-white/40 text-[9px] sm:text-[10px] font-mono whitespace-nowrap">{event.time}</p>
                                         </div>
-                                        <h3 className="text-white text-sm sm:text-base font-semibold leading-snug group-hover:text-vvs-gold transition-colors">{event.title}</h3>
+                                        <h3 className={`text-sm sm:text-base font-semibold leading-snug transition-colors ${event.isMain ? 'text-vvs-gold group-hover:text-vvs-gold/80' : 'text-white group-hover:text-vvs-gold'}`}>{event.title}</h3>
                                         <p className="text-white/50 text-xs mt-2 hidden sm:block font-sans">{event.venue}</p>
                                     </motion.div>
                                 ))}

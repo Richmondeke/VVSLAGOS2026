@@ -19,7 +19,14 @@ export default function Hero() {
     const subtitleY = useTransform(scrollYProgress, [0, 1], ["0%", "-12%"]);
     const bgGlowY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
     const mascotY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
-    const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+    // Staggered top-to-bottom scroll fade opacities (stays active when scrolling back up)
+    const countdownOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
+    const labelOpacity = useTransform(scrollYProgress, [0.15, 0.4], [1, 0]);
+    const titleOpacity = useTransform(scrollYProgress, [0.3, 0.55], [1, 0]);
+    const subtitleOpacity = useTransform(scrollYProgress, [0.45, 0.7], [1, 0]);
+    const ctaOpacity = useTransform(scrollYProgress, [0.6, 0.85], [1, 0]);
+    const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
     return (
         <section
@@ -36,7 +43,6 @@ export default function Hero() {
             />
 
             <motion.div
-                style={{ opacity }}
                 className="w-full max-w-7xl mx-auto px-5 sm:px-8 relative z-10 flex flex-col items-center overflow-hidden"
             >
                 {/* Countdown */}
@@ -44,6 +50,7 @@ export default function Hero() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 1, ease: "easeOut" }}
+                    style={{ opacity: countdownOpacity }}
                     className="mb-12"
                 >
                     <Countdown targetDate="2026-07-05T19:00:00" variant="hero" />
@@ -54,7 +61,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    style={{ y: subtitleY }}
+                    style={{ y: subtitleY, opacity: labelOpacity }}
                 >
                     <span className="text-vvs-gold text-xs md:text-sm uppercase tracking-[0.4em] mb-6 block text-center font-mono font-bold">
                         VVS LAGOS 2026 • 5TH EDITION
@@ -66,7 +73,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.9, ease: "easeOut", delay: 0.1 }}
-                    style={{ y: titleY }}
+                    style={{ y: titleY, opacity: titleOpacity }}
                     className="text-[clamp(2rem,9vw,9rem)] font-serif font-extrabold text-vvs-white lg:leading-tight mb-8 tracking-tighter text-center leading-[1.1] w-full"
                 >
                     <ScrambleText text="AFRO" /><br />
@@ -78,7 +85,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    style={{ y: subtitleY }}
+                    style={{ y: subtitleY, opacity: subtitleOpacity }}
                     className="text-vvs-white/60 text-sm md:text-lg max-w-2xl mx-auto leading-relaxed uppercase tracking-widest font-light mb-12 text-center"
                 >
                     The Intersection of Ancient Narrative and Futuristic Vision.
@@ -90,7 +97,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.35 }}
-                    style={{ y: subtitleY }}
+                    style={{ y: subtitleY, opacity: ctaOpacity }}
                     className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full"
                 >
                     <motion.button
@@ -112,13 +119,12 @@ export default function Hero() {
                 </motion.div>
             </motion.div>
 
-
-
             {/* Scroll Indicator */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.5, duration: 1 }}
+                style={{ opacity: scrollIndicatorOpacity }}
                 className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center z-20"
             >
                 <span className="text-[8px] uppercase tracking-[0.3em] text-vvs-white/40 mb-3 font-bold font-mono">Scroll</span>

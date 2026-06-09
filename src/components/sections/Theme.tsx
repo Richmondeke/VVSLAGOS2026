@@ -65,14 +65,20 @@ export default function Theme() {
                                     key={pillar.label}
                                     initial={{ opacity: 0, y: 20 }}
                                     whileInView={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 * i + 0.3 }}
+                                    whileHover={{ y: -5, scale: 1.02, borderColor: "rgba(197, 160, 89, 0.5)" }}
+                                    transition={{ delay: 0.1 * i + 0.3, duration: 0.3 }}
                                     viewport={{ once: true }}
-                                    className="border border-vvs-gold/20 rounded-xl sm:rounded-2xl p-5 sm:p-8 bg-vvs-white/[0.02] hover:border-vvs-gold/50 transition-all group"
+                                    className="relative overflow-hidden border border-vvs-gold/20 rounded-xl sm:rounded-2xl p-5 sm:p-8 bg-vvs-white/[0.02] cursor-pointer group"
                                 >
-                                    <img src="/assets/VVSMASCOT7.png" alt="" className="h-6 w-6 object-contain opacity-70" />
-                                    <h3 className="text-base sm:text-xl font-serif font-extrabold text-vvs-white uppercase tracking-tight group-hover:text-vvs-gold transition-colors">
-                                        {pillar.label}
-                                    </h3>
+                                    {/* Gradient mesh backdrop */}
+                                    <div className="absolute inset-0 bg-gradient-to-br from-vvs-gold/10 via-vvs-gold/[0.01] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl sm:rounded-2xl pointer-events-none" />
+                                    
+                                    <div className="relative z-10 flex flex-col gap-3">
+                                        <img src="/assets/VVSMASCOT7.png" alt="" className="h-6 w-6 object-contain opacity-70 group-hover:opacity-100 group-hover:scale-115 group-hover:rotate-12 transition-all duration-500" />
+                                        <h3 className="text-base sm:text-xl font-serif font-extrabold text-vvs-white uppercase tracking-tight group-hover:text-vvs-gold transition-colors">
+                                            {pillar.label}
+                                        </h3>
+                                    </div>
                                 </motion.div>
                             ))}
                         </div>

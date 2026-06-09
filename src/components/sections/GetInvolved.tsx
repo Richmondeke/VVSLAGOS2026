@@ -65,12 +65,16 @@ export default function GetInvolved() {
                                 onClick={() => handleClick(card.modal)}
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
+                                whileHover={{ y: -6, borderColor: "rgba(197, 160, 89, 0.5)", scale: 1.01 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 0.6, delay: i * 0.15 }}
-                                className="group border border-vvs-gold/15 rounded-2xl p-6 sm:p-8 bg-vvs-white/[0.02] hover:border-vvs-gold/40 hover:bg-vvs-white/[0.04] transition-all duration-500 flex flex-col text-left cursor-pointer"
+                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                className="group relative overflow-hidden border border-vvs-gold/15 rounded-2xl p-6 sm:p-8 bg-vvs-white/[0.02] hover:bg-vvs-gold/[0.01] hover:shadow-[0_0_40px_rgba(197,160,89,0.15)] transition-all duration-500 flex flex-col text-left cursor-pointer"
                             >
-                                <div className="flex items-center gap-3 mb-5">
-                                    <div className="p-2.5 rounded-xl bg-vvs-gold/10 border border-vvs-gold/20">
+                                {/* Subtle inner glow overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-vvs-gold/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                                <div className="flex items-center gap-3 mb-5 relative z-10">
+                                    <div className="p-2.5 rounded-xl bg-vvs-gold/10 border border-vvs-gold/20 group-hover:bg-vvs-gold/25 group-hover:scale-110 transition-all duration-300">
                                         <card.icon size={20} className="text-vvs-gold" />
                                     </div>
                                     <span className="text-[10px] uppercase tracking-[0.3em] text-vvs-white/40 font-mono font-bold">
@@ -78,17 +82,17 @@ export default function GetInvolved() {
                                     </span>
                                 </div>
 
-                                <h3 className="text-xl sm:text-2xl font-serif font-extrabold text-vvs-white uppercase tracking-tight mb-3 group-hover:text-vvs-gold transition-colors">
+                                <h3 className="text-xl sm:text-2xl font-serif font-extrabold text-vvs-white uppercase tracking-tight mb-3 group-hover:text-vvs-gold transition-colors relative z-10">
                                     {card.title}
                                 </h3>
 
-                                <p className="text-vvs-white/50 text-sm font-sans font-light leading-relaxed mb-6 flex-1">
+                                <p className="text-vvs-white/50 text-sm font-sans font-light leading-relaxed mb-6 flex-1 relative z-10">
                                     {card.description}
                                 </p>
 
-                                <div className="flex items-center gap-2 text-vvs-gold text-xs uppercase tracking-[0.2em] font-bold group-hover:gap-3 transition-all">
+                                <div className="flex items-center gap-2 text-vvs-gold text-xs uppercase tracking-[0.2em] font-bold relative z-10">
                                     <span>{card.cta}</span>
-                                    <span className="text-base">→</span>
+                                    <span className="text-base transform group-hover:translate-x-1.5 transition-transform duration-300">→</span>
                                 </div>
                             </motion.button>
                         ))}

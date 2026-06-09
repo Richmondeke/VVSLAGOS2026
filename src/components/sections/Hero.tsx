@@ -87,18 +87,22 @@ export default function Hero() {
                     style={{ y: subtitleY }}
                     className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full"
                 >
-                    <button
+                    <motion.button
                         onClick={() => document.querySelector('#journey')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                        className="w-full sm:w-auto px-10 py-4 bg-vvs-gold text-vvs-black text-xs uppercase tracking-[0.2em] font-bold rounded-full hover:bg-white transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(197,160,89,0.3)]"
+                        whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(197, 160, 89, 0.6)" }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full sm:w-auto px-10 py-4 bg-vvs-gold text-vvs-black text-xs uppercase tracking-[0.2em] font-bold rounded-full cursor-pointer transition-colors shadow-[0_0_20px_rgba(197,160,89,0.3)]"
                     >
                         Discover the Legacy
-                    </button>
-                    <button
+                    </motion.button>
+                    <motion.button
                         onClick={() => document.querySelector('#events')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                        className="w-full sm:w-auto px-10 py-4 border border-white/20 text-vvs-white text-xs uppercase tracking-[0.2em] font-bold rounded-full hover:bg-white/5 transition-all"
+                        whileHover={{ scale: 1.05, borderColor: "rgba(197, 160, 89, 0.6)", color: "#c5a059", backgroundColor: "rgba(197,160,89,0.05)" }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full sm:w-auto px-10 py-4 border border-white/20 text-vvs-white text-xs uppercase tracking-[0.2em] font-bold rounded-full cursor-pointer transition-colors"
                     >
                         View Calendar
-                    </button>
+                    </motion.button>
                 </motion.div>
             </motion.div>
 
@@ -122,10 +126,22 @@ export default function Hero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.5, duration: 1 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center"
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center z-20"
             >
-                <span className="text-[10px] uppercase tracking-[0.3em] text-vvs-white/30 mb-4 font-bold">Scroll to Explore</span>
-                <div className="w-[1px] h-20 bg-gradient-to-b from-vvs-gold to-transparent" />
+                <span className="text-[8px] uppercase tracking-[0.3em] text-vvs-white/40 mb-3 font-bold font-mono">Scroll</span>
+                <div className="w-[1px] h-10 bg-vvs-white/10 relative overflow-hidden">
+                    <motion.div
+                        animate={{
+                            y: ["-100%", "100%"]
+                        }}
+                        transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
+                        className="absolute left-0 top-0 w-full h-1/2 bg-gradient-to-b from-vvs-gold to-transparent"
+                    />
+                </div>
             </motion.div>
 
             {/* Side decorative */}

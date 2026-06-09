@@ -42,7 +42,7 @@ export default function Navbar() {
     return (
         <nav
             className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${scrolled
-                ? "py-4 bg-vvs-black border-b border-vvs-gold/10"
+                ? "py-4 bg-vvs-black/80 backdrop-blur-md border-b border-vvs-gold/20 shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
                 : "py-8 bg-transparent"
                 }`}
         >

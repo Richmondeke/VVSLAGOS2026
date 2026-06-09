@@ -415,7 +415,7 @@ export default function GuestsPage() {
                                                 opacity: isVisible ? 1 : 0, 
                                                 scale: isVisible ? ((scales[activeTimelineIndex]?.[extraIndex] || 0) * 0.7) : 0,
                                                 x: isMerged ? 0 : (positions[activeTimelineIndex]?.[extraIndex]?.x || 0),
-                                                y: isMerged ? 0 : -140
+                                                y: isMerged ? 0 : (activeTimelineIndex === 4 ? 0 : -180)
                                             }}
                                             transition={{ type: "spring", damping: 20, stiffness: 100 }}
                                         >
@@ -439,7 +439,7 @@ export default function GuestsPage() {
                                             150,
                                             0
                                         ][activeTimelineIndex],
-                                        y: isMerged ? 0 : -140,
+                                        y: isMerged ? 0 : (activeTimelineIndex === 4 ? 0 : -180),
                                         scale: isMerged ? 1 : (
                                             [1.5, 1.2, 1.5, 1.3, 1.5][activeTimelineIndex] / 2.5
                                         )
@@ -507,9 +507,9 @@ export default function GuestsPage() {
                                 <motion.div 
                                     className="absolute w-[85vw] sm:w-[600px] h-[180px] sm:h-[300px] rounded-xl overflow-hidden shadow-2xl border border-white/10 z-10"
                                     animate={{
-                                        opacity: isMerged ? 0 : 1,
-                                        y: isMerged ? 0 : 200,
-                                        scale: isMerged ? 0 : 1
+                                        opacity: (isMerged || activeTimelineIndex === 4) ? 0 : 1,
+                                        y: isMerged ? 0 : 20,
+                                        scale: (isMerged || activeTimelineIndex === 4) ? 0 : 1
                                     }}
                                     transition={{ type: "spring", damping: 20, stiffness: 100 }}
                                 >

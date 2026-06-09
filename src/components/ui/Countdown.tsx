@@ -35,7 +35,7 @@ function pad(n: number) {
 interface CountdownProps {
     targetDate: string;
     className?: string;
-    variant?: "compact" | "hero";
+    variant?: "compact" | "hero" | "hero-light";
 }
 
 export default function Countdown({ targetDate, className = "", variant = "compact" }: CountdownProps) {

@@ -2,7 +2,6 @@
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValueEvent } from "framer-motion";
-import { X, CheckCircle2, Ticket, QrCode } from "lucide-react";
 import { designers, DesignerCard } from "@/components/sections/Designers";
 import { timelineData } from "@/components/sections/Journey";
 import Countdown from "@/components/ui/Countdown";
@@ -90,6 +89,13 @@ export default function GuestsPage() {
         if (latest >= 0.52 && latest < 0.66) setShowEventCalendar(true);
         else setShowEventCalendar(false);
     });
+
+    const handleReset = () => {
+        containerRef.current?.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    };
 
     const handleStartClick = () => {
         triggerHaptic("medium");

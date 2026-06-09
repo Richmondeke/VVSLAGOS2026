@@ -65,9 +65,92 @@ const events = [
 function getDayLabel(isoDate: string): string {
     const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
     const d = new Date(isoDate);
-    // Note: This can still cause hydration issues if server/client timezones differ
-    // However, for these specific dates, they are all fixed in the future.
     return days[d.getDay()];
+}
+
+function EventCard({ event, index, mounted }: { event: typeof events[0]; index: number; mounted: boolean }) {
+    const [isHovered, setIsHovered] = useState(false);
+
+    // Split event.note into distinct activities
+    const activities = event.note ? event.note.split("•").map((act) => act.trim()) : [];
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="group relative overflow-hidden"
+        >
+            <div className="p-4 sm:p-6 md:p-8 bg-vvs-white/5 border border-vvs-gold/10 hover:border-vvs-gold/40 transition-all rounded-xl relative z-10 cursor-pointer">
+                {/* Desktop: side-by-side | Mobile: stacked */}
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8">
+
+                    {/* ── Main content ── */}
+                    <div className="min-w-0 flex-1">
+                        {/* Top meta row: DAY · Date · Category */}
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
+                            <span className="text-vvs-gold text-sm sm:text-base md:text-lg font-mono font-extrabold leading-none">
+                                {mounted ? getDayLabel(event.fullDate) : "---"}
+                            </span>
+                            <span className="h-1 w-1 bg-vvs-gold/40 rounded-full" />
+                            <span className="text-vvs-white/50 text-xs font-sans">{event.date}</span>
+                            <span className="h-1 w-1 bg-vvs-gold/40 rounded-full" />
+                            <span className="text-vvs-gold/70 text-[10px] uppercase tracking-widest font-mono font-bold">
+                                {event.category}
+                            </span>
+                        </div>
+
+                        {/* Title */}
+                        <h3 className="text-lg sm:text-xl md:text-2xl font-serif font-extrabold text-vvs-white group-hover:text-vvs-gold transition-colors uppercase tracking-tight leading-snug">
+                            {event.title}
+                        </h3>
+
+                        {/* Smoothly expanded activity minicards on hover */}
+                        {activities.length > 0 && (
+                            <motion.div
+                                initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                                animate={{ 
+                                    height: isHovered ? "auto" : 0, 
+                                    opacity: isHovered ? 1 : 0,
+                                    marginTop: isHovered ? 16 : 0
+                                }}
+                                transition={{ duration: 0.35, ease: "easeInOut" }}
+                                className="overflow-hidden"
+                            >
+                                <div className="flex flex-wrap gap-2">
+                                    {activities.map((activity, aIdx) => (
+                                        <motion.div 
+                                            key={aIdx}
+                                            initial={{ scale: 0.9, opacity: 0 }}
+                                            animate={{ scale: isHovered ? 1 : 0.9, opacity: isHovered ? 1 : 0 }}
+                                            transition={{ delay: isHovered ? aIdx * 0.04 : 0 }}
+                                            className="px-3 py-1.5 border border-vvs-gold/15 bg-vvs-white/[0.03] hover:border-vvs-gold/30 hover:bg-vvs-gold/5 rounded-lg text-[10px] sm:text-xs font-mono text-vvs-white/80 uppercase tracking-wider transition-all"
+                                        >
+                                            ✦ {activity}
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+                    </div>
+
+                    {/* ── Right column: time, venue, countdown ── */}
+                    <div className="flex items-center justify-between md:flex-col md:items-end gap-3 md:gap-1 pt-3 md:pt-0 border-t border-vvs-gold/10 md:border-t-0 shrink-0">
+                        <div className="flex items-center gap-3 md:flex-col md:items-end md:gap-0">
+                            <span className="text-vvs-white text-sm sm:text-base md:text-lg font-mono font-bold tracking-tighter">{event.time}</span>
+                            <span className="text-vvs-gold/60 text-[10px] sm:text-xs uppercase tracking-widest font-mono">{event.venue}</span>
+                        </div>
+                        <Countdown targetDate={event.fullDate} variant="hero" className="scale-90 md:scale-95 origin-right" />
+                    </div>
+                </div>
+            </div>
+
+            {/* Hover Background Glow */}
+            <div className="absolute inset-0 bg-vvs-gold/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0 pointer-events-none" />
+        </motion.div>
+    );
 }
 
 export default function EventsCalendar() {
@@ -76,6 +159,7 @@ export default function EventsCalendar() {
     useEffect(() => {
         setMounted(true);
     }, []);
+
     return (
         <section id="events" className="py-20 md:py-32 bg-vvs-black relative overflow-hidden">
             {/* Mascot Accent */}
@@ -99,59 +183,7 @@ export default function EventsCalendar() {
 
                 <div className="space-y-3 sm:space-y-4">
                     {events.map((event, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 10 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="group relative overflow-hidden"
-                        >
-                            <div className="p-4 sm:p-6 md:p-8 bg-vvs-white/5 border border-vvs-gold/10 hover:border-vvs-gold/40 transition-all rounded-xl relative z-10">
-                                {/* Desktop: side-by-side | Mobile: stacked */}
-                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8">
-
-                                    {/* ── Main content ── */}
-                                    <div className="min-w-0 flex-1">
-                                        {/* Top meta row: DAY · Date · Category */}
-                                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
-                                            <span className="text-vvs-gold text-sm sm:text-base md:text-lg font-mono font-extrabold leading-none">
-                                                {mounted ? getDayLabel(event.fullDate) : "---"}
-                                            </span>
-                                            <span className="h-1 w-1 bg-vvs-gold/40 rounded-full" />
-                                            <span className="text-vvs-white/50 text-xs font-sans">{event.date}</span>
-                                            <span className="h-1 w-1 bg-vvs-gold/40 rounded-full" />
-                                            <span className="text-vvs-gold/70 text-[10px] uppercase tracking-widest font-mono font-bold">
-                                                {event.category}
-                                            </span>
-                                        </div>
-
-                                        {/* Title */}
-                                        <h3 className="text-lg sm:text-xl md:text-2xl font-serif font-extrabold text-vvs-white group-hover:text-vvs-gold transition-colors uppercase tracking-tight leading-snug">
-                                            {event.title}
-                                        </h3>
-
-                                        {/* Note */}
-                                        {event.note && (
-                                            <p className="text-vvs-white/30 text-[11px] sm:text-xs font-mono mt-2 leading-relaxed break-words">
-                                                {event.note}
-                                            </p>
-                                        )}
-                                    </div>
-
-                                    {/* ── Right column: time, venue, countdown ── */}
-                                    <div className="flex items-center justify-between md:flex-col md:items-end gap-3 md:gap-1 pt-3 md:pt-0 border-t border-vvs-gold/10 md:border-t-0 shrink-0">
-                                        <div className="flex items-center gap-3 md:flex-col md:items-end md:gap-0">
-                                            <span className="text-vvs-white text-sm sm:text-base md:text-lg font-mono font-bold tracking-tighter">{event.time}</span>
-                                            <span className="text-vvs-gold/60 text-[10px] sm:text-xs uppercase tracking-widest font-mono">{event.venue}</span>
-                                        </div>
-                                        <Countdown targetDate={event.fullDate} />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Hover Background Glow */}
-                            <div className="absolute inset-0 bg-vvs-gold/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0" />
-                        </motion.div>
+                        <EventCard key={index} event={event} index={index} mounted={mounted} />
                     ))}
                 </div>
             </div>

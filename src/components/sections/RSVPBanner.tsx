@@ -43,6 +43,7 @@ export default function RSVPBanner() {
                     Secure your spot for an unforgettable celebration of culture, design, and Afrofuturism.
                 </p>
                 <button
+                    id="rsvp-trigger-page"
                     onClick={() => { triggerHaptic("medium"); setIsModalOpen(true); }}
                     className="px-8 sm:px-10 py-3 sm:py-4 bg-[#111111] text-white text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold rounded-full hover:bg-black/80 transition-all transform hover:scale-[1.02] shadow-xl"
                 >

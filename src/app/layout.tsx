@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Jost, Space_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const jost = Jost({
@@ -11,6 +12,11 @@ const spaceMono = Space_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
   weight: ["400", "700"],
+});
+
+const oldEnglish = localFont({
+  src: "./fonts/DSCaslonGotisch.ttf",
+  variable: "--font-old-english",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +32,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jost.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${jost.variable} ${spaceMono.variable} ${oldEnglish.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-vvs-black text-vvs-white">
         {children}

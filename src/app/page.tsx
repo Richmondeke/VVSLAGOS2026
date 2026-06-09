@@ -7,6 +7,7 @@ import { timelineData } from "@/components/sections/Journey";
 import Countdown from "@/components/ui/Countdown";
 import Footer from "@/components/layout/Footer";
 import RSVPBanner from "@/components/sections/RSVPBanner";
+import LiquidNavbar from "@/components/sections/LiquidNavbar";
 
 // Config for deterministic item positioning to avoid SSR hydration mismatch
 const INNER_COUNT = 12;
@@ -235,28 +236,30 @@ export default function GuestsPage() {
             `}} />
 
             {/* Top Fixed Logo */}
-            <header className="fixed top-12 left-0 w-full z-20 flex justify-center pointer-events-none">
+            <header className="fixed top-8 sm:top-12 left-0 w-full z-[100] flex justify-start sm:justify-center pointer-events-none px-6 sm:px-0">
                 <div 
                     onClick={() => { triggerHaptic("light"); handleReset(); }}
-                    className="bg-black p-[10px] rounded-full aspect-square cursor-pointer hover:opacity-80 transition-opacity pointer-events-auto flex items-center justify-center"
+                    className="bg-black p-[8px] sm:p-[10px] rounded-full aspect-square cursor-pointer hover:opacity-80 transition-opacity pointer-events-auto flex items-center justify-center shadow-lg border border-white/10"
                 >
                     <img 
                         src="/assets/VVSLAGOSLOGO.png" 
                         alt="VVS Lagos" 
-                        className="h-10 sm:h-12 w-auto object-contain"
+                        className="h-8 sm:h-12 w-auto object-contain"
                     />
                 </div>
             </header>
 
             {/* Bottom Fixed Languages */}
             <footer className="fixed bottom-12 left-0 w-full z-20 flex justify-center pointer-events-none">
-                <div className="flex items-center space-x-6 text-[10px] tracking-[0.2em] text-[#888888] font-mono font-bold pointer-events-auto">
+                <div className="hidden sm:flex items-center space-x-6 text-[10px] tracking-[0.2em] text-[#888888] font-mono font-bold pointer-events-auto">
                     <span className="relative pb-0.5 cursor-pointer text-black border-b border-red-600" onClick={() => triggerHaptic("light")}>EN</span>
                     <span className="cursor-pointer hover:text-black transition-colors" onClick={() => triggerHaptic("light")}>YO</span>
                     <span className="cursor-pointer hover:text-black transition-colors" onClick={() => triggerHaptic("light")}>HA</span>
                     <span className="cursor-pointer hover:text-black transition-colors" onClick={() => triggerHaptic("light")}>IG</span>
                 </div>
             </footer>
+
+
 
             {/* Fixed Hero Content (fades out on scroll, does not slide up) */}
             <motion.div 
@@ -282,24 +285,6 @@ export default function GuestsPage() {
                     {/* Countdown */}
                     <div className="z-10 relative">
                         <Countdown targetDate="2026-07-05T19:00:00" variant="hero-light" />
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-4 z-10 relative">
-                        <motion.button
-                            onClick={handleStartClick}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.97 }}
-                            className="px-6 py-3 bg-[#111111] hover:bg-black text-white text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold rounded-sm cursor-pointer shadow-md hover:shadow-lg transition-all"
-                        >
-                            Discover the legacy
-                        </motion.button>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.97 }}
-                            className="px-8 py-3 bg-transparent border border-[#111111] text-[#111111] hover:bg-black/5 text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold rounded-sm cursor-pointer transition-all"
-                        >
-                            RSVP
-                        </motion.button>
                     </div>
                 </div>
 
@@ -534,7 +519,7 @@ export default function GuestsPage() {
                 <section className="w-full h-[400vh] snap-start relative z-20">
                     <motion.div 
                         style={{ opacity: timelineOpacity }}
-                        className="fixed inset-0 w-full h-full flex flex-col justify-end items-center px-4 pointer-events-none pb-20 sm:pb-32 z-20"
+                        className="fixed inset-0 w-full h-full flex flex-col justify-end items-center px-4 pointer-events-none pb-28 sm:pb-32 z-20"
                     >
                         {/* Centered Text under Mascots */}
                         <div className="flex flex-col items-center max-w-2xl text-center">
@@ -565,7 +550,38 @@ export default function GuestsPage() {
                 </section>
 
                 {/* Section 3: Event Calendar Scroll Spacer */}
-                <section className="w-full h-[150vh] snap-start relative z-10" />
+                <section className="w-full h-[150vh] snap-start relative z-10 hidden sm:block" />
+
+                {/* Mobile Static Event Calendar */}
+                <section className="w-full bg-[#0a0a0a] py-20 px-5 sm:hidden relative z-20">
+                    <div className="flex flex-col items-center text-center space-y-4 mb-8">
+                        <h2 className="text-3xl font-serif font-bold text-white tracking-tight leading-tight uppercase">
+                            Event Calendar
+                        </h2>
+                        <p className="text-white/80 font-sans text-sm leading-relaxed font-light">
+                            Join us for an immersive 7-day experience celebrating the intersection of African culture, luxury, and the future.
+                        </p>
+                    </div>
+                    <div className="flex flex-col gap-3 w-full">
+                        {[
+                            { date: "JULY 5", title: "Grand Opening Night", time: "7:00 PM", venue: "Nahous, Lagos" },
+                            { date: "JULY 6", title: "Business & Culture Day", time: "10:00 AM", venue: "Yoga Center" },
+                            { date: "JULY 7", title: "Collectors Preview", time: "2:00 PM", venue: "Private Venue" },
+                            { date: "JULY 8", title: "Public Opening", time: "12:00 PM", venue: "Nahous, Lagos" },
+                            { date: "JULY 9-10", title: "Pop-Ups & Exhibitions", time: "11:00 AM", venue: "Nahous, Lagos" },
+                            { date: "JULY 11", title: "Film Day", time: "2:00 PM", venue: "Nahous, Lagos" }
+                        ].map((event, i) => (
+                            <div key={`mob-evt-${i}`} className="bg-white/5 border border-white/10 rounded-xl p-4 flex flex-col gap-1">
+                                <div className="flex justify-between items-center">
+                                    <p className="text-vvs-gold text-[10px] font-mono font-bold tracking-widest">{event.date}</p>
+                                    <p className="text-white/40 text-[9px] font-mono">{event.time}</p>
+                                </div>
+                                <h3 className="text-white text-sm font-semibold">{event.title}</h3>
+                                <p className="text-white/50 text-[10px] font-sans">{event.venue}</p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
 
                 <AnimatePresence>
                     {showEventCalendar && (
@@ -574,7 +590,7 @@ export default function GuestsPage() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.5 }}
-                            className="fixed inset-0 w-full h-full flex flex-col justify-center items-center py-6 sm:py-12 px-4 sm:px-6 pointer-events-none z-20"
+                            className="fixed inset-0 w-full h-full hidden sm:flex flex-col justify-center items-center py-6 sm:py-12 px-4 sm:px-6 pointer-events-none z-20"
                         >
                             <motion.div 
                                 initial={{ opacity: 0, y: 15 }}
@@ -591,7 +607,7 @@ export default function GuestsPage() {
                                 </p>
                             </motion.div>
 
-                            <div className="mt-8 sm:mt-12 grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 w-full max-w-5xl pointer-events-auto">
+                            <div className="mt-8 sm:mt-12 grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 w-full max-w-5xl pointer-events-auto pb-28 sm:pb-0">
                                 {[
                                     { date: "JULY 5", title: "Grand Opening Night", time: "7:00 PM", venue: "Nahous, Lagos" },
                                     { date: "JULY 6", title: "Business & Culture Day", time: "10:00 AM", venue: "Yoga Center" },
@@ -622,26 +638,27 @@ export default function GuestsPage() {
                 </AnimatePresence>
 
                 {/* 4) Designers (0.66 to 1.0) */}
-                <section className="w-full h-[400vh] relative z-30 bg-black">
-                    <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden">
-                        <div className="w-full max-w-7xl mx-auto px-5 sm:px-8 relative z-10 pt-20 flex-shrink-0">
-                            <div className="mb-10 md:mb-16">
-                                <span className="text-vvs-gold text-sm uppercase tracking-[0.4em] mb-4 block font-mono font-bold">
+                <section className="w-full h-auto sm:h-[400vh] relative z-30 bg-black">
+                    <div className="relative sm:sticky top-0 h-auto sm:h-screen w-full flex flex-col justify-center overflow-hidden py-24 sm:py-0">
+                        <div className="w-full max-w-7xl mx-auto px-5 sm:px-8 relative z-10 pt-10 sm:pt-20 flex-shrink-0">
+                            <div className="mb-8 sm:mb-16">
+                                <span className="text-vvs-gold text-xs sm:text-sm uppercase tracking-[0.4em] mb-4 block font-mono font-bold">
                                     VVS COLLECTIVE
                                 </span>
                                 <h2 className="text-3xl sm:text-4xl md:text-6xl font-serif font-extrabold text-vvs-white uppercase tracking-tighter">
                                     THE <span className="text-vvs-gold">INNOVATORS</span>
                                 </h2>
-                                <p className="text-vvs-white/50 mt-4 max-w-2xl font-sans font-light text-base md:text-lg">
+                                <p className="text-vvs-white/50 mt-4 max-w-2xl font-sans font-light text-sm sm:text-lg">
                                     Visionary designers selected for VVS Lagos 2026, each telling a uniquely African story through the lens of tomorrow.
                                 </p>
                             </div>
                         </div>
                         
                         <div ref={viewportRef} className="w-full relative z-10 overflow-hidden">
+                            {/* Desktop scroll jacked track */}
                             <motion.div 
                                 ref={trackRef}
-                                className="flex gap-4 sm:gap-6 pb-32 w-max pl-5 sm:pl-8 xl:pl-[calc((100vw-80rem)/2+2rem)] pr-5 sm:pr-8 xl:pr-[calc((100vw-80rem)/2+2rem)]"
+                                className="hidden sm:flex gap-4 sm:gap-6 pb-32 w-max pl-5 sm:pl-8 xl:pl-[calc((100vw-80rem)/2+2rem)] pr-5 sm:pr-8 xl:pr-[calc((100vw-80rem)/2+2rem)]"
                                 style={{ x: designersX }}
                             >
                                 {designers.map((designer, index) => (
@@ -650,16 +667,30 @@ export default function GuestsPage() {
                                     </div>
                                 ))}
                             </motion.div>
+
+                            {/* Mobile native horizontal scroll */}
+                            <div className="flex sm:hidden overflow-x-auto snap-x snap-mandatory gap-4 pb-8 px-5 w-full scrollbar-none" style={{ touchAction: 'pan-x' }}>
+                                {designers.map((designer, index) => (
+                                    <div key={`mob-des-${index}`} className="w-[85vw] shrink-0 snap-center">
+                                        <DesignerCard designer={designer} index={index} />
+                                    </div>
+                                ))}
+                                {/* Extra padding element so the last item can be scrolled fully into view */}
+                                <div className="w-[10vw] shrink-0" />
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 <RSVPBanner />
                 {/* Section 5: Footer */}
-                <section className="w-full relative z-30 snap-start bg-vvs-black text-vvs-white">
+                <section className="w-full relative z-30 snap-start bg-vvs-black text-vvs-white pb-28 sm:pb-0">
                     <Footer />
                 </section>
             </main>
+
+            {/* Liquid morphing navbar and menu overlay */}
+            <LiquidNavbar containerRef={containerRef} scrollYProgress={scrollYProgress} />
         </div>
     );
 }

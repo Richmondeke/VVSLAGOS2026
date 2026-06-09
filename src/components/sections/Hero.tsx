@@ -3,6 +3,7 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Countdown from "../ui/Countdown";
+import NsibidiRain from "../ui/NsibidiRain";
 
 export default function Hero() {
     const ref = useRef<HTMLElement>(null);
@@ -24,6 +25,9 @@ export default function Hero() {
             ref={ref}
             className="relative min-h-screen flex items-center justify-center pt-32 pb-20 overflow-hidden"
         >
+            {/* Animated Nsibidi Digital Rain */}
+            <NsibidiRain />
+
             {/* Background gold glow — moves slowest */}
             <motion.div
                 style={{ y: bgGlowY }}

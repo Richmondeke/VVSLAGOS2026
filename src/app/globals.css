@@ -38,7 +38,7 @@ h4,
 h5,
 h6 {
   font-family: var(--font-serif);
-  font-weight: 800;
+  font-weight: 400;
   letter-spacing: 0.02em;
   transform: scaleY(1.05);
   transform-origin: center bottom;

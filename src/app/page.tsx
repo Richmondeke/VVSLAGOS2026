@@ -272,9 +272,9 @@ export default function GuestsPage() {
                 {/* Centered Content */}
                 <div className="flex flex-col items-center justify-center flex-1 max-w-2xl mx-auto text-center gap-8 px-4 pointer-events-auto">
                     <div className="space-y-4 max-w-lg z-10 relative mt-8 sm:mt-12">
-                        <h1 className="text-4xl sm:text-5xl font-light text-[#1a1a1a] tracking-tight leading-tight select-text uppercase">
-                            Welcome to <br className="hidden sm:block" />
-                            <span className="font-semibold text-black font-serif">VVS LAGOS 2026</span>
+                        <h1 className="font-light text-[#1a1a1a] tracking-tight select-text uppercase flex flex-col items-center">
+                            <span className="text-2xl sm:text-3xl mb-2 sm:mb-4">Welcome to</span>
+                            <span className="font-normal text-black font-serif text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-none mt-2">VVS LAGOS 2026</span>
                         </h1>
                         <p className="text-sm sm:text-base font-light text-[#444444] leading-relaxed mx-auto max-w-md">
                             <span className="font-bold text-black tracking-widest uppercase block mb-1">AFRO MODERNISM:</span>

@@ -74,6 +74,10 @@ const Footer = () => {
                 </div>
             </div>
 
+            {/* Large Watermark */}
+            <div className="absolute -bottom-24 -right-24 opacity-[0.02] pointer-events-none select-none">
+                <img src="/assets/VVSMASCOT7.png" alt="" className="w-96 h-96 object-contain" />
+            </div>
         </footer>
     );
 };

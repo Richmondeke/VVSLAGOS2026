@@ -112,20 +112,7 @@ export default function Hero() {
                 </motion.div>
             </motion.div>
 
-            {/* Mascot — positioned below the text, moves with parallax */}
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 0.25, scale: 1 }}
-                transition={{ duration: 1.4, delay: 0.6 }}
-                style={{ y: mascotY }}
-                className="absolute bottom-0 right-4 sm:right-16 w-40 h-40 sm:w-52 sm:h-52 md:w-96 md:h-96 pointer-events-none mix-blend-screen"
-            >
-                <img
-                    src="/assets/VVSMASCOT1.webp"
-                    alt="VVS Mascot"
-                    className="w-full h-full object-contain"
-                />
-            </motion.div>
+
 
             {/* Scroll Indicator */}
             <motion.div

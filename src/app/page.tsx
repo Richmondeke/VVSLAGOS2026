@@ -107,16 +107,25 @@ export default function GuestsPage() {
     const [activeTimelineIndex, setActiveTimelineIndex] = useState(0);
     const [isMerged, setIsMerged] = useState(false);
     const [showEventCalendar, setShowEventCalendar] = useState(false);
+    const [showCarousel, setShowCarousel] = useState(false);
 
     useMotionValueEvent(smoothProgress, "change", (latest) => {
-        if (latest < 0.165) setActiveTimelineIndex(0);
-        else if (latest >= 0.165 && latest < 0.237) setActiveTimelineIndex(1);
-        else if (latest >= 0.237 && latest < 0.309) setActiveTimelineIndex(2);
-        else if (latest >= 0.309 && latest < 0.381) setActiveTimelineIndex(3);
-        else setActiveTimelineIndex(4);
+
 
         if (latest >= 0.453) setIsMerged(true);
         else setIsMerged(false);
+
+        let currentIndex = 0;
+        if (latest < 0.165) currentIndex = 0;
+        else if (latest >= 0.165 && latest < 0.237) currentIndex = 1;
+        else if (latest >= 0.237 && latest < 0.309) currentIndex = 2;
+        else if (latest >= 0.309 && latest < 0.381) currentIndex = 3;
+        else currentIndex = 4;
+        
+        setActiveTimelineIndex(currentIndex);
+
+        if (latest >= 0.08 && latest < 0.453 && currentIndex !== 4) setShowCarousel(true);
+        else setShowCarousel(false);
 
         if (latest >= 0.52 && latest < 0.66) setShowEventCalendar(true);
         else setShowEventCalendar(false);
@@ -413,9 +422,9 @@ export default function GuestsPage() {
                                             initial={{ opacity: 0, scale: 0, x: 0 }}
                                             animate={{ 
                                                 opacity: isVisible ? 1 : 0, 
-                                                scale: isVisible ? ((scales[activeTimelineIndex]?.[extraIndex] || 0) * 0.7) : 0,
+                                                scale: isVisible ? ((scales[activeTimelineIndex]?.[extraIndex] || 0) * 0.45) : 0,
                                                 x: isMerged ? 0 : (positions[activeTimelineIndex]?.[extraIndex]?.x || 0),
-                                                y: isMerged ? 0 : (activeTimelineIndex === 4 ? 0 : -180)
+                                                y: isMerged ? 0 : (activeTimelineIndex === 4 ? 0 : -220)
                                             }}
                                             transition={{ type: "spring", damping: 20, stiffness: 100 }}
                                         >
@@ -439,9 +448,9 @@ export default function GuestsPage() {
                                             150,
                                             0
                                         ][activeTimelineIndex],
-                                        y: isMerged ? 0 : (activeTimelineIndex === 4 ? 0 : -180),
+                                        y: isMerged ? 0 : (activeTimelineIndex === 4 ? 0 : -220),
                                         scale: isMerged ? 1 : (
-                                            [1.5, 1.2, 1.5, 1.3, 1.5][activeTimelineIndex] / 2.5
+                                            [1.5, 1.2, 1.5, 1.3, 1.5][activeTimelineIndex] / 3.5
                                         )
                                     }}
                                     transition={{ type: "spring", damping: 20, stiffness: 100 }}
@@ -507,9 +516,9 @@ export default function GuestsPage() {
                                 <motion.div 
                                     className="absolute w-[85vw] sm:w-[600px] h-[180px] sm:h-[300px] rounded-xl overflow-hidden shadow-2xl border border-white/10 z-10"
                                     animate={{
-                                        opacity: (isMerged || activeTimelineIndex === 4) ? 0 : 1,
-                                        y: isMerged ? 0 : 20,
-                                        scale: (isMerged || activeTimelineIndex === 4) ? 0 : 1
+                                        opacity: showCarousel ? 1 : 0,
+                                        y: isMerged ? 0 : 0,
+                                        scale: showCarousel ? 1 : 0.8
                                     }}
                                     transition={{ type: "spring", damping: 20, stiffness: 100 }}
                                 >

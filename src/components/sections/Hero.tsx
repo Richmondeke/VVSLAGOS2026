@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Countdown from "../ui/Countdown";
 import NsibidiRain from "../ui/NsibidiRain";
+import ScrambleText from "../ui/ScrambleText";
 
 export default function Hero() {
     const ref = useRef<HTMLElement>(null);
@@ -68,7 +69,8 @@ export default function Hero() {
                     style={{ y: titleY }}
                     className="text-[clamp(2rem,9vw,9rem)] font-serif font-extrabold text-vvs-white lg:leading-tight mb-8 tracking-tighter text-center leading-[1.1] w-full"
                 >
-                    AFRO<br /><span className="text-vvs-gold font-bold">MODERNISM</span>
+                    <ScrambleText text="AFRO" /><br />
+                    <ScrambleText text="MODERNISM" className="text-vvs-gold font-bold" />
                 </motion.h1>
 
                 {/* Subtitle */}

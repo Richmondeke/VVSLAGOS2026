@@ -27,6 +27,71 @@ const triggerHaptic = (type: "light" | "medium" | "success") => {
     }
 };
 
+type EventInfo = { date: string, title: string, time: string, venue: string, isMain?: boolean, description?: string };
+
+const EventCard = ({ event, i, onClick }: { event: EventInfo, i: number, onClick: (e: EventInfo) => void }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+    const handleMouseEnter = () => {
+        setIsHovered(true);
+        timerRef.current = setTimeout(() => {
+            onClick(event);
+            setIsHovered(false);
+        }, 3000);
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovered(false);
+        if (timerRef.current) clearTimeout(timerRef.current);
+    };
+
+    return (
+        <motion.div
+            layoutId={`event-${event.title}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5, delay: 0.2 + i * 0.1, ease: "easeOut" }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onClick={() => onClick(event)}
+            className={`cursor-pointer relative overflow-hidden bg-white/5 backdrop-blur-sm border hover:border-vvs-gold/40 hover:bg-white/10 rounded-sm p-4 sm:p-5 text-left transition-all group ${event.isMain ? 'border-vvs-gold shadow-[0_0_15px_rgba(197,160,89,0.3)] col-span-2 md:col-span-3' : 'border-white/10'}`}
+        >
+            {/* Background Video */}
+            {isHovered && (
+                <video 
+                    src="https://www.w3schools.com/html/mov_bbb.mp4" 
+                    autoPlay 
+                    loop 
+                    muted 
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover opacity-20 z-0"
+                />
+            )}
+            
+            {/* Loading Overlay */}
+            {isHovered && (
+                <motion.div 
+                    initial={{ width: "0%" }}
+                    animate={{ width: "100%" }}
+                    transition={{ duration: 3, ease: "linear" }}
+                    className="absolute top-0 left-0 h-full bg-vvs-gold/20 z-0"
+                />
+            )}
+
+            <div className="relative z-10 pointer-events-none">
+                <div className="flex flex-col xl:flex-row xl:justify-between xl:items-start mb-2 gap-1">
+                    <p className="text-vvs-gold text-[10px] sm:text-xs font-mono font-bold tracking-widest">{event.date}</p>
+                    <p className="text-white/40 text-[9px] sm:text-[10px] font-mono whitespace-nowrap">{event.time}</p>
+                </div>
+                <h3 className={`text-sm sm:text-base font-semibold leading-snug transition-colors ${event.isMain ? 'text-vvs-gold group-hover:text-vvs-gold/80' : 'text-white group-hover:text-vvs-gold'}`}>{event.title}</h3>
+                <p className="text-white/50 text-xs mt-2 hidden sm:block font-sans">{event.venue}</p>
+            </div>
+        </motion.div>
+    );
+};
+
 export default function GuestsPage() {
     const containerRef = useRef<HTMLDivElement>(null);
     const trackRef = useRef<HTMLDivElement>(null);
@@ -107,6 +172,17 @@ export default function GuestsPage() {
     const [activeTimelineIndex, setActiveTimelineIndex] = useState(0);
     const [isMerged, setIsMerged] = useState(false);
     const [showEventCalendar, setShowEventCalendar] = useState(false);
+    const [expandedEvent, setExpandedEvent] = useState<EventInfo | null>(null);
+
+    const eventsList: EventInfo[] = useMemo(() => [
+        { date: "JULY 5", title: "Grand Opening Night", time: "7:00 PM", venue: "Nahous, Lagos", description: "Experience the grand kickoff of VVS Lagos 2026. Join top designers, celebrities, and culture shapers for an unforgettable night of luxury and high fashion." },
+        { date: "JULY 6", title: "Business & Culture Day", time: "10:00 AM", venue: "Yoga Center", description: "A day dedicated to the intersection of business, culture, and innovation. Keynote speeches and panel discussions from industry leaders." },
+        { date: "JULY 7", title: "Collectors Preview", time: "2:00 PM", venue: "Private Venue", description: "An exclusive preview for our VIP collectors. Get first access to limited edition pieces and private collections." },
+        { date: "JULY 8", title: "Public Opening", time: "12:00 PM", venue: "Nahous, Lagos", description: "The doors open to everyone. Come witness the spectacular installations and exhibitions that define VVS Lagos." },
+        { date: "JULY 9-10", title: "Pop-Ups & Exhibitions", time: "11:00 AM", venue: "Nahous, Lagos", description: "Two full days of immersive brand pop-ups, interactive art exhibitions, and cutting-edge fashion displays." },
+        { date: "JULY 11", title: "Film Day", time: "2:00 PM", venue: "Nahous, Lagos", description: "Screenings of avant-garde fashion films and documentaries highlighting African creators and their global impact." },
+        { date: "JULY 12", title: "VVS Main Day", time: "All Day", venue: "Nahous, Lagos", isMain: true, description: "The grand finale. A spectacular showcase of everything VVS Lagos stands for, culminating in the highly anticipated runway show and afterparty." }
+    ], []);
 
     useMotionValueEvent(smoothProgress, "change", (latest) => {
         if (latest < 0.165) setActiveTimelineIndex(0);
@@ -603,7 +679,7 @@ export default function GuestsPage() {
                                 transition={{ duration: 0.5, delay: 0.1 }}
                                 className="flex flex-col items-center text-center space-y-4 sm:space-y-6 max-w-3xl pointer-events-auto"
                             >
-                                <h2 className="text-3xl sm:text-5xl font-serif font-bold text-white tracking-tight leading-tight uppercase">
+                                <h2 className="text-3xl sm:text-5xl font-serif font-bold text-vvs-gold tracking-tight leading-tight uppercase">
                                     Event Calendar
                                 </h2>
                                 <p className="text-white/80 font-sans text-sm sm:text-lg leading-relaxed max-w-2xl font-light">
@@ -612,32 +688,73 @@ export default function GuestsPage() {
                             </motion.div>
 
                             <div className="mt-8 sm:mt-12 grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 w-full max-w-5xl pointer-events-auto pb-28 sm:pb-0">
-                                {[
-                                    { date: "JULY 5", title: "Grand Opening Night", time: "7:00 PM", venue: "Nahous, Lagos" },
-                                    { date: "JULY 6", title: "Business & Culture Day", time: "10:00 AM", venue: "Yoga Center" },
-                                    { date: "JULY 7", title: "Collectors Preview", time: "2:00 PM", venue: "Private Venue" },
-                                    { date: "JULY 8", title: "Public Opening", time: "12:00 PM", venue: "Nahous, Lagos" },
-                                    { date: "JULY 9-10", title: "Pop-Ups & Exhibitions", time: "11:00 AM", venue: "Nahous, Lagos" },
-                                    { date: "JULY 11", title: "Film Day", time: "2:00 PM", venue: "Nahous, Lagos" },
-                                    { date: "JULY 12", title: "VVS Main Day", time: "All Day", venue: "Nahous, Lagos", isMain: true }
-                                ].map((event, i) => (
-                                    <motion.div
-                                        key={i}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -20 }}
-                                        transition={{ duration: 0.5, delay: 0.2 + i * 0.1, ease: "easeOut" }}
-                                        className={`bg-white/5 backdrop-blur-sm border hover:border-vvs-gold/40 hover:bg-white/10 rounded-sm p-4 sm:p-5 text-left transition-all group ${event.isMain ? 'border-vvs-gold shadow-[0_0_15px_rgba(197,160,89,0.3)] col-span-2 md:col-span-3' : 'border-white/10'}`}
-                                    >
-                                        <div className="flex flex-col xl:flex-row xl:justify-between xl:items-start mb-2 gap-1">
-                                            <p className="text-vvs-gold text-[10px] sm:text-xs font-mono font-bold tracking-widest">{event.date}</p>
-                                            <p className="text-white/40 text-[9px] sm:text-[10px] font-mono whitespace-nowrap">{event.time}</p>
-                                        </div>
-                                        <h3 className={`text-sm sm:text-base font-semibold leading-snug transition-colors ${event.isMain ? 'text-vvs-gold group-hover:text-vvs-gold/80' : 'text-white group-hover:text-vvs-gold'}`}>{event.title}</h3>
-                                        <p className="text-white/50 text-xs mt-2 hidden sm:block font-sans">{event.venue}</p>
-                                    </motion.div>
+                                {eventsList.map((event, i) => (
+                                    <EventCard key={i} event={event} i={i} onClick={setExpandedEvent} />
                                 ))}
                             </div>
+
+                            <AnimatePresence>
+                                {expandedEvent && (
+                                    <motion.div 
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md pointer-events-auto"
+                                        onClick={() => setExpandedEvent(null)}
+                                    >
+                                        <motion.div 
+                                            layoutId={`event-${expandedEvent.title}`}
+                                            className="bg-[#0a0a0a] border border-vvs-gold shadow-[0_0_30px_rgba(197,160,89,0.3)] rounded-lg p-6 sm:p-10 max-w-2xl w-full relative overflow-hidden"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            {/* Background Video */}
+                                            <video 
+                                                src="https://www.w3schools.com/html/mov_bbb.mp4" 
+                                                autoPlay 
+                                                loop 
+                                                muted 
+                                                playsInline
+                                                className="absolute inset-0 w-full h-full object-cover opacity-20 z-0"
+                                            />
+
+                                            <div className="relative z-10 flex flex-col h-full">
+                                                <button 
+                                                    onClick={() => setExpandedEvent(null)}
+                                                    className="absolute top-0 right-0 text-white/50 hover:text-white transition-colors p-2 z-20"
+                                                >
+                                                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                                </button>
+                                                
+                                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-2 pt-2">
+                                                    <div>
+                                                        <p className="text-vvs-gold text-sm font-mono font-bold tracking-widest">{expandedEvent.date}</p>
+                                                        <p className="text-white/40 text-xs font-mono">{expandedEvent.time}</p>
+                                                    </div>
+                                                    <p className="text-white/50 text-sm font-sans flex items-center gap-1">
+                                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                                        {expandedEvent.venue}
+                                                    </p>
+                                                </div>
+                                                
+                                                <h3 className="text-2xl sm:text-4xl font-serif font-bold text-white mb-6 leading-tight">{expandedEvent.title}</h3>
+                                                
+                                                <div className="bg-black/40 border border-white/10 rounded p-4 mb-6">
+                                                    <p className="text-white/80 font-sans leading-relaxed text-sm sm:text-base">
+                                                        {expandedEvent.description}
+                                                    </p>
+                                                </div>
+                                                
+                                                <button 
+                                                    className="mt-auto bg-vvs-gold text-black font-bold uppercase tracking-widest py-3 px-6 rounded-sm hover:bg-white transition-colors self-start"
+                                                    onClick={() => setExpandedEvent(null)}
+                                                >
+                                                    RSVP NOW
+                                                </button>
+                                            </div>
+                                        </motion.div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </motion.div>
                     )}
                 </AnimatePresence>

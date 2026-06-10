@@ -174,8 +174,7 @@ export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNa
                             <motion.div
                                 onClick={() => {
                                     triggerHaptic("medium");
-                                    const rsvpBtn = document.querySelector("#rsvp-trigger-page");
-                                    if (rsvpBtn) (rsvpBtn as HTMLElement).click();
+                                    window.dispatchEvent(new Event("open-rsvp"));
                                     setIsMenuOpen(false);
                                 }}
                                 className="w-full mt-2 bg-vvs-gold text-black rounded-2xl p-4 flex justify-center items-center cursor-pointer active:scale-[0.98] transition-all font-bold uppercase tracking-[0.2em] text-[11px]"
@@ -256,10 +255,7 @@ export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNa
                         layout
                         onClick={() => {
                             triggerHaptic("medium");
-                            const rsvpBtn = document.querySelector("#rsvp-trigger-page");
-                            if (rsvpBtn) {
-                                (rsvpBtn as HTMLElement).click();
-                            }
+                            window.dispatchEvent(new Event("open-rsvp"));
                         }}
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.96 }}

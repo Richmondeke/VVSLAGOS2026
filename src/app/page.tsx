@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValueEvent } from "framer-motion";
+import { Compass, Calendar as CalendarIcon, X } from "lucide-react";
 import { designers, DesignerCard } from "@/components/sections/Designers";
 import { timelineData } from "@/components/sections/Journey";
 import Countdown from "@/components/ui/Countdown";
@@ -173,6 +174,31 @@ export default function GuestsPage() {
     const [isMerged, setIsMerged] = useState(false);
     const [showEventCalendar, setShowEventCalendar] = useState(false);
     const [expandedEvent, setExpandedEvent] = useState<EventInfo | null>(null);
+    const [isRSVPOpen, setIsRSVPOpen] = useState(false);
+    const [isRSVPSubmitted, setIsRSVPSubmitted] = useState(false);
+
+    useEffect(() => {
+        const handleOpen = () => setIsRSVPOpen(true);
+        const handleClose = () => setIsRSVPOpen(false);
+        window.addEventListener("open-rsvp", handleOpen);
+        window.addEventListener("close-rsvp", handleClose);
+        return () => {
+            window.removeEventListener("open-rsvp", handleOpen);
+            window.removeEventListener("close-rsvp", handleClose);
+        };
+    }, []);
+
+    const effectiveIsMerged = isMerged || isRSVPOpen;
+
+    const handleRSVPSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        triggerHaptic("success");
+        setIsRSVPSubmitted(true);
+        setTimeout(() => {
+            setIsRSVPOpen(false);
+            setIsRSVPSubmitted(false);
+        }, 3000);
+    };
 
     const eventsList: EventInfo[] = useMemo(() => [
         { date: "JULY 5", title: "Grand Opening Night", time: "7:00 PM", venue: "Nahous, Lagos", description: "Experience the grand kickoff of VVS Lagos 2026. Join top designers, celebrities, and culture shapers for an unforgettable night of luxury and high fashion." },
@@ -375,10 +401,11 @@ export default function GuestsPage() {
                         <>
                             {/* Rotating Concentric Orbits (scales down and fades out on scroll) */}
                             <motion.div
-                                style={{
+                                style={!isRSVPOpen ? {
                                     scale: orbitsScale,
                                     opacity: orbitsOpacity,
-                                }}
+                                } : undefined}
+                                animate={isRSVPOpen ? { scale: 0, opacity: 0 } : undefined}
                                 className="absolute top-0 left-0 w-0 h-0"
                             >
                                 {/* Inner Orbit Circle */}
@@ -458,7 +485,7 @@ export default function GuestsPage() {
                                 {/* Extra Timeline Mascots */}
                                 {Array.from({ length: 4 }).map((_, i) => {
                                     const extraIndex = i + 1; // 1, 2, 3, 4
-                                    const isVisible = activeTimelineIndex >= extraIndex && !isMerged;
+                                    const isVisible = activeTimelineIndex >= extraIndex && !effectiveIsMerged;
                                     
                                     const positions = [
                                         // 1 mascot (index 0)
@@ -489,7 +516,7 @@ export default function GuestsPage() {
                                             animate={{ 
                                                 opacity: isVisible ? 1 : 0, 
                                                 scale: isVisible ? (scales[activeTimelineIndex]?.[extraIndex] || 0) : 0,
-                                                x: isMerged ? 0 : (positions[activeTimelineIndex]?.[extraIndex]?.x || 0),
+                                                x: effectiveIsMerged ? 0 : (positions[activeTimelineIndex]?.[extraIndex]?.x || 0),
                                                 y: 0
                                             }}
                                             transition={{ type: "spring", damping: 20, stiffness: 100 }}
@@ -507,7 +534,7 @@ export default function GuestsPage() {
                                 <motion.div 
                                     className="absolute w-80 h-80"
                                     animate={{
-                                        x: isMerged ? 0 : [
+                                        x: effectiveIsMerged ? 0 : [
                                             0,
                                             150,
                                             0,
@@ -515,7 +542,7 @@ export default function GuestsPage() {
                                             0
                                         ][activeTimelineIndex],
                                         y: 0,
-                                        scale: isMerged ? 1 : (
+                                        scale: effectiveIsMerged ? 1 : (
                                             [1.5, 1.2, 1.5, 1.3, 1.5][activeTimelineIndex] / 1.8
                                         )
                                     }}
@@ -524,19 +551,29 @@ export default function GuestsPage() {
                                     {/* Black stretch layer */}
                                     <motion.div
                                         className="absolute top-0 left-1/2 -translate-x-1/2 h-full bg-black"
-                                        style={{
+                                        style={!isRSVPOpen ? {
                                             width: splitWidth,
                                             scaleY: blackLayerScaleY,
-                                        }}
+                                        } : undefined}
+                                        animate={isRSVPOpen ? {
+                                            width: "100vw",
+                                            scaleY: 15,
+                                        } : undefined}
                                     />
                                     {/* Left Half */}
                                     <motion.div
-                                        style={{
+                                        style={!isRSVPOpen ? {
                                             scale: mergedScale,
                                             opacity: mergedOpacity,
                                             rotate: mergedRotate,
                                             x: splitLeftX,
-                                        }}
+                                        } : undefined}
+                                        animate={isRSVPOpen ? {
+                                            scale: 1,
+                                            opacity: 1,
+                                            rotate: 0,
+                                            x: "-50vw",
+                                        } : undefined}
                                         className="absolute inset-0"
                                     >
                                         <img
@@ -555,12 +592,18 @@ export default function GuestsPage() {
 
                                     {/* Right Half */}
                                     <motion.div
-                                        style={{
+                                        style={!isRSVPOpen ? {
                                             scale: mergedScale,
                                             opacity: mergedOpacity,
                                             rotate: mergedRotate,
                                             x: splitRightX,
-                                        }}
+                                        } : undefined}
+                                        animate={isRSVPOpen ? {
+                                            scale: 1,
+                                            opacity: 1,
+                                            rotate: 0,
+                                            x: "50vw",
+                                        } : undefined}
                                         className="absolute inset-0"
                                     >
                                         <img
@@ -810,6 +853,92 @@ export default function GuestsPage() {
                     <Footer />
                 </section>
             </main>
+
+            {/* RSVP Form Overlay */}
+            <AnimatePresence>
+                {isRSVPOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-auto"
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0, transition: { delay: 0.3 } }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative w-[90%] max-w-lg bg-white rounded-2xl shadow-2xl z-[101] overflow-hidden max-h-[90vh] overflow-y-auto"
+                        >
+                            <div className="relative p-6 sm:p-12">
+                                <button
+                                    onClick={() => { triggerHaptic("light"); setIsRSVPOpen(false); }}
+                                    className="absolute top-4 right-4 sm:top-6 sm:right-6 text-black/50 hover:text-black transition-colors"
+                                >
+                                    <X size={24} />
+                                </button>
+                                
+                                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-black uppercase tracking-tight mb-2 pr-8">
+                                    RSVP
+                                </h3>
+                                <p className="text-black/60 font-sans text-xs sm:text-sm mb-6 sm:mb-8">
+                                    Please fill out your details to secure your spot.
+                                </p>
+
+                                {isRSVPSubmitted ? (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="py-12 flex flex-col items-center text-center"
+                                    >
+                                        <div className="w-16 h-16 bg-black/5 rounded-full flex items-center justify-center mb-4">
+                                            <span className="text-2xl">✨</span>
+                                        </div>
+                                        <h4 className="text-xl font-serif font-bold text-black mb-2">
+                                            Request Received
+                                        </h4>
+                                        <p className="text-black/60 text-sm">
+                                            We'll be in touch with your confirmation details soon.
+                                        </p>
+                                    </motion.div>
+                                ) : (
+                                    <form onSubmit={handleRSVPSubmit} className="space-y-4">
+                                        <div>
+                                            <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-black/50 mb-2">
+                                                Full Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                required
+                                                className="w-full bg-black/5 border border-black/10 rounded-xl px-4 py-3 text-black placeholder:text-black/30 focus:outline-none focus:border-vvs-gold focus:ring-1 focus:ring-vvs-gold transition-all"
+                                                placeholder="Enter your name"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-black/50 mb-2">
+                                                Email Address
+                                            </label>
+                                            <input
+                                                type="email"
+                                                required
+                                                className="w-full bg-black/5 border border-black/10 rounded-xl px-4 py-3 text-black placeholder:text-black/30 focus:outline-none focus:border-vvs-gold focus:ring-1 focus:ring-vvs-gold transition-all"
+                                                placeholder="Enter your email"
+                                            />
+                                        </div>
+                                        <div className="pt-4">
+                                            <button
+                                                type="submit"
+                                                className="w-full py-4 bg-black text-white text-xs uppercase tracking-[0.2em] font-bold rounded-xl hover:bg-black/80 transition-colors"
+                                            >
+                                                Submit Request
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Liquid morphing navbar and menu overlay */}
             <LiquidNavbar containerRef={containerRef} scrollYProgress={scrollYProgress} />

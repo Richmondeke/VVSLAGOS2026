@@ -174,28 +174,38 @@ export default function GuestsPage() {
     const [isMerged, setIsMerged] = useState(false);
     const [showEventCalendar, setShowEventCalendar] = useState(false);
     const [expandedEvent, setExpandedEvent] = useState<EventInfo | null>(null);
-    const [isRSVPOpen, setIsRSVPOpen] = useState(false);
+    const [rsvpPhase, setRsvpPhase] = useState<"idle" | "assembling" | "splitting">("idle");
     const [isRSVPSubmitted, setIsRSVPSubmitted] = useState(false);
 
     useEffect(() => {
-        const handleOpen = () => setIsRSVPOpen(true);
-        const handleClose = () => setIsRSVPOpen(false);
+        const handleOpen = () => {
+            if (rsvpPhase !== "idle") return;
+            setRsvpPhase("assembling");
+            setTimeout(() => {
+                setRsvpPhase("splitting");
+            }, 800);
+        };
+        const handleClose = () => {
+            setRsvpPhase("idle");
+        };
         window.addEventListener("open-rsvp", handleOpen);
         window.addEventListener("close-rsvp", handleClose);
         return () => {
             window.removeEventListener("open-rsvp", handleOpen);
             window.removeEventListener("close-rsvp", handleClose);
         };
-    }, []);
+    }, [rsvpPhase]);
 
-    const effectiveIsMerged = isMerged || isRSVPOpen;
+    const isRSVPActive = rsvpPhase !== "idle";
+    const isRSVPSplitting = rsvpPhase === "splitting";
+    const effectiveIsMerged = isMerged || isRSVPActive;
 
     const handleRSVPSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         triggerHaptic("success");
         setIsRSVPSubmitted(true);
         setTimeout(() => {
-            setIsRSVPOpen(false);
+            setRsvpPhase("idle");
             setIsRSVPSubmitted(false);
         }, 3000);
     };
@@ -401,12 +411,13 @@ export default function GuestsPage() {
                         <>
                             {/* Rotating Concentric Orbits (scales down and fades out on scroll) */}
                             <motion.div
-                                style={!isRSVPOpen ? {
+                                style={!isRSVPActive ? {
                                     scale: orbitsScale,
                                     opacity: orbitsOpacity,
                                 } : undefined}
-                                animate={isRSVPOpen ? { scale: 0, opacity: 0 } : undefined}
-                                className="absolute top-0 left-0 w-0 h-0"
+                                animate={isRSVPActive ? { scale: 0, opacity: 0 } : undefined}
+                                transition={{ duration: 0.8, ease: "easeInOut" }}
+                                className="absolute inset-0"
                             >
                                 {/* Inner Orbit Circle */}
                                 <div
@@ -551,29 +562,31 @@ export default function GuestsPage() {
                                     {/* Black stretch layer */}
                                     <motion.div
                                         className="absolute top-0 left-1/2 -translate-x-1/2 h-full bg-black"
-                                        style={!isRSVPOpen ? {
+                                        style={!isRSVPActive ? {
                                             width: splitWidth,
                                             scaleY: blackLayerScaleY,
                                         } : undefined}
-                                        animate={isRSVPOpen ? {
-                                            width: "100vw",
-                                            scaleY: 15,
+                                        animate={isRSVPActive ? {
+                                            width: isRSVPSplitting ? "100vw" : "0vw",
+                                            scaleY: isRSVPSplitting ? 15 : 1.8,
                                         } : undefined}
+                                        transition={{ duration: 0.8, ease: "easeInOut" }}
                                     />
                                     {/* Left Half */}
                                     <motion.div
-                                        style={!isRSVPOpen ? {
+                                        style={!isRSVPActive ? {
                                             scale: mergedScale,
                                             opacity: mergedOpacity,
                                             rotate: mergedRotate,
                                             x: splitLeftX,
                                         } : undefined}
-                                        animate={isRSVPOpen ? {
-                                            scale: 1,
+                                        animate={isRSVPActive ? {
+                                            scale: 1.8,
                                             opacity: 1,
                                             rotate: 0,
-                                            x: "-50vw",
+                                            x: isRSVPSplitting ? "-45vw" : "0vw",
                                         } : undefined}
+                                        transition={{ duration: 0.8, ease: "easeInOut" }}
                                         className="absolute inset-0"
                                     >
                                         <img
@@ -586,24 +599,27 @@ export default function GuestsPage() {
                                             src="/assets/VVSMASCOT7.png"
                                             alt=""
                                             className="w-full h-full object-contain absolute inset-0 glitch-effect-1"
-                                            style={{ maxWidth: "none", clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)", opacity: glitchOpacity }}
+                                            style={!isRSVPActive ? { maxWidth: "none", clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)", opacity: glitchOpacity } : { maxWidth: "none", clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)" }}
+                                            animate={isRSVPActive ? { opacity: isRSVPSplitting ? [0, 1, 1, 0] : 0 } : undefined}
+                                            transition={{ duration: 0.6, times: [0, 0.2, 0.8, 1], ease: "linear" }}
                                         />
                                     </motion.div>
 
                                     {/* Right Half */}
                                     <motion.div
-                                        style={!isRSVPOpen ? {
+                                        style={!isRSVPActive ? {
                                             scale: mergedScale,
                                             opacity: mergedOpacity,
                                             rotate: mergedRotate,
                                             x: splitRightX,
                                         } : undefined}
-                                        animate={isRSVPOpen ? {
-                                            scale: 1,
+                                        animate={isRSVPActive ? {
+                                            scale: 1.8,
                                             opacity: 1,
                                             rotate: 0,
-                                            x: "50vw",
+                                            x: isRSVPSplitting ? "45vw" : "0vw",
                                         } : undefined}
+                                        transition={{ duration: 0.8, ease: "easeInOut" }}
                                         className="absolute inset-0"
                                     >
                                         <img
@@ -616,7 +632,9 @@ export default function GuestsPage() {
                                             src="/assets/VVSMASCOT7.png"
                                             alt=""
                                             className="w-full h-full object-contain absolute inset-0 glitch-effect-2"
-                                            style={{ maxWidth: "none", clipPath: "polygon(50% 0, 100% 0, 100% 100%, 50% 100%)", opacity: glitchOpacity }}
+                                            style={!isRSVPActive ? { maxWidth: "none", clipPath: "polygon(50% 0, 100% 0, 100% 100%, 50% 100%)", opacity: glitchOpacity } : { maxWidth: "none", clipPath: "polygon(50% 0, 100% 0, 100% 100%, 50% 100%)" }}
+                                            animate={isRSVPActive ? { opacity: isRSVPSplitting ? [0, 1, 1, 0] : 0 } : undefined}
+                                            transition={{ duration: 0.6, times: [0, 0.2, 0.8, 1], ease: "linear" }}
                                         />
                                     </motion.div>
                                 </motion.div>
@@ -856,31 +874,26 @@ export default function GuestsPage() {
 
             {/* RSVP Form Overlay */}
             <AnimatePresence>
-                {isRSVPOpen && (
+                {isRSVPSplitting && (
                     <motion.div
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
+                        animate={{ opacity: 1, transition: { delay: 0.4 } }}
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-auto"
                     >
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0, transition: { delay: 0.3 } }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-[90%] max-w-lg bg-white rounded-2xl shadow-2xl z-[101] overflow-hidden max-h-[90vh] overflow-y-auto"
-                        >
-                            <div className="relative p-6 sm:p-12">
+                        <div className="relative w-[90%] max-w-lg z-[101]">
+                            <div className="relative p-6 sm:p-12 text-center text-vvs-white">
                                 <button
-                                    onClick={() => { triggerHaptic("light"); setIsRSVPOpen(false); }}
-                                    className="absolute top-4 right-4 sm:top-6 sm:right-6 text-black/50 hover:text-black transition-colors"
+                                    onClick={() => { triggerHaptic("light"); window.dispatchEvent(new Event("close-rsvp")); }}
+                                    className="absolute top-0 right-0 sm:top-6 sm:right-6 text-vvs-white/50 hover:text-vvs-gold transition-colors"
                                 >
                                     <X size={24} />
                                 </button>
                                 
-                                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-black uppercase tracking-tight mb-2 pr-8">
+                                <h3 className="text-2xl sm:text-3xl font-serif font-bold uppercase tracking-tight mb-2 text-vvs-gold">
                                     RSVP
                                 </h3>
-                                <p className="text-black/60 font-sans text-xs sm:text-sm mb-6 sm:mb-8">
+                                <p className="font-sans text-xs sm:text-sm mb-6 sm:mb-8 text-vvs-white/80">
                                     Please fill out your details to secure your spot.
                                 </p>
 
@@ -888,46 +901,46 @@ export default function GuestsPage() {
                                     <motion.div
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
-                                        className="py-12 flex flex-col items-center text-center"
+                                        className="py-12 flex flex-col items-center"
                                     >
-                                        <div className="w-16 h-16 bg-black/5 rounded-full flex items-center justify-center mb-4">
+                                        <div className="w-16 h-16 bg-vvs-gold/10 rounded-full flex items-center justify-center mb-4">
                                             <span className="text-2xl">✨</span>
                                         </div>
-                                        <h4 className="text-xl font-serif font-bold text-black mb-2">
+                                        <h4 className="text-xl font-serif font-bold mb-2 text-vvs-gold">
                                             Request Received
                                         </h4>
-                                        <p className="text-black/60 text-sm">
+                                        <p className="text-vvs-white/60 text-sm">
                                             We'll be in touch with your confirmation details soon.
                                         </p>
                                     </motion.div>
                                 ) : (
-                                    <form onSubmit={handleRSVPSubmit} className="space-y-4">
+                                    <form onSubmit={handleRSVPSubmit} className="space-y-4 text-left">
                                         <div>
-                                            <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-black/50 mb-2">
+                                            <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2">
                                                 Full Name
                                             </label>
                                             <input
                                                 type="text"
                                                 required
-                                                className="w-full bg-black/5 border border-black/10 rounded-xl px-4 py-3 text-black placeholder:text-black/30 focus:outline-none focus:border-vvs-gold focus:ring-1 focus:ring-vvs-gold transition-all"
+                                                className="w-full bg-transparent border-b border-vvs-white/20 px-0 py-3 text-vvs-white placeholder:text-vvs-white/30 focus:outline-none focus:border-vvs-gold transition-all"
                                                 placeholder="Enter your name"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-black/50 mb-2">
+                                            <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2 mt-6">
                                                 Email Address
                                             </label>
                                             <input
                                                 type="email"
                                                 required
-                                                className="w-full bg-black/5 border border-black/10 rounded-xl px-4 py-3 text-black placeholder:text-black/30 focus:outline-none focus:border-vvs-gold focus:ring-1 focus:ring-vvs-gold transition-all"
+                                                className="w-full bg-transparent border-b border-vvs-white/20 px-0 py-3 text-vvs-white placeholder:text-vvs-white/30 focus:outline-none focus:border-vvs-gold transition-all"
                                                 placeholder="Enter your email"
                                             />
                                         </div>
-                                        <div className="pt-4">
+                                        <div className="pt-8">
                                             <button
                                                 type="submit"
-                                                className="w-full py-4 bg-black text-white text-xs uppercase tracking-[0.2em] font-bold rounded-xl hover:bg-black/80 transition-colors"
+                                                className="w-full py-4 bg-vvs-gold text-black text-xs uppercase tracking-[0.2em] font-bold hover:bg-white transition-colors border border-transparent"
                                             >
                                                 Submit Request
                                             </button>
@@ -935,7 +948,7 @@ export default function GuestsPage() {
                                     </form>
                                 )}
                             </div>
-                        </motion.div>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>

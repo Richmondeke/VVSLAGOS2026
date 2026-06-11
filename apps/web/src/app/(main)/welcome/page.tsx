@@ -8,10 +8,21 @@ import { useAuth } from "@/lib/auth-context";
 type Step = 1 | 2 | 3 | 4;
 type Intent = "hire" | "offer" | "both";
 
+const AVATARS = [
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
+    "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80",
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80",
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
+    "https://www.vvslagos.com/assets/VVSMASCOT7.png",
+];
+
 export default function WelcomePage() {
     const router = useRouter();
     const { addXp } = useAuth();
     const [step, setStep] = useState<Step>(1);
+    const [introSlide, setIntroSlide] = useState<1 | 2 | 3>(1);
+    const [showIntro, setShowIntro] = useState(true);
     const [bio, setBio] = useState("");
     const [profession, setProfession] = useState("");
     const [category, setCategory] = useState("");
@@ -57,23 +68,44 @@ export default function WelcomePage() {
             {/* Header / Navigation Bar */}
             <div className="w-full max-w-md flex items-center justify-between mb-8">
                 <button 
-                    onClick={() => step > 1 && setStep((s) => (s - 1) as Step)}
+                    onClick={() => {
+                        if (showIntro) {
+                            if (introSlide > 1) setIntroSlide((s) => (s - 1) as 1 | 2 | 3);
+                        } else {
+                            if (step === 2) setShowIntro(true);
+                            else setStep((s) => (s - 1) as Step);
+                        }
+                    }}
                     className="w-10 h-10 rounded-xl bg-white border border-black/5 flex items-center justify-center hover:bg-black/5 active:scale-95 transition-all cursor-pointer text-vvs-black"
                 >
                     <span className="text-base font-bold">←</span>
                 </button>
                 <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4].map((s) => (
-                        <div
-                            key={s}
-                            className={`w-2.5 h-1 rounded-full transition-all duration-300 ${
-                                s <= step ? "bg-vvs-gold w-5" : "bg-black/10"
-                            }`}
-                        />
-                    ))}
+                    {showIntro ? (
+                        [1, 2, 3].map((s) => (
+                            <div
+                                key={s}
+                                className={`w-2.5 h-1 rounded-full transition-all duration-300 ${
+                                    s <= introSlide ? "bg-vvs-gold w-5" : "bg-black/10"
+                                }`}
+                            />
+                        ))
+                    ) : (
+                        [2, 3, 4].map((s) => (
+                            <div
+                                key={s}
+                                className={`w-2.5 h-1 rounded-full transition-all duration-300 ${
+                                    s <= step ? "bg-vvs-gold w-5" : "bg-black/10"
+                                }`}
+                            />
+                        ))
+                    )}
                 </div>
                 <button 
-                    onClick={() => setStep(4)}
+                    onClick={() => {
+                        setShowIntro(false);
+                        setStep(2);
+                    }}
                     className="text-xs font-bold text-vvs-black/60 hover:text-vvs-black transition-all cursor-pointer"
                 >
                     Skip
@@ -81,39 +113,159 @@ export default function WelcomePage() {
             </div>
 
             <div className="w-full max-w-md space-y-6">
-                {step === 1 && (
-                    <div className="space-y-8 text-left">
-                        {/* Onboarding Welcome Screen */}
-                        <div className="space-y-4">
-                            <div className="w-12 h-12 rounded-2xl bg-vvs-gold/10 flex items-center justify-center text-xl shadow-sm border border-vvs-gold/25">
-                                📈
+                {showIntro && (
+                    <div className="text-center space-y-8">
+                        {/* Interactive Floating/Orbiting Bubble Visual */}
+                        <div className="relative h-64 w-full flex items-center justify-center">
+                            {/* Inner and Outer Orbit Lines */}
+                            <div className="absolute w-52 h-52 rounded-full border border-black/5" />
+                            <div className="absolute w-36 h-36 rounded-full border border-black/5" />
+
+                            {/* Center Avatar Container */}
+                            <div className="relative z-10 w-24 h-24 rounded-[32px] bg-white border border-black/5 flex items-center justify-center shadow-lg overflow-hidden p-2 transform transition-transform duration-500 hover:scale-105">
+                                <img
+                                    src="https://www.vvslagos.com/assets/VVSMASCOT7.png"
+                                    alt="VVS Mascot Logo"
+                                    className="w-full h-full object-contain"
+                                />
                             </div>
-                            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-vvs-black leading-[1.1] font-serif">
-                                Start creating your individual profile
-                            </h1>
-                            <p className="text-vvs-black/60 text-sm leading-relaxed">
-                                Complete your initial synchronization steps. This allows us to pair your creative discipline with optimal collaboration streams.
-                            </p>
+
+                            {/* Orbiting Ring of Avatars */}
+                            {introSlide === 1 && (
+                                <div className="absolute inset-0 w-full h-full animate-orbit-container pointer-events-none">
+                                    {AVATARS.map((url, index) => {
+                                        const angle = (index * 360) / AVATARS.length;
+                                        return (
+                                            <div
+                                                key={index}
+                                                className="absolute w-10 h-10 rounded-xl bg-white border border-black/5 shadow-md overflow-hidden p-0.5"
+                                                style={{
+                                                    top: "calc(50% - 20px)",
+                                                    left: "calc(50% - 20px)",
+                                                    transform: `rotate(${angle}deg) translate(95px) rotate(-${angle}deg)`,
+                                                }}
+                                            >
+                                                <div className="w-full h-full rounded-lg overflow-hidden animate-counter-rotate">
+                                                    <img src={url} alt="" className="w-full h-full object-cover" />
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+
+                            {/* Collaborate Page Visuals: Connecting lines & paired positions */}
+                            {introSlide === 2 && (
+                                <div className="absolute inset-0 w-full h-full pointer-events-none">
+                                    {AVATARS.map((url, index) => {
+                                        // Position them clustered into pairs connecting to center
+                                        const angle = (index * 360) / AVATARS.length;
+                                        const dist = 75; // closer to center indicating collaboration
+                                        return (
+                                            <div key={index} className="absolute inset-0 w-full h-full flex items-center justify-center">
+                                                {/* Connection Link line */}
+                                                <div 
+                                                    className="absolute h-[2px] bg-dashed bg-vvs-gold/45 origin-left"
+                                                    style={{
+                                                        width: `${dist}px`,
+                                                        transform: `rotate(${angle}deg) translateX(12px)`,
+                                                    }}
+                                                />
+                                                <div
+                                                    className="absolute w-10 h-10 rounded-xl bg-white border border-black/10 shadow-lg overflow-hidden p-0.5 animate-float-slow"
+                                                    style={{
+                                                        transform: `rotate(${angle}deg) translate(${dist}px) rotate(-${angle}deg)`,
+                                                        animationDelay: `${index * 0.4}s`
+                                                    }}
+                                                >
+                                                    <img src={url} alt="" className="w-full h-full rounded-lg object-cover" />
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+
+                            {/* Stay Connected Visuals: Mini ticket passes floating around */}
+                            {introSlide === 3 && (
+                                <div className="absolute inset-0 w-full h-full pointer-events-none">
+                                    {AVATARS.map((url, index) => {
+                                        const angle = (index * 360) / AVATARS.length;
+                                        const dist = 90;
+                                        return (
+                                            <div key={index} className="absolute inset-0 w-full h-full flex items-center justify-center">
+                                                <div
+                                                    className="absolute w-12 h-8 rounded-lg bg-white border-2 border-dashed border-vvs-gold/30 shadow-md flex items-center justify-center p-1 animate-float-slow"
+                                                    style={{
+                                                        transform: `rotate(${angle}deg) translate(${dist}px) rotate(-${angle}deg) rotate(15deg)`,
+                                                        animationDelay: `${index * 0.5}s`
+                                                    }}
+                                                >
+                                                    <div className="w-2 h-2 rounded-full bg-vvs-gold absolute -left-1" />
+                                                    <img src={url} alt="" className="w-6 h-6 rounded-md object-cover" />
+                                                    <div className="w-2 h-2 rounded-full bg-vvs-gold absolute -right-1" />
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
 
-                        <div className="pt-6 space-y-3">
+                        {/* Title and Descriptions */}
+                        <div className="space-y-3 px-4">
+                            {introSlide === 1 && (
+                                <>
+                                    <h1 className="text-3xl font-bold tracking-tight text-vvs-black font-serif">
+                                        Discover
+                                    </h1>
+                                    <p className="text-vvs-black/60 text-sm leading-relaxed max-w-sm mx-auto">
+                                        Discover grants and opportunities exclusive to community members only.
+                                    </p>
+                                </>
+                            )}
+                            {introSlide === 2 && (
+                                <>
+                                    <h1 className="text-3xl font-bold tracking-tight text-vvs-black font-serif">
+                                        Collaborate
+                                    </h1>
+                                    <p className="text-vvs-black/60 text-sm leading-relaxed max-w-sm mx-auto">
+                                        Collaborate with other creatives who need your skills.
+                                    </p>
+                                </>
+                            )}
+                            {introSlide === 3 && (
+                                <>
+                                    <h1 className="text-3xl font-bold tracking-tight text-vvs-black font-serif">
+                                        Stay Connected
+                                    </h1>
+                                    <p className="text-vvs-black/60 text-sm leading-relaxed max-w-sm mx-auto">
+                                        stay Connected, Attend Events, Enter Contests and Win prizes.
+                                    </p>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Actions */}
+                        <div className="pt-4 px-4 space-y-3">
                             <button
-                                onClick={() => setStep(2)}
+                                onClick={() => {
+                                    if (introSlide < 3) {
+                                        setIntroSlide((s) => (s + 1) as 1 | 2 | 3);
+                                    } else {
+                                        setShowIntro(false);
+                                        setStep(2);
+                                    }
+                                }}
                                 className="w-full rounded-full bg-vvs-black py-4 font-bold text-white hover:bg-vvs-black/95 transition-all text-sm tracking-wide shadow-md cursor-pointer text-center"
                             >
-                                Continue
-                            </button>
-                            <button
-                                onClick={() => router.push("/discover")}
-                                className="w-full rounded-full border border-black/10 py-3 font-semibold text-vvs-black/75 hover:bg-black/5 transition-all text-xs cursor-pointer text-center"
-                            >
-                                Skip Onboarding
+                                {introSlide === 3 ? "Get Started" : "Next"}
                             </button>
                         </div>
                     </div>
                 )}
 
-                {step === 2 && (
+                {!showIntro && step === 2 && (
                     <div className="space-y-6 text-left">
                         <div>
                             <span className="text-xs font-bold text-vvs-gold uppercase tracking-wider">Profile Info</span>

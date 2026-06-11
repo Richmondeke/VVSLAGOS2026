@@ -94,7 +94,7 @@
     --color-vvs-yellow: #FFD600;
     --color-vvs-black: #000000;
 
-    --font-sans: 'Satoshi', var(--font-outfit), sans-serif;
+    --font-sans: var(--font-satoshi), var(--font-outfit), sans-serif;
     --font-serif: var(--font-syne), serif;
     --font-mono: var(--font-mono), monospace;
 
@@ -316,3 +316,22 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+/* Onboarding Presentation Animations */
+@keyframes orbit-loop {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.animate-orbit-container {
+    animation: orbit-loop 24s linear infinite;
+}
+
+.animate-counter-rotate {
+    animation: orbit-loop 24s linear infinite reverse;
+}
+
+.animate-float-slow {
+    animation: float 8s ease-in-out infinite;
+}
+

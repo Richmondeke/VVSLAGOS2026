@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sun, Moon, ChevronLeft, ChevronRight, Calendar, Clock, MapPin, Check, Send } from "lucide-react";
 import { triggerHaptic } from "@/utils/haptic";
+import { supabase } from "@/lib/supabase";
 
 interface TimeLeft {
     days: number;
@@ -51,6 +52,7 @@ export default function TypeBLandingPage() {
     }>({ name: "", email: "", attendance: "yes", events: ["JULY 5"] });
     const [newsletterEmail, setNewsletterEmail] = useState("");
     const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
+    const [activeMask, setActiveMask] = useState<"white" | "black">("white");
 
     // Countdown target date (VVS Lagos 2026 Kickoff - July 5th, 2026)
     const targetDate = "2026-07-05T19:00:00";
@@ -90,6 +92,14 @@ export default function TypeBLandingPage() {
         }, 1000);
         return () => clearInterval(timer);
     }, [targetDate]);
+
+    // Loading screen mask interchanging interval
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setActiveMask((prev) => (prev === "white" ? "black" : "white"));
+        }, 800);
+        return () => clearInterval(interval);
+    }, []);
 
     // Optimized event dates for VVS Lagos 2026 - featuring the Innovators
     const optimizedEvents = useMemo(() => [
@@ -247,9 +257,32 @@ export default function TypeBLandingPage() {
         }
     };
 
-    const handleRSVPSubmit = (e: React.FormEvent) => {
+    const handleRSVPSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         triggerHaptic("success");
+
+        // If Supabase keys are configured, save to database
+        if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+            try {
+                const { error } = await supabase
+                    .from("rsvps")
+                    .insert([
+                        {
+                            name: rsvpData.name,
+                            email: rsvpData.email,
+                            attendance: rsvpData.attendance,
+                            events: rsvpData.events,
+                            created_at: new Date().toISOString()
+                        }
+                    ]);
+                if (error) {
+                    console.error("Supabase RSVP Error:", error);
+                }
+            } catch (err) {
+                console.error("Failed to submit RSVP to Supabase:", err);
+            }
+        }
+
         setRsvpSubmitted(true);
         setTimeout(() => {
             setIsRSVPOpen(false);
@@ -284,37 +317,10 @@ export default function TypeBLandingPage() {
         }
     };
 
-    // Calculate anim phases for the preloader
-    const preloaderLeftX = useMemo(() => {
-        if (progress < 25) return "-25vw"; // Separated
-        if (progress >= 25 && progress < 60) {
-            const p = (progress - 25) / 35;
-            return `calc(-25vw + (${p} * 25vw))`; // Merging
-        }
-        if (progress >= 60 && progress < 85) return "0vw"; // Merged
-        // Splitting
-        const p = (progress - 85) / 15;
-        return `calc(${p} * -35vw)`;
-    }, [progress]);
-
-    const preloaderRightX = useMemo(() => {
-        if (progress < 25) return "25vw"; // Separated
-        if (progress >= 25 && progress < 60) {
-            const p = (progress - 25) / 35;
-            return `calc(25vw - (${p} * 25vw))`; // Merging
-        }
-        if (progress >= 60 && progress < 85) return "0vw"; // Merged
-        // Splitting
-        const p = (progress - 85) / 15;
-        return `calc(${p} * 35vw)`;
-    }, [progress]);
-
-    const showText = progress >= 85;
-
     return (
         <div className={`min-h-screen transition-colors duration-700 font-sans ${theme === "dark" ? "bg-black text-white" : "bg-[#F5F0E8] text-black"}`}>
             
-            {/* 1. Preloader Screen (Dynamic Assembling and Splitting Mask Circles) */}
+            {/* 1. Preloader Screen (Interchanging Mask Icons simulating a horizontal ad-banner slider) */}
             <AnimatePresence>
                 {isLoading && (
                     <motion.div
@@ -322,62 +328,23 @@ export default function TypeBLandingPage() {
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 z-[1000] bg-[#0A0A0A] flex flex-col items-center justify-between py-12 px-6 overflow-hidden"
                     >
-                        {/* Status Label */}
-                        <span className="text-[#c5a059] font-mono text-[9px] uppercase tracking-[0.4em]">
-                            System Launching
-                        </span>
+                        {/* Spacer placeholder to center main content since label is removed */}
+                        <div />
 
                         {/* Central Animation Area */}
-                        <div className="relative w-full max-w-lg flex flex-col items-center justify-center flex-1">
-                            
-                            {/* Two Mask Circles Container */}
-                            <div className="relative w-full h-40 flex items-center justify-center">
-                                
-                                {/* Left Mask Circle (Dark Background, White Mask) */}
-                                <div 
-                                    className="absolute w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-[#111] border border-white/10 flex items-center justify-center shadow-lg transition-all"
-                                    style={{ transform: `translateX(${preloaderLeftX})` }}
-                                >
-                                    <img
-                                        src="/assets/VVSWhiteMAsk.png"
-                                        alt="White Mask"
-                                        className="w-12 h-12 object-contain"
-                                    />
-                                </div>
-
-                                {/* Right Mask Circle (White Background, Black Mask) */}
-                                <div 
-                                    className="absolute w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white border border-black/10 flex items-center justify-center shadow-lg transition-all"
-                                    style={{ transform: `translateX(${preloaderRightX})` }}
-                                >
-                                    <img
-                                        src="/assets/VVSMASKBLACK.png"
-                                        alt="Black Mask"
-                                        className="w-12 h-12 object-contain"
-                                    />
-                                </div>
-
-                                {/* On-Brand Center Text (revealed when circles split) */}
-                                <AnimatePresence>
-                                    {showText && (
-                                        <motion.div
-                                            initial={{ opacity: 0, scale: 0.9 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            exit={{ opacity: 0 }}
-                                            transition={{ duration: 0.4 }}
-                                            className="absolute flex flex-col items-center text-center pointer-events-none"
-                                        >
-                                            <h1 className="text-2xl sm:text-3xl font-black tracking-[0.25em] text-[#c5a059] uppercase leading-none">
-                                                VVS LAGOS
-                                            </h1>
-                                            <span className="text-white text-[10px] font-mono tracking-[0.4em] uppercase mt-1.5">
-                                                2026 EDITION
-                                            </span>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-
-                            </div>
+                        <div className="relative w-full max-w-lg flex flex-col items-center justify-center flex-1 overflow-hidden">
+                            <AnimatePresence mode="wait">
+                                <motion.img
+                                    key={activeMask}
+                                    src={activeMask === "white" ? "/assets/VVSWhiteMAsk.png" : "/assets/VVSMASKBLACK.png"}
+                                    alt="VVS Mask"
+                                    initial={{ x: 70, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    exit={{ x: -70, opacity: 0 }}
+                                    transition={{ duration: 0.45, ease: "easeInOut" }}
+                                    className="w-20 h-20 sm:w-24 sm:h-24 object-contain filter drop-shadow-[0_12px_24px_rgba(197,160,89,0.2)]"
+                                />
+                            </AnimatePresence>
                         </div>
 
                         {/* Loading progress bar & percentage */}
@@ -430,7 +397,6 @@ export default function TypeBLandingPage() {
                     <div className="flex items-center gap-4 ml-auto lg:ml-0">
                         <div className="hidden lg:flex items-center gap-6 mr-4">
                             <a href="/style-quiz" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">Style Quiz</a>
-                            <a href="/strategy" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">Strategy</a>
                         </div>
 
                         {/* Theme Toggle */}
@@ -487,7 +453,6 @@ export default function TypeBLandingPage() {
                         <button onClick={() => scrollSection("countdown")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Kickoff Countdown</button>
                         <button onClick={() => scrollSection("calendar")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Upcoming Events</button>
                         <a href="/style-quiz" className="text-[12px] uppercase tracking-widest font-bold py-2">Style Quiz</a>
-                        <a href="/strategy" className="text-[12px] uppercase tracking-widest font-bold py-2">Internal Strategy</a>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -496,7 +461,12 @@ export default function TypeBLandingPage() {
             <section id="about" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20 px-6">
                 
                 {/* Giant typography behind mascot heads */}
-                <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center select-none pointer-events-none z-0">
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1.2, ease: "easeOut" }}
+                    className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex flex-col items-center justify-center select-none pointer-events-none z-0"
+                >
                     <h1 className={`text-[12vw] font-black uppercase tracking-tighter leading-none text-center ${
                         theme === "dark" 
                             ? "text-white/[0.03] stroke-white stroke-[1px]" 
@@ -506,15 +476,20 @@ export default function TypeBLandingPage() {
                     >
                         VVS LAGOS<br />2026
                     </h1>
-                </div>
+                </motion.div>
 
                 {/* Mascot heads floating layer */}
                 <div className="relative z-10 w-full max-w-5xl aspect-video sm:aspect-[2.4/1] flex items-center justify-center gap-6 sm:gap-12 mt-12">
                     
                     {/* Head Left (VVSMASCOT1) */}
                     <motion.div
-                        animate={{ y: [0, -15, 0] }}
-                        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                        initial={{ opacity: 0, x: -60 }}
+                        animate={{ opacity: 1, x: 0, y: [0, -15, 0] }}
+                        transition={{
+                            opacity: { duration: 0.8, delay: 0.1 },
+                            x: { duration: 0.8, delay: 0.1 },
+                            y: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+                        }}
                         className="w-1/4 sm:w-1/5 relative cursor-pointer"
                         whileHover={{ scale: 1.08 }}
                     >
@@ -527,8 +502,13 @@ export default function TypeBLandingPage() {
 
                     {/* Head Center */}
                     <motion.div
-                        animate={{ y: [0, 15, 0] }}
-                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1, y: [0, 15, 0] }}
+                        transition={{
+                            opacity: { duration: 0.8, delay: 0.2 },
+                            scale: { duration: 0.8, delay: 0.2 },
+                            y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }
+                        }}
                         className="w-1/3 sm:w-1/4 relative cursor-pointer"
                         whileHover={{ scale: 1.1 }}
                     >
@@ -541,8 +521,13 @@ export default function TypeBLandingPage() {
 
                     {/* Head Right (Mirrored / Horizontally Flipped version of VVSMASCOT1) */}
                     <motion.div
-                        animate={{ y: [0, -15, 0] }}
-                        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                        initial={{ opacity: 0, x: 60 }}
+                        animate={{ opacity: 1, x: 0, y: [0, -15, 0] }}
+                        transition={{
+                            opacity: { duration: 0.8, delay: 0.3 },
+                            x: { duration: 0.8, delay: 0.3 },
+                            y: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+                        }}
                         className="w-1/4 sm:w-1/5 relative cursor-pointer"
                         whileHover={{ scale: 1.08 }}
                     >
@@ -556,7 +541,12 @@ export default function TypeBLandingPage() {
                 </div>
 
                 {/* Event Intro and Details */}
-                <div className="relative z-10 text-center max-w-2xl mt-8">
+                <motion.div 
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                    className="relative z-10 text-center max-w-2xl mt-8"
+                >
                     <span className="text-[#c5a059] text-xs font-mono font-bold tracking-[0.4em] uppercase block mb-3">5th Anniversary Edition</span>
                     <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight uppercase mb-4">Afromodernism</h2>
                     <p className={`text-sm sm:text-base font-light leading-relaxed mb-6 ${theme === "dark" ? "text-white/70" : "text-black/70"}`}>
@@ -566,7 +556,7 @@ export default function TypeBLandingPage() {
                         <span className={`px-4 py-2 rounded-full border ${theme === "dark" ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>✦ JULY 5 - 12, 2026</span>
                         <span className={`px-4 py-2 rounded-full border ${theme === "dark" ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>✦ LAGOS, NIGERIA</span>
                     </div>
-                </div>
+                </motion.div>
             </section>
 
             {/* 4. Countdown Section (Strict Brand Colors: White, Black, Gold, Obsidian) */}
@@ -586,7 +576,13 @@ export default function TypeBLandingPage() {
                     ))}
                 </div>
 
-                <div className="max-w-7xl mx-auto px-6 relative z-10 text-center flex flex-col items-center">
+                <motion.div 
+                    initial={{ opacity: 0, y: 35 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.6 }}
+                    className="max-w-7xl mx-auto px-6 relative z-10 text-center flex flex-col items-center"
+                >
                     
                     <span className="text-[#c5a059] text-xs font-mono font-bold tracking-[0.5em] uppercase block mb-4">Countdown Track</span>
                     
@@ -623,7 +619,7 @@ export default function TypeBLandingPage() {
                     </div>
 
                     <p className="text-xs font-mono opacity-50 mt-4">OFFICIAL INVITATION SENT DATE: JUNE 10TH, 2026</p>
-                </div>
+                </motion.div>
             </section>
 
             {/* 5. Match Schedule Layout */}
@@ -637,8 +633,12 @@ export default function TypeBLandingPage() {
 
                 <div className="flex flex-col gap-4">
                     {optimizedEvents.map((event, idx) => (
-                        <div
+                        <motion.div
                             key={idx}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ duration: 0.5, delay: idx * 0.05 }}
                             className={`p-5 sm:p-7 rounded-2xl border transition-all duration-300 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-xl hover:-translate-y-1 ${
                                 theme === "dark" 
                                     ? "bg-white/[0.02] border-white/10 hover:border-[#c5a059]/40 hover:bg-white/[0.04]" 
@@ -682,14 +682,20 @@ export default function TypeBLandingPage() {
                                     Get Invitation
                                 </button>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </section>
 
             {/* 6. Upcoming Events Calendar Slider (Featuring VVS Innovators, strict gold/white/obsidian highlights) */}
             <section id="calendar" className={`py-24 border-t ${theme === "dark" ? "border-white/10 bg-white/[0.01]" : "border-black/10 bg-black/[0.01]"}`}>
-                <div className="max-w-7xl mx-auto px-6">
+                <motion.div 
+                    initial={{ opacity: 0, y: 35 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.6 }}
+                    className="max-w-7xl mx-auto px-6"
+                >
                     
                     {/* Header with Navigation Controls */}
                     <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-12">
@@ -776,7 +782,7 @@ export default function TypeBLandingPage() {
                             </div>
                         ))}
                     </div>
-                </div>
+                </motion.div>
             </section>
 
             {/* 7. Subscribe to Newsletter Section (New) */}

@@ -27,7 +27,6 @@ export default function QuizResults({ answers }: QuizResultsProps) {
     const summaryCardRef = useRef<HTMLDivElement>(null);
     const [isDownloading, setIsDownloading] = useState(false);
 
-    // Determine archetype based on selected style
     const archetype = useMemo(() => {
         const style = answers.style || "Streetwear";
         if (style === "Streetwear") {
@@ -35,7 +34,7 @@ export default function QuizResults({ answers }: QuizResultsProps) {
                 title: "You are a Rebel",
                 type: "REBEL",
                 desc: "Edgy, bold, and unapologetic. You break standard conventions and redefine streetwear with raw, modern African energy.",
-                color: "#FF3B30",
+                color: "#ffffff",
                 brands: ["TOKYO JAMES", "I AM ISIGO", "TZAR STUDIOS"]
             };
         } else if (style === "Avant-Garde") {
@@ -43,7 +42,7 @@ export default function QuizResults({ answers }: QuizResultsProps) {
                 title: "You are a Futurist",
                 type: "FUTURIST",
                 desc: "An avant-garde visionary. You view clothing as wearable sculpture, fusing experimental digital narratives with bold silhouettes.",
-                color: "#002AFF",
+                color: "#c5a059",
                 brands: ["LFJ OFFICIAL", "TJ-WHO", "PIECE ET PATCH"]
             };
         } else if (style === "Minimalist") {
@@ -51,7 +50,7 @@ export default function QuizResults({ answers }: QuizResultsProps) {
                 title: "You are a Minimalist",
                 type: "MINIMALIST",
                 desc: "Clean lines, quiet luxury. You believe in the luxury of authenticity, focusing on premium tailoring and timeless structures.",
-                color: "#C9A84C",
+                color: "#c5a059",
                 brands: ["HERTUNBA", "FRUCHÉ", "ONALAJA"]
             };
         } else {
@@ -59,7 +58,7 @@ export default function QuizResults({ answers }: QuizResultsProps) {
                 title: "You are an Archivist",
                 type: "ARCHIVIST",
                 desc: "A heritage preservationist. You weave historical textures, rich textile craftsmanship, and modern silhouettes into high luxury statements.",
-                color: "#1E824C",
+                color: "#ffffff",
                 brands: ["IN OFFICIAL", "ONALAJA", "RE LAGOS"]
             };
         }

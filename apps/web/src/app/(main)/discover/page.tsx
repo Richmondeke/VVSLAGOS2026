@@ -41,6 +41,9 @@ type Creative = {
         url: string;
         type: "link" | "file" | "pdf" | "website" | "reel" | "document";
     }>;
+    projects: number;
+    earnings: string;
+    rating: number;
 };
 
 const MOCK_OPPORTUNITIES: Opportunity[] = [
@@ -152,6 +155,9 @@ const MOCK_CREATIVES: Creative[] = [
             { title: "Portfolio Reel 🎥", url: "https://vvs.is/amina-reel", type: "reel" },
             { title: "SS26 Lookbook.pdf 📄", url: "https://vvs.is/amina-lookbook", type: "pdf" },
         ],
+        projects: 52,
+        earnings: "$45k+",
+        rating: 4.9,
     },
     {
         id: "cr-2",
@@ -168,6 +174,9 @@ const MOCK_CREATIVES: Creative[] = [
             { title: "Technical Folio", url: "https://vvs.is/tunde-folio", type: "link" },
             { title: "Brand Concept", url: "https://vvs.is/tunde-brand", type: "website" },
         ],
+        projects: 38,
+        earnings: "$28k+",
+        rating: 4.7,
     },
     {
         id: "cr-3",
@@ -184,6 +193,9 @@ const MOCK_CREATIVES: Creative[] = [
             { title: "Creative Reel ⚡", url: "https://vvs.is/zara-reel", type: "reel" },
             { title: "Editorial Deck.pdf 📄", url: "https://vvs.is/zara-deck", type: "pdf" },
         ],
+        projects: 64,
+        earnings: "$55k+",
+        rating: 5.0,
     },
     {
         id: "cr-4",
@@ -197,6 +209,9 @@ const MOCK_CREATIVES: Creative[] = [
         bio: "Sculpting wearable art out of recycled brass, bronze, and raw crystal clusters. Inspired by cosmic geometries.",
         skills: ["Jewelry Craft", "3D Printing", "Metal Forging"],
         links: [{ title: "Jewelry Showroom", url: "https://vvs.is/kofi-shop", type: "website" }],
+        projects: 29,
+        earnings: "$18k+",
+        rating: 4.5,
     },
     {
         id: "cr-5",
@@ -213,6 +228,9 @@ const MOCK_CREATIVES: Creative[] = [
             { title: "Director's Cut 🎥", url: "https://vvs.is/nneka-cut", type: "reel" },
             { title: "Lagos Subculture PDF 📄", url: "https://vvs.is/nneka-doc", type: "pdf" },
         ],
+        projects: 41,
+        earnings: "$32k+",
+        rating: 4.8,
     },
 ];
 
@@ -587,13 +605,12 @@ export default function DiscoverPage() {
                             {filteredCreatives.map((creative) => (
                                 <div
                                     key={creative.id}
-                                    className="glass-card p-6 rounded-2xl flex flex-col justify-between h-full relative border border-text-secondary/5 group"
+                                    className="bg-white dark:bg-[#0E0F13] text-black dark:text-white border border-[#EBEBEF] dark:border-white/5 rounded-[28px] p-6 shadow-sm flex flex-col justify-between h-full group transition-all duration-300"
                                 >
-                                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-text-primary/5 to-transparent group-hover:via-vvs-gold/40 transition-all duration-300" />
-
                                     <div className="space-y-4">
+                                        {/* Avatar & Name Header */}
                                         <div className="flex items-center gap-4">
-                                            <div className="h-14 w-16 rounded-full overflow-hidden border border-text-secondary/15 shrink-0 bg-text-primary/5">
+                                            <div className="h-14 w-14 rounded-2xl overflow-hidden border border-black/5 dark:border-white/10 shrink-0 bg-black/5 dark:bg-white/5">
                                                 <img
                                                     src={creative.avatarUrl}
                                                     alt={creative.name}
@@ -601,63 +618,47 @@ export default function DiscoverPage() {
                                                 />
                                             </div>
                                             <div className="min-w-0">
-                                                <h3 className="text-sm font-bold text-text-primary truncate">
+                                                <h3 className="text-sm font-bold text-text-primary leading-tight">
                                                     {creative.name}
                                                 </h3>
-                                                <p className="text-[10px] text-vvs-gold font-mono font-bold leading-none mt-1">
-                                                    {creative.status}
-                                                </p>
-                                                <p className="text-[10px] text-text-muted mt-1 leading-none truncate">
-                                                    {creative.location}
+                                                <p className="text-xs text-text-secondary mt-1">
+                                                    {creative.discipline} • {creative.location}
                                                 </p>
                                             </div>
                                         </div>
 
-                                        <div className="space-y-2">
-                                            <p className="text-[11px] font-bold text-text-primary leading-tight">
-                                                {creative.discipline}
-                                            </p>
-                                            <p className="text-xs text-text-secondary leading-relaxed line-clamp-3">
-                                                {creative.bio}
-                                            </p>
-                                        </div>
+                                        {/* Bio */}
+                                        <p className="text-xs text-text-secondary leading-relaxed">
+                                            {creative.bio}
+                                        </p>
 
-                                        {/* Skill Tags */}
-                                        <div className="flex flex-wrap gap-1.5">
-                                            {creative.skills.map((s, idx) => (
-                                                <span
-                                                    key={idx}
-                                                    className="text-[8px] mono-caps bg-text-primary/5 border border-text-secondary/5 px-2 py-0.5 rounded-full font-bold text-text-secondary"
-                                                >
-                                                    {s}
+                                        {/* Details Grid (Separated by subtle lines) */}
+                                        <div className="grid grid-cols-3 border-t border-b border-[#EBEBEF]/80 dark:border-white/5 py-4 mt-2">
+                                            <div className="text-center border-r border-[#EBEBEF]/80 dark:border-white/5 px-2">
+                                                <span className="block text-[10px] text-text-muted">Projects</span>
+                                                <span className="block text-sm font-bold text-text-primary mt-1">{creative.projects}</span>
+                                            </div>
+                                            <div className="text-center border-r border-[#EBEBEF]/80 dark:border-white/5 px-2">
+                                                <span className="block text-[10px] text-text-muted">Earnings</span>
+                                                <span className="block text-sm font-bold text-text-primary mt-1">{creative.earnings}</span>
+                                            </div>
+                                            <div className="text-center px-2 flex flex-col items-center justify-center">
+                                                <span className="block text-[10px] text-text-muted">Rating</span>
+                                                <span className="block text-sm font-bold text-text-primary mt-1 flex items-center justify-center gap-1">
+                                                    <span className="text-vvs-gold text-xs">⭐</span> {creative.rating}
                                                 </span>
-                                            ))}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Link in bio nodes */}
-                                    <div className="mt-5 pt-4 border-t border-text-secondary/5 space-y-3">
-                                        <span className="block text-[8px] text-text-muted font-bold mono-caps tracking-widest">
-                                            Active Proof Nodes:
-                                        </span>
-                                        <div className="space-y-1.5">
-                                            {creative.links.map((link, idx) => (
-                                                <a
-                                                    key={idx}
-                                                    href={link.url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center justify-between p-2.5 rounded-lg bg-text-primary/5 border border-text-secondary/5 text-[10px] text-text-primary hover:text-vvs-accent hover:border-vvs-accent/35 hover:bg-vvs-accent/5 transition-all"
-                                                >
-                                                    <span className="font-semibold truncate">
-                                                        {link.title}
-                                                    </span>
-                                                    <span className="text-[8px] mono-caps font-mono tracking-widest opacity-60 uppercase">
-                                                        {link.type}
-                                                    </span>
-                                                </a>
-                                            ))}
-                                        </div>
+                                    {/* Action Buttons */}
+                                    <div className="flex gap-3 mt-6">
+                                        <button className="flex-1 py-3 bg-[#0A0A0C] dark:bg-white text-white dark:text-black rounded-xl text-xs font-bold transition-all hover:opacity-90 cursor-pointer">
+                                            Hire now
+                                        </button>
+                                        <button className="flex-1 py-3 bg-[#F5F5F7] dark:bg-white/5 text-[#0A0A0C] dark:text-white rounded-xl text-xs font-bold transition-all hover:bg-black/5 dark:hover:bg-white/10 cursor-pointer">
+                                            Message
+                                        </button>
                                     </div>
                                 </div>
                             ))}

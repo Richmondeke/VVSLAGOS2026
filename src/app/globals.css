@@ -1,3 +1,4 @@
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -6,9 +7,9 @@
   --color-vvs-gold: #c5a059;
   --color-vvs-gold-muted: #8c6d3e;
 
-  --font-sans: 'Futura', var(--font-jost), sans-serif;
-  --font-serif: var(--font-old-english), 'Futura', var(--font-jost), serif;
-  --font-mono: var(--font-mono);
+  --font-sans: 'Satoshi', sans-serif;
+  --font-serif: 'Satoshi', sans-serif;
+  --font-mono: 'Satoshi', sans-serif;
 }
 
 html {
@@ -22,6 +23,7 @@ html {
 
 * {
   border-color: rgba(255, 255, 255, 0.1);
+  font-family: 'Satoshi', sans-serif !important;
 }
 
 body {

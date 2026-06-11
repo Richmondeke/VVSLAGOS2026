@@ -67,8 +67,8 @@ export default function Navbar() {
                 >
                     <div className="w-10 h-10 relative">
                         <img
-                            src="/assets/VVSMASCOT7.png"
-                            alt="VVS Mascot Logo"
+                            src="/assets/VVSWhiteMAsk.png"
+                            alt="VVS Mask Logo"
                             className="w-10 h-10 object-contain"
                         />
                     </div>

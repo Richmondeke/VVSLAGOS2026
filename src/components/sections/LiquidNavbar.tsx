@@ -79,10 +79,10 @@ export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNa
             icon: <Award size={14} className="text-vvs-gold" /> 
         },
         { 
-            label: "VVS App", 
-            sub: "Mint Collectibles", 
+            label: "Style Match", 
+            sub: "Find your twin", 
             image: "/assets/VVSMASCOT1.webp", 
-            action: () => openModal("app"), 
+            action: () => { window.location.href = "/style-quiz"; }, 
             icon: <Smartphone size={14} className="text-vvs-gold" /> 
         },
     ];

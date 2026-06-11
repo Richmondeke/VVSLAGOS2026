@@ -1,8 +1,8 @@
 "use client";
 
+import { useAuth } from "@/lib/auth-context";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
 import { useEffect, useState } from "react";
 
 const NAV_ITEMS = [
@@ -88,19 +88,6 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                         {theme === "dark" ? "☀️" : "🌙"}
                     </button>
 
-                    {/* XP pill */}
-                    {user && (
-                        <div className="hidden sm:flex items-center gap-2 bg-tag-bg rounded-full px-3 py-1.5">
-                            <span className="text-xs font-medium text-text-primary flex items-center gap-1">
-                                🔥 <span className="font-semibold">{user.streak ?? 3}D</span>
-                            </span>
-                            <div className="h-3 w-px bg-text-secondary/15" />
-                            <span className="text-[11px] font-semibold text-vvs-gold">
-                                {user.xp ?? 450} XP
-                            </span>
-                        </div>
-                    )}
-
                     {/* Notifications */}
                     <Link
                         href="/notifications"
@@ -126,7 +113,9 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             </header>
 
             {/* Main content */}
-            <main className="flex-1 pb-24 md:pb-12 max-w-7xl mx-auto w-full px-5 md:px-10 transition-colors duration-300">{children}</main>
+            <main className="flex-1 pb-24 md:pb-12 max-w-7xl mx-auto w-full px-5 md:px-10 transition-colors duration-300">
+                {children}
+            </main>
 
             {/* Bottom tab navigation — Mobile Only */}
             <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex h-[72px] items-center justify-around border-t border-text-secondary/8 bg-vvs-bg/85 backdrop-blur-xl pb-2 px-2 transition-colors duration-300">
@@ -137,12 +126,12 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
                             key={item.href}
                             href={item.href}
                             className={`flex flex-col items-center gap-1 px-3 py-1.5 text-[10px] font-medium tracking-wide transition-all ${
-                                isActive
-                                    ? "text-vvs-accent font-semibold"
-                                    : "text-text-muted"
+                                isActive ? "text-vvs-accent font-semibold" : "text-text-muted"
                             }`}
                         >
-                            <span className={`text-xl transition-all duration-200 ${isActive ? "" : "opacity-60"}`}>
+                            <span
+                                className={`text-xl transition-all duration-200 ${isActive ? "" : "opacity-60"}`}
+                            >
                                 {item.icon}
                             </span>
                             <span>{item.label}</span>

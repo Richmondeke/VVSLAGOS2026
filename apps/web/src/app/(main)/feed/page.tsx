@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
+import { useEffect, useState } from "react";
 
 type Article = {
     id: string;
@@ -21,9 +21,10 @@ const MOCK_ARTICLES: Article[] = [
         category: "Announcements",
         date: "Today at 09:00",
         image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80",
-        summary: "Our next structural capsule is dropping in weeks. From pattern cutting at TJ-WHO to styling with VVS creative leads. Get your invite keys ready, zero stories.",
+        summary:
+            "Our next structural capsule is dropping in weeks. From pattern cutting at TJ-WHO to styling with VVS creative leads. Get your invite keys ready, zero stories.",
         readTime: "3 min read",
-        highlightColor: "red"
+        highlightColor: "red",
     },
     {
         id: "feed-2",
@@ -31,9 +32,10 @@ const MOCK_ARTICLES: Article[] = [
         category: "Product News",
         date: "Yesterday",
         image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80",
-        summary: "No more story-telling from clients. All contract deposits are now locked automatically in secure, instant-settlement CoraPay escrow. Your funds release when work is verified.",
+        summary:
+            "No more story-telling from clients. All contract deposits are now locked automatically in secure, instant-settlement CoraPay escrow. Your funds release when work is verified.",
         readTime: "2 min read",
-        highlightColor: "gold"
+        highlightColor: "gold",
     },
     {
         id: "feed-3",
@@ -41,31 +43,34 @@ const MOCK_ARTICLES: Article[] = [
         category: "Casting Update",
         date: "May 25, 2026",
         image: "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=800&q=80",
-        summary: "Lagos street scouting is officially open for Tokyo James SS27. Raw attitude and pure, unbothered presence wanted. Apply directly through the Opportunities tab.",
+        summary:
+            "Lagos street scouting is officially open for Tokyo James SS27. Raw attitude and pure, unbothered presence wanted. Apply directly through the Opportunities tab.",
         readTime: "4 min read",
-        highlightColor: "red"
-    }
+        highlightColor: "red",
+    },
 ];
 
 const BANNER_ADS = [
     {
         id: "ad-1",
-        tag: "VVS SOUND LAB // GBEDU LAB",
-        title: "Submit your Amapiano-Electronic fusion track before June 15",
-        cta: "Unlock +250 XP",
+        tag: "MTN // VVS PARTNERSHIP",
+        title: "Free Data every Month on MTN VVS Plan",
+        cta: "Activate",
         tagColor: "text-vvs-accent",
-        emoji: "🎧",
-        description: "Show the community how your beat stands out from generic copy-copy loops."
+        emoji: "📶",
+        description:
+            "Stay connected to the creative grid. Get 10GB free data monthly on the exclusive MTN VVS custom plan.",
     },
     {
         id: "ad-2",
-        tag: "ORANGE CULTURE // CAMPAIGN",
-        title: "Street-scouted and gender-neutral runway casting",
+        tag: "MAYBELLINE // VVS BEAUTY",
+        title: "Maybelline Cosmetics",
         cta: "Claim Spot",
         tagColor: "text-vvs-gold",
-        emoji: "🍊",
-        description: "Bring your raw cultural energy to the runway. No prior model portfolio required, just unmatched confidence."
-    }
+        emoji: "💄",
+        description:
+            "VVS Runway partner. Discover raw attitude and premium editorial palettes designed for the Surulere catwalk.",
+    },
 ];
 
 export default function FeedPage() {
@@ -88,7 +93,8 @@ export default function FeedPage() {
                     Feed
                 </h1>
                 <p className="text-text-secondary max-w-xl text-sm leading-relaxed">
-                    News, updates, and cultural intel. Stay locked in with VVS announcements, product upgrades, and live cultural telemetry. No noise, just relevant updates.
+                    News, updates, and cultural intel. Stay locked in with VVS announcements,
+                    product upgrades, and live cultural telemetry. No noise, just relevant updates.
                 </p>
             </div>
 
@@ -97,7 +103,7 @@ export default function FeedPage() {
                 <div
                     className="relative overflow-hidden rounded-2xl bg-vvs-gold text-vvs-black p-6 md:p-8 flex items-center justify-between shadow-lg"
                     style={{
-                        background: "linear-gradient(135deg, #FFD500 0%, #F5A623 100%)"
+                        background: "linear-gradient(135deg, #FFD500 0%, #F5A623 100%)",
                     }}
                 >
                     {/* Left content - Title and Description only */}
@@ -121,7 +127,7 @@ export default function FeedPage() {
                     {/* Overlaid Diamond emblem positioned in the bottom right corner */}
                     <div className="absolute right-[-20px] bottom-[-20px] w-36 h-36 text-white/15 select-none pointer-events-none z-0 transform rotate-12">
                         <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
-                            <path d="M12 2L2 9l10 13 10-13-10-7zm0 2.8L18.4 9H5.6L12 4.8zM4.7 10.5h14.6L12 19.3l-7.3-8.8z"/>
+                            <path d="M12 2L2 9l10 13 10-13-10-7zm0 2.8L18.4 9H5.6L12 4.8zM4.7 10.5h14.6L12 19.3l-7.3-8.8z" />
                         </svg>
                     </div>
 
@@ -147,27 +153,30 @@ export default function FeedPage() {
             <div className="grid gap-8 md:grid-cols-3">
                 <div className="md:col-span-2 space-y-8">
                     <div className="flex items-center justify-between border-b border-text-secondary/10 pb-3">
-                        <h3 className="mono-caps text-xs font-bold text-text-primary tracking-widest">Latest Broadcasts</h3>
-                        <span className="text-xs text-vvs-accent font-bold font-mono">⚡ Curated Broadcasts</span>
+                        <h3 className="mono-caps text-xs font-bold text-text-primary tracking-widest">
+                            Latest Updates
+                        </h3>
                     </div>
 
                     <div className="grid gap-6">
                         {MOCK_ARTICLES.map((article) => (
-                            <div 
-                                key={article.id} 
+                            <div
+                                key={article.id}
                                 className="glass-card overflow-hidden rounded-2xl flex flex-col sm:flex-row border border-text-secondary/5 hover:border-text-secondary/15 transition-all duration-300"
                             >
                                 <div className="h-48 sm:h-auto sm:w-48 relative shrink-0 overflow-hidden bg-text-primary/5">
-                                    <img 
-                                        src={article.image} 
-                                        alt={article.title} 
+                                    <img
+                                        src={article.image}
+                                        alt={article.title}
                                         className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                                     />
-                                    <span className={`absolute top-3 left-3 text-[8px] font-bold mono-caps px-2.5 py-1 rounded-full ${
-                                        article.highlightColor === "red" 
-                                            ? "bg-vvs-accent/15 text-vvs-accent border border-vvs-accent/25" 
-                                            : "bg-vvs-gold/15 text-vvs-gold border border-vvs-gold/25"
-                                    }`}>
+                                    <span
+                                        className={`absolute top-3 left-3 text-[8px] font-bold mono-caps px-2.5 py-1 rounded-full ${
+                                            article.highlightColor === "red"
+                                                ? "bg-vvs-accent/15 text-vvs-accent border border-vvs-accent/25"
+                                                : "bg-vvs-gold/15 text-vvs-gold border border-vvs-gold/25"
+                                        }`}
+                                    >
                                         {article.category}
                                     </span>
                                 </div>
@@ -187,7 +196,7 @@ export default function FeedPage() {
                                     </div>
                                     <div>
                                         <button className="text-xs font-bold text-vvs-accent hover:underline flex items-center gap-1">
-                                            Read Broadcast <span>→</span>
+                                            Read Update <span>→</span>
                                         </button>
                                     </div>
                                 </div>
@@ -199,40 +208,63 @@ export default function FeedPage() {
                 {/* Sidebar Events Panel */}
                 <div className="space-y-6">
                     <div className="flex items-center justify-between border-b border-text-secondary/10 pb-3">
-                        <h3 className="mono-caps text-xs font-bold text-text-primary tracking-widest">Upcoming Events</h3>
+                        <h3 className="mono-caps text-xs font-bold text-text-primary tracking-widest">
+                            Upcoming Events
+                        </h3>
                     </div>
 
                     <div className="space-y-4">
                         <div className="glass-card p-5 rounded-2xl border border-text-secondary/5 hover:border-vvs-gold/20 transition-all">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="mono-caps text-[8px] text-vvs-gold font-bold tracking-widest">SHOWROOM // VICTORIA ISLAND</span>
-                                <span className="text-[8px] font-mono text-vvs-gold font-bold bg-vvs-gold/10 px-2.5 py-0.5 rounded-full">JUNE 20</span>
+                                <span className="mono-caps text-[8px] text-vvs-gold font-bold tracking-widest">
+                                    SHOWROOM // VICTORIA ISLAND
+                                </span>
+                                <span className="text-[8px] font-mono text-vvs-gold font-bold bg-vvs-gold/10 px-2.5 py-0.5 rounded-full">
+                                    JUNE 20
+                                </span>
                             </div>
-                            <h5 className="text-xs font-bold text-text-primary leading-snug">VVS Lagos Private Showroom SS27</h5>
+                            <h5 className="text-xs font-bold text-text-primary leading-snug">
+                                VVS Lagos Private Showroom SS27
+                            </h5>
                             <p className="text-[11px] text-text-secondary mt-1.5 leading-relaxed">
-                                Curated structural showcase of the SS27 capsule garments. Access restricted to verified vanguard members. Redeem passes via XP.
+                                Curated structural showcase of the SS27 capsule garments. Access
+                                restricted to verified vanguard members. Redeem passes via XP.
                             </p>
                         </div>
 
                         <div className="glass-card p-5 rounded-2xl border border-text-secondary/5 hover:border-vvs-accent/20 transition-all">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="mono-caps text-[8px] text-vvs-accent font-bold tracking-widest">ROUNDTABLE // ONIKAN</span>
-                                <span className="text-[8px] font-mono text-vvs-accent font-bold bg-vvs-accent/10 px-2.5 py-0.5 rounded-full">JULY 05</span>
+                                <span className="mono-caps text-[8px] text-vvs-accent font-bold tracking-widest">
+                                    ROUNDTABLE // ONIKAN
+                                </span>
+                                <span className="text-[8px] font-mono text-vvs-accent font-bold bg-vvs-accent/10 px-2.5 py-0.5 rounded-full">
+                                    JULY 05
+                                </span>
                             </div>
-                            <h5 className="text-xs font-bold text-text-primary leading-snug">Creative Roundtable 04: Sonic Archives</h5>
+                            <h5 className="text-xs font-bold text-text-primary leading-snug">
+                                Creative Roundtable 04: Sonic Archives
+                            </h5>
                             <p className="text-[11px] text-text-secondary mt-1.5 leading-relaxed">
-                                An intimate dialogue exploring West African sound preservation and electronic architecture with industry vanguard leaders.
+                                An intimate dialogue exploring West African sound preservation and
+                                electronic architecture with industry vanguard leaders.
                             </p>
                         </div>
 
                         <div className="glass-card p-5 rounded-2xl border border-text-secondary/5 hover:border-vvs-accent/20 transition-all">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="mono-caps text-[8px] text-vvs-accent font-bold tracking-widest">CASTING // SURULERE</span>
-                                <span className="text-[8px] font-mono text-vvs-accent font-bold bg-vvs-accent/10 px-2.5 py-0.5 rounded-full">JULY 12</span>
+                                <span className="mono-caps text-[8px] text-vvs-accent font-bold tracking-widest">
+                                    CASTING // SURULERE
+                                </span>
+                                <span className="text-[8px] font-mono text-vvs-accent font-bold bg-vvs-accent/10 px-2.5 py-0.5 rounded-full">
+                                    JULY 12
+                                </span>
                             </div>
-                            <h5 className="text-xs font-bold text-text-primary leading-snug">Tokyo James Casting Call</h5>
+                            <h5 className="text-xs font-bold text-text-primary leading-snug">
+                                Tokyo James Casting Call
+                            </h5>
                             <p className="text-[11px] text-text-secondary mt-1.5 leading-relaxed">
-                                Physical model scouting callbacks for the upcoming Paris runway collection. Bring your physical portfolio.
+                                Physical model scouting callbacks for the upcoming Paris runway
+                                collection. Bring your physical portfolio.
                             </p>
                         </div>
                     </div>

@@ -510,19 +510,22 @@ export default function TypeBLandingPage() {
                     {/* Head Center */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1, y: [0, 15, 0] }}
+                        animate={{ opacity: 1, scale: 1, y: [0, 15, 0], x: [0, 0, -4, 4, -2, 0, 0] }}
                         transition={{
                             opacity: { duration: 0.8, delay: 0.2 },
                             scale: { duration: 0.8, delay: 0.2 },
-                            y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }
+                            y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 },
+                            x: { duration: 3, repeat: Infinity, ease: "steps(5)", repeatDelay: 4 }
                         }}
                         className="w-1/3 sm:w-1/4 relative cursor-pointer"
                         whileHover={{ scale: 1.1 }}
                     >
-                        <img
+                        <motion.img
+                            animate={{ filter: ["hue-rotate(0deg)", "hue-rotate(0deg)", "hue-rotate(90deg) invert(1)", "hue-rotate(-90deg) blur(2px)", "hue-rotate(0deg)", "hue-rotate(0deg)"] }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "steps(5)", repeatDelay: 4 }}
                             src={theme === "dark" ? "/assets/VVSWhiteMAsk.png" : "/assets/VVSMASKBLACK.png"}
                             alt="VVS Mascot Head Center"
-                            className="w-full h-auto object-contain filter drop-shadow-[0_25px_50px_rgba(197,160,89,0.3)]"
+                            className="w-full h-auto object-contain drop-shadow-[0_25px_50px_rgba(197,160,89,0.3)]"
                         />
                     </motion.div>
 
@@ -546,6 +549,39 @@ export default function TypeBLandingPage() {
                         />
                     </motion.div>
                 </div>
+
+                {/* Hero Countdown Widget */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.6 }}
+                    className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 mt-6 z-10 relative"
+                >
+                    {[
+                        { label: "Days", value: timeLeft.days },
+                        { label: "Hrs", value: timeLeft.hours },
+                        { label: "Mins", value: timeLeft.minutes },
+                        { label: "Secs", value: timeLeft.seconds }
+                    ].map((timeUnit, index) => (
+                        <React.Fragment key={timeUnit.label}>
+                            <div className="flex flex-col items-center">
+                                <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-lg flex items-center justify-center font-mono font-black text-xl sm:text-2xl shadow-lg border transition-all ${
+                                    theme === "dark" 
+                                        ? "bg-[#151515] border-white/10 text-white" 
+                                        : "bg-white border-black/10 text-[#c5a059]"
+                                }`}>
+                                    {pad(timeUnit.value)}
+                                </div>
+                                <span className="text-[8px] uppercase tracking-widest font-mono font-bold mt-1 opacity-60">
+                                    {timeUnit.label}
+                                </span>
+                            </div>
+                            {index < 3 && (
+                                <div className="text-xl sm:text-2xl font-black text-[#c5a059] opacity-80 select-none pb-4">:</div>
+                            )}
+                        </React.Fragment>
+                    ))}
+                </motion.div>
 
                 {/* Event Intro and Details */}
                 <motion.div 

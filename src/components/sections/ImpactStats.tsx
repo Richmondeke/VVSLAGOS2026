@@ -1,7 +1,49 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useInView, animate } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+
+function Counter({ valueStr }: { valueStr: string }) {
+    const ref = useRef<HTMLSpanElement>(null);
+    const isInView = useInView(ref, { once: true, margin: "-50px" });
+    const [display, setDisplay] = useState("0");
+    
+    useEffect(() => {
+        if (!isInView) return;
+        
+        const match = valueStr.match(/^([\d,.]+)(.*)$/);
+        if (!match) {
+            setDisplay(valueStr);
+            return;
+        }
+        
+        const numStr = match[1].replace(/,/g, '');
+        const suffix = match[2] || '';
+        const num = parseFloat(numStr);
+        
+        if (isNaN(num)) {
+            setDisplay(valueStr);
+            return;
+        }
+        
+        const controls = animate(0, num, {
+            duration: 2,
+            ease: "easeOut",
+            onUpdate(value) {
+                let formatted = Math.floor(value).toString();
+                if (valueStr.includes(",")) {
+                    formatted = Math.floor(value).toLocaleString("en-US");
+                }
+                setDisplay(formatted + suffix);
+            }
+        });
+        
+        return () => controls.stop();
+    }, [isInView, valueStr]);
+
+    return <span ref={ref}>{display}</span>;
+}
 
 const stats = [
     { value: "5", label: "Years Running" },
@@ -21,7 +63,7 @@ export default function ImpactStats({ theme = "dark" }: ImpactStatsProps) {
 
     return (
         <section className={`py-24 border-y relative overflow-hidden ${
-            isDark ? "bg-[#111111] border-white/5" : "bg-[#FAF7F2] border-black/5"
+            isDark ? "border-white/5" : "border-black/5"
         }`}>
             {/* Subtle glow background */}
             <div className="absolute inset-0 bg-gradient-to-b from-[#c5a059]/5 to-transparent pointer-events-none" />
@@ -62,7 +104,7 @@ export default function ImpactStats({ theme = "dark" }: ImpactStatsProps) {
                             <span className={`text-4xl md:text-6xl font-black mb-2 tracking-tighter ${
                                 isDark ? "text-white" : "text-black"
                             }`}>
-                                {stat.value}
+                                <Counter valueStr={stat.value} />
                             </span>
                             <span className="text-[10px] md:text-xs font-mono uppercase tracking-[0.2em] text-[#c5a059]">
                                 {stat.label}

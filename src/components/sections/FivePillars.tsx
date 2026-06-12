@@ -35,7 +35,7 @@ export default function FivePillars({ theme = "dark" }: FivePillarsProps) {
 
     return (
         <section className={`py-24 md:py-32 overflow-hidden relative border-y ${
-            isDark ? "bg-[#111111] border-white/5" : "bg-[#FAF7F2] border-black/5"
+            isDark ? "border-white/5" : "border-black/5"
         }`}>
             <div className="max-w-7xl mx-auto px-6 mb-16 text-center md:text-left">
                 <motion.div
@@ -46,7 +46,7 @@ export default function FivePillars({ theme = "dark" }: FivePillarsProps) {
                     <h2 className={`text-4xl md:text-6xl font-extrabold uppercase tracking-tighter mb-4 ${
                         isDark ? "text-white" : "text-black"
                     }`}>
-                        The Five <span className="text-[#c5a059]">Pillars</span>
+                        Our Five <span className="text-[#c5a059]">Pillars</span>
                     </h2>
                     <p className={`max-w-xl text-sm md:text-base font-mono uppercase tracking-widest ${
                         isDark ? "text-white/50" : "text-black/50"
@@ -66,7 +66,7 @@ export default function FivePillars({ theme = "dark" }: FivePillarsProps) {
                                     idx === 4 ? "sm:w-[calc(50%-12px)] lg:w-auto" : ""
                                 }`}
                             >
-                                <div className={`h-[320px] md:h-[400px] w-full rounded-2xl overflow-hidden border relative p-6 md:p-8 flex flex-col justify-end transition-all duration-300 hover:-translate-y-2 ${
+                                <div className={`h-[200px] md:h-[240px] w-full rounded-2xl overflow-hidden border relative p-6 md:p-8 flex flex-col justify-end transition-all duration-300 hover:-translate-y-2 ${
                                     isDark 
                                         ? "bg-black border-white/10 hover:border-[#c5a059]/50" 
                                         : "bg-white border-black/10 hover:border-[#c5a059]/50 hover:shadow-xl"

@@ -24,7 +24,7 @@ export default function CommunitySection({ theme = "dark" }: CommunitySectionPro
 
     return (
         <section className={`py-32 border-y relative overflow-hidden ${
-            isDark ? "bg-[#111111] border-white/5" : "bg-[#FAF7F2] border-black/5"
+            isDark ? "border-white/5" : "border-black/5"
         }`}>
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#c5a059]/5 blur-[120px] rounded-full pointer-events-none" />
             
@@ -39,7 +39,7 @@ export default function CommunitySection({ theme = "dark" }: CommunitySectionPro
                             viewport={{ once: true }}
                             className="text-[#c5a059] font-mono text-xs uppercase tracking-[0.3em] mb-4"
                         >
-                            The Network
+                            Our Network
                         </motion.p>
                         
                         <motion.h2

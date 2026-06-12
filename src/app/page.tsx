@@ -540,14 +540,14 @@ export default function TypeBLandingPage() {
                             opacity: { duration: 0.8, delay: 0.2 },
                             scale: { duration: 0.8, delay: 0.2 },
                             y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 },
-                            x: { duration: 3, repeat: Infinity, ease: "steps(5)", repeatDelay: 4 }
+                            x: { duration: 3, repeat: Infinity, ease: "linear", repeatDelay: 4 }
                         }}
                         className="w-1/3 sm:w-1/4 relative cursor-pointer"
                         whileHover={{ scale: 1.1 }}
                     >
                         <motion.img
                             animate={{ filter: ["hue-rotate(0deg)", "hue-rotate(0deg)", "hue-rotate(90deg) invert(1)", "hue-rotate(-90deg) blur(2px)", "hue-rotate(0deg)", "hue-rotate(0deg)"] }}
-                            transition={{ duration: 3, repeat: Infinity, ease: "steps(5)", repeatDelay: 4 }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "linear", repeatDelay: 4 }}
                             src={theme === "dark" ? "/assets/VVSWhiteMAsk.png" : "/assets/VVSMASKBLACK.png"}
                             alt="VVS Mascot Head Center"
                             className="w-full h-auto object-contain drop-shadow-[0_25px_50px_rgba(197,160,89,0.3)]"

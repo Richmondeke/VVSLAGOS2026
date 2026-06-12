@@ -63,7 +63,7 @@ export default function TypeBLandingPage() {
 
     // Countdown target date (VVS Lagos 2026 Kickoff - July 5th, 2026)
     const targetDate = "2026-07-05T19:00:00";
-    const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calcTimeLeft(targetDate));
+    const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0, past: false });
 
     // Scroll listener for navbar background blur
     useEffect(() => {
@@ -94,6 +94,7 @@ export default function TypeBLandingPage() {
 
     // Countdown timer interval
     useEffect(() => {
+        setTimeLeft(calcTimeLeft(targetDate));
         const timer = setInterval(() => {
             setTimeLeft(calcTimeLeft(targetDate));
         }, 1000);
@@ -409,7 +410,7 @@ export default function TypeBLandingPage() {
                         {/* Theme Toggle */}
                         <button 
                             onClick={toggleTheme}
-                            className={`p-2 rounded-full border transition-all ${
+                            className={`hidden lg:block p-2 rounded-full border transition-all ${
                                 theme === "dark" 
                                     ? "border-white/10 hover:bg-white/10 text-white" 
                                     : "border-black/10 hover:bg-black/5 text-black"
@@ -422,7 +423,7 @@ export default function TypeBLandingPage() {
                         {/* RSVP Action Button */}
                         <button
                             onClick={() => { triggerHaptic("medium"); setIsRSVPOpen(true); }}
-                            className={`px-5 py-2.5 rounded-full text-[10px] uppercase tracking-[0.18em] font-extrabold transition-all shadow-md active:scale-95 ${
+                            className={`hidden lg:block px-5 py-2.5 rounded-full text-[10px] uppercase tracking-[0.18em] font-extrabold transition-all shadow-md active:scale-95 ${
                                 theme === "dark" 
                                     ? "bg-white text-black hover:bg-[#c5a059] hover:text-white" 
                                     : "bg-black text-white hover:bg-[#c5a059]"
@@ -460,6 +461,30 @@ export default function TypeBLandingPage() {
                         <button onClick={() => scrollSection("countdown")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Kickoff Countdown</button>
                         <button onClick={() => scrollSection("calendar")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Upcoming Events</button>
                         <a href="/style-quiz" className="text-[12px] uppercase tracking-widest font-bold py-2">Style Quiz</a>
+                        
+                        <div className="flex gap-4 mt-4 border-t pt-4 border-white/10">
+                            <button
+                                onClick={() => { triggerHaptic("medium"); setIsRSVPOpen(true); setIsMenuOpen(false); }}
+                                className={`flex-1 py-3 rounded-full text-[10px] uppercase tracking-[0.18em] font-extrabold transition-all shadow-md active:scale-95 ${
+                                    theme === "dark" 
+                                        ? "bg-white text-black hover:bg-[#c5a059] hover:text-white" 
+                                        : "bg-black text-white hover:bg-[#c5a059]"
+                                }`}
+                            >
+                                RSVP NOW
+                            </button>
+                            <button 
+                                onClick={toggleTheme}
+                                className={`p-3 rounded-full border transition-all ${
+                                    theme === "dark" 
+                                        ? "border-white/10 bg-white/5 text-white" 
+                                        : "border-black/10 bg-black/5 text-black"
+                                }`}
+                                aria-label="Toggle theme"
+                            >
+                                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                            </button>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -555,7 +580,7 @@ export default function TypeBLandingPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
-                    className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 mt-6 z-10 relative"
+                    className="flex flex-nowrap justify-center items-center gap-1 sm:gap-4 mt-6 z-10 relative"
                 >
                     {[
                         { label: "Days", value: timeLeft.days },
@@ -565,19 +590,19 @@ export default function TypeBLandingPage() {
                     ].map((timeUnit, index) => (
                         <React.Fragment key={timeUnit.label}>
                             <div className="flex flex-col items-center">
-                                <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-lg flex items-center justify-center font-mono font-black text-xl sm:text-2xl shadow-lg border transition-all ${
+                                <div className={`w-10 h-10 sm:w-16 sm:h-16 rounded-lg flex items-center justify-center font-mono font-black text-lg sm:text-2xl shadow-lg border transition-all ${
                                     theme === "dark" 
                                         ? "bg-[#151515] border-white/10 text-white" 
                                         : "bg-white border-black/10 text-[#c5a059]"
                                 }`}>
                                     {pad(timeUnit.value)}
                                 </div>
-                                <span className="text-[8px] uppercase tracking-widest font-mono font-bold mt-1 opacity-60">
+                                <span className="text-[7px] sm:text-[8px] uppercase tracking-widest font-mono font-bold mt-1 opacity-60">
                                     {timeUnit.label}
                                 </span>
                             </div>
                             {index < 3 && (
-                                <div className="text-xl sm:text-2xl font-black text-[#c5a059] opacity-80 select-none pb-4">:</div>
+                                <div className="text-lg sm:text-2xl font-black text-[#c5a059] opacity-80 select-none pb-4 sm:pb-4 mx-1 sm:mx-0">:</div>
                             )}
                         </React.Fragment>
                     ))}
@@ -598,6 +623,20 @@ export default function TypeBLandingPage() {
                     <div className="flex flex-wrap justify-center gap-4 text-xs font-mono">
                         <span className={`px-4 py-2 rounded-full border ${theme === "dark" ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>✦ JULY 5 - 12, 2026</span>
                         <span className={`px-4 py-2 rounded-full border ${theme === "dark" ? "border-white/10 bg-white/5" : "border-black/10 bg-black/5"}`}>✦ LAGOS, NIGERIA</span>
+                    </div>
+
+                    {/* RSVP CTA For Mobile Only */}
+                    <div className="mt-8 lg:hidden flex justify-center">
+                        <button
+                            onClick={() => { triggerHaptic("medium"); setIsRSVPOpen(true); }}
+                            className={`px-8 py-3 rounded-full text-[12px] uppercase tracking-[0.18em] font-extrabold transition-all shadow-lg active:scale-95 ${
+                                theme === "dark" 
+                                    ? "bg-white text-black hover:bg-[#c5a059] hover:text-white" 
+                                    : "bg-black text-white hover:bg-[#c5a059]"
+                            }`}
+                        >
+                            RSVP NOW
+                        </button>
                     </div>
                 </motion.div>
             </section>
@@ -641,7 +680,7 @@ export default function TypeBLandingPage() {
                     </h2>
 
                     {/* Countdown Display grid */}
-                    <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8 mb-6">
+                    <div className="flex flex-nowrap justify-center items-center gap-1 sm:gap-8 mb-6">
                         {[
                             { label: "Days", value: timeLeft.days },
                             { label: "Hours", value: timeLeft.hours },
@@ -650,19 +689,19 @@ export default function TypeBLandingPage() {
                         ].map((timeUnit, index) => (
                             <React.Fragment key={timeUnit.label}>
                                 <div className="flex flex-col items-center">
-                                    <div className={`w-20 sm:w-28 aspect-square rounded-xl flex items-center justify-center font-mono font-black text-3xl sm:text-5xl shadow-lg border transition-all ${
+                                    <div className={`w-14 h-14 sm:w-28 sm:h-28 rounded-xl flex items-center justify-center font-mono font-black text-2xl sm:text-5xl shadow-lg border transition-all ${
                                         theme === "dark" 
                                             ? "bg-[#151515] border-white/10 text-white" 
                                             : "bg-white border-black/10 text-[#c5a059]"
                                     }`}>
                                         {pad(timeUnit.value)}
                                     </div>
-                                    <span className="text-[10px] uppercase tracking-widest font-mono font-bold mt-2 opacity-60">
+                                    <span className="text-[8px] sm:text-[10px] uppercase tracking-widest font-mono font-bold mt-2 opacity-60">
                                         {timeUnit.label}
                                     </span>
                                 </div>
                                 {index < 3 && (
-                                    <div className="text-3xl sm:text-5xl font-black text-[#c5a059] opacity-80 select-none pb-4">:</div>
+                                    <div className="text-2xl sm:text-5xl font-black text-[#c5a059] opacity-80 select-none pb-4 mx-1 sm:mx-0">:</div>
                                 )}
                             </React.Fragment>
                         ))}

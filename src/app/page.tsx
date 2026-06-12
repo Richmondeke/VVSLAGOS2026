@@ -5,6 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sun, Moon, ChevronLeft, ChevronRight, Calendar, Clock, MapPin, Check, Send } from "lucide-react";
 import { triggerHaptic } from "@/utils/haptic";
 import { supabase } from "@/lib/supabase";
+import ImpactStats from "@/components/sections/ImpactStats";
+import WhatIsVVS from "@/components/sections/WhatIsVVS";
+import FivePillars from "@/components/sections/FivePillars";
+import OurStory from "@/components/sections/OurStory";
+import CommunitySection from "@/components/sections/CommunitySection";
+import PastPartners from "@/components/sections/PastPartners";
+import RSVPSection from "@/components/sections/RSVPSection";
 
 interface TimeLeft {
     days: number;
@@ -559,6 +566,13 @@ export default function TypeBLandingPage() {
                 </motion.div>
             </section>
 
+            {/* Added Content Sections */}
+            <WhatIsVVS theme={theme} />
+            <ImpactStats theme={theme} />
+            <FivePillars theme={theme} />
+            <OurStory theme={theme} />
+            <PastPartners theme={theme} />
+
             {/* 4. Countdown Section (Strict Brand Colors: White, Black, Gold, Obsidian) */}
             <section id="countdown" className={`py-24 border-y relative overflow-hidden ${
                 theme === "dark" ? "border-white/10 bg-[#0D0D0D]" : "border-black/10 bg-[#F5F0E8]"
@@ -784,6 +798,9 @@ export default function TypeBLandingPage() {
                     </div>
                 </motion.div>
             </section>
+
+            <RSVPSection theme={theme} />
+            <CommunitySection theme={theme} />
 
             {/* 7. Subscribe to Newsletter Section (New) */}
             <section className={`py-20 md:py-28 relative overflow-hidden border-t ${

@@ -18,38 +18,40 @@ const ALL_STYLE_TWINS = [
     "Osas Ighodaro",
 ];
 
+import type { AIStyleData } from "./QuizFlow";
+
 interface QuizResultsProps {
-    answers: Record<string, string>;
+    aiData: AIStyleData;
 }
 
-export default function QuizResults({ answers }: QuizResultsProps) {
+export default function QuizResults({ aiData }: QuizResultsProps) {
     const [storyIndex, setStoryIndex] = useState(0);
     const summaryCardRef = useRef<HTMLDivElement>(null);
     const [isDownloading, setIsDownloading] = useState(false);
 
     const archetype = useMemo(() => {
-        const style = answers.style || "Streetwear";
-        if (style === "Streetwear") {
+        const type = aiData.archetype || "REBEL";
+        if (type === "REBEL") {
             return {
                 title: "You are a Rebel",
                 type: "REBEL",
-                desc: "Edgy, bold, and unapologetic. You break standard conventions and redefine streetwear with raw, modern African energy.",
+                desc: aiData.reading,
                 color: "#ffffff",
                 brands: ["TOKYO JAMES", "I AM ISIGO", "TZAR STUDIOS"]
             };
-        } else if (style === "Avant-Garde") {
+        } else if (type === "FUTURIST") {
             return {
                 title: "You are a Futurist",
                 type: "FUTURIST",
-                desc: "An avant-garde visionary. You view clothing as wearable sculpture, fusing experimental digital narratives with bold silhouettes.",
+                desc: aiData.reading,
                 color: "#c5a059",
                 brands: ["LFJ OFFICIAL", "TJ-WHO", "PIECE ET PATCH"]
             };
-        } else if (style === "Minimalist") {
+        } else if (type === "MINIMALIST") {
             return {
                 title: "You are a Minimalist",
                 type: "MINIMALIST",
-                desc: "Clean lines, quiet luxury. You believe in the luxury of authenticity, focusing on premium tailoring and timeless structures.",
+                desc: aiData.reading,
                 color: "#c5a059",
                 brands: ["HERTUNBA", "FRUCHÉ", "ONALAJA"]
             };
@@ -57,12 +59,12 @@ export default function QuizResults({ answers }: QuizResultsProps) {
             return {
                 title: "You are an Archivist",
                 type: "ARCHIVIST",
-                desc: "A heritage preservationist. You weave historical textures, rich textile craftsmanship, and modern silhouettes into high luxury statements.",
+                desc: aiData.reading,
                 color: "#ffffff",
                 brands: ["IN OFFICIAL", "ONALAJA", "RE LAGOS"]
             };
         }
-    }, [answers]);
+    }, [aiData]);
 
     // Pick 3 style twins
     const styleTwins = useMemo(() => {
@@ -134,12 +136,25 @@ export default function QuizResults({ answers }: QuizResultsProps) {
             // Wait for 1.8s, then swipe the current card out
             const timer = setTimeout(async () => {
                 triggerHaptic("light");
-                await cardControls.start(i => i === cardIndex ? {
-                    x: 400,
-                    rotate: 20,
-                    opacity: 0,
-                    transition: { duration: 0.65, ease: "easeOut" }
-                } : {});
+                await cardControls.start(i => {
+                    if (i === cardIndex) {
+                        return {
+                            x: 400,
+                            rotate: 20,
+                            opacity: 0,
+                            transition: { duration: 0.65, ease: "easeOut" }
+                        };
+                    }
+                    if (i === cardIndex + 1) {
+                        return {
+                            scale: 1,
+                            y: 0,
+                            filter: "brightness(1)",
+                            transition: { duration: 0.65, delay: 0.1 }
+                        };
+                    }
+                    return {};
+                });
                 setCardIndex(p => p + 1);
             }, 2000);
             return () => clearTimeout(timer);
@@ -255,8 +270,10 @@ export default function QuizResults({ answers }: QuizResultsProps) {
                                             initial={{ 
                                                 scale: isCurrent ? 1 : 0.92,
                                                 y: isCurrent ? 0 : 20,
-                                                opacity: isCurrent ? 1 : 0.4
+                                                opacity: 1,
+                                                filter: isCurrent ? "brightness(1)" : "brightness(0.3)"
                                             }}
+                                            transition={{ duration: 0.4 }}
                                             className="absolute w-full h-full max-w-[260px] rounded-2xl overflow-hidden border border-[#c5a059]/30 bg-[#151515] flex flex-col justify-between shadow-2xl"
                                         >
                                             <div className="aspect-[3/4] overflow-hidden relative flex-1">
@@ -325,45 +342,67 @@ export default function QuizResults({ answers }: QuizResultsProps) {
                             animate={{ opacity: 1 }}
                             className="absolute inset-0 flex flex-col items-center justify-center p-3 z-10 bg-black"
                         >
-                            {/* Summary Card (White Background) */}
+                            {/* Summary Card (White Background / Image Background) */}
                             <div
                                 ref={summaryCardRef}
-                                className="relative w-full aspect-[9/16] bg-white overflow-hidden flex flex-col border border-black/10 rounded-2xl"
+                                className="relative w-full aspect-[9/16] bg-[#111111] overflow-hidden flex flex-col border border-black/10 rounded-2xl"
                             >
-                                <div className="flex-1 flex flex-col px-6 pt-8 pb-0">
-                                    <p className="text-[9px] font-mono text-black/40 uppercase tracking-[0.25em] mb-4">
+                                {/* AI Image Background */}
+                                {aiData.userImage && (
+                                    <>
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img 
+                                            src={aiData.userImage} 
+                                            alt="User aesthetic" 
+                                            className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity opacity-40 grayscale"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-b from-[#111111]/80 via-[#111111]/50 to-[#111111]/90" />
+                                    </>
+                                )}
+
+                                <div className="relative z-10 flex-1 flex flex-col px-6 pt-8 pb-0">
+                                    <p className="text-[9px] font-mono text-white/50 uppercase tracking-[0.25em] mb-4">
                                         VVS Lagos &apos;26 · Style Match
                                     </p>
 
                                     <h2 className="text-3xl font-extrabold uppercase mb-1" style={{ color: archetype.color }}>
                                         {archetype.type}
                                     </h2>
-                                    <p className="text-[10px] font-mono uppercase tracking-widest text-black/50 mb-6">
+                                    <p className="text-[10px] font-mono uppercase tracking-widest text-[#c5a059] mb-6">
                                         Archetype Match
                                     </p>
 
-                                    <p className="text-[9px] uppercase tracking-[0.2em] text-black/40 font-mono mb-2">
+                                    <p className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-mono mb-2">
                                         Matched Brands
                                     </p>
                                     <div className="flex flex-col gap-1.5 mb-6">
                                         {matchedBrands.slice(0, 3).map((b) => (
                                             <span
                                                 key={b.name}
-                                                className="px-3 py-1.5 bg-black text-white text-[9px] font-bold uppercase tracking-wider rounded-md inline-block max-w-max"
+                                                className="px-3 py-1.5 bg-[#c5a059] text-black text-[9px] font-bold uppercase tracking-wider rounded-md inline-block max-w-max"
                                             >
                                                 {b.name}
                                             </span>
                                         ))}
                                     </div>
 
-                                    <p className="text-[9px] uppercase tracking-[0.2em] text-black/40 font-mono mb-2">
+                                    <p className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-mono mb-2">
+                                        Dominant Palette
+                                    </p>
+                                    <div className="flex gap-2 mb-6">
+                                        {aiData.colors?.map((c) => (
+                                            <div key={c} className="w-6 h-6 rounded-full border border-white/20 shadow-md" style={{ backgroundColor: c }} />
+                                        ))}
+                                    </div>
+
+                                    <p className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-mono mb-2">
                                         Influencer Twins
                                     </p>
                                     <div className="flex flex-col gap-1.5">
                                         {styleTwins.map((t) => (
                                             <span
                                                 key={t}
-                                                className="text-sm font-bold italic text-black uppercase tracking-tight"
+                                                className="text-sm font-bold italic text-white uppercase tracking-tight"
                                             >
                                                 {t}
                                             </span>
@@ -371,7 +410,7 @@ export default function QuizResults({ answers }: QuizResultsProps) {
                                     </div>
 
                                     <div className="mt-auto pb-4">
-                                        <p className="text-[8px] font-mono uppercase tracking-[0.3em] text-black/30">
+                                        <p className="text-[8px] font-mono uppercase tracking-[0.3em] text-white/30">
                                             #VVSLagos26
                                         </p>
                                     </div>

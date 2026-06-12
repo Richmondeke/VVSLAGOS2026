@@ -1,18 +1,6 @@
 import type { Metadata } from "next";
-import { Jost, Space_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-
-const jost = Jost({
-  variable: "--font-jost",
-  subsets: ["latin"],
-});
-
-const spaceMono = Space_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
 
 const oldEnglish = localFont({
   src: "./fonts/Blackiron.ttf",
@@ -32,9 +20,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jost.variable} ${spaceMono.variable} ${oldEnglish.variable} h-full antialiased`}
+      className={`${oldEnglish.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-vvs-black text-vvs-white">
+      <head>
+        <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet" />
+      </head>
+      <body className="min-h-full flex flex-col bg-vvs-black text-vvs-white font-sans">
         {children}
       </body>
     </html>

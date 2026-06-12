@@ -201,30 +201,21 @@ export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNa
                                 initial="hidden"
                                 animate="visible"
                                 exit="hidden"
-                                className="flex gap-1.5 sm:gap-3 flex-nowrap w-full max-w-[96vw] md:max-w-3xl px-1 sm:px-4 pb-4 justify-center items-center pointer-events-auto overflow-visible py-2 mx-auto"
+                                className="flex flex-col gap-2 w-[300px] p-4 pointer-events-auto bg-black/95 backdrop-blur-xl border border-white/15 rounded-3xl shadow-2xl mb-4 origin-bottom mx-auto"
                             >
                                 {navItems.map((item, idx) => (
                                     <motion.div
-                                        key={idx}
+                                        key={`desk-${idx}`}
                                         variants={cardVariants as any}
                                         onClick={() => handleCardClick(item.action)}
-                                        whileHover={{ scale: 1.05, y: -4 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="flex-1 w-full max-w-[70px] sm:max-w-[100px] md:max-w-[140px] aspect-[4/5] sm:aspect-square md:aspect-[4/5] rounded-xl sm:rounded-2xl overflow-hidden relative border border-white/15 hover:border-vvs-gold/50 cursor-pointer shadow-sm hover:shadow-[0_0_15px_rgba(197,160,89,0.15)] select-none group transition-all duration-300 bg-[#111]"
+                                        className="w-full bg-[#111] border border-white/10 rounded-2xl p-4 flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-all hover:bg-white/5 hover:border-vvs-gold/50 group"
                                     >
-                                        {/* Background Gradient */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-[#111] to-[#222] group-hover:from-vvs-black group-hover:via-vvs-black/90 group-hover:to-vvs-gold/10 transition-all duration-500" />
-                                        
-                                        {/* Content inside card */}
-                                        <div className="absolute inset-0 p-2 sm:p-3 flex flex-col justify-end items-start z-10">
-                                            <div className="text-left w-full">
-                                                <h4 className="font-mono font-bold text-[5.5px] sm:text-[9px] md:text-[10px] tracking-wider text-white group-hover:text-vvs-gold transition-colors leading-tight uppercase truncate">
-                                                    {item.label}
-                                                </h4>
-                                                <p className="font-sans font-light text-[4.5px] sm:text-[7px] md:text-[8px] text-white/50 leading-tight mt-0.5 truncate hidden sm:block">
-                                                    {item.sub}
-                                                </p>
-                                            </div>
+                                        <div className="bg-white/5 p-2 rounded-lg text-white group-hover:text-vvs-gold transition-colors">
+                                            {item.icon}
+                                        </div>
+                                        <div className="flex-1 text-left">
+                                            <h4 className="font-mono font-bold text-[12px] tracking-wider text-white uppercase group-hover:text-vvs-gold transition-colors">{item.label}</h4>
+                                            <p className="font-sans font-light text-[10px] text-white/50 group-hover:text-white/80 transition-colors">{item.sub}</p>
                                         </div>
                                     </motion.div>
                                 ))}

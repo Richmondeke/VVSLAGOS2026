@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "vvs-members-777"
-  }
+  },
+  "targets": {
+    "vvs-members-777": {
+      "hosting": {
+        "web": [
+          "vvs-members-777"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

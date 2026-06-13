@@ -19,47 +19,69 @@ type EventItem = {
 const MOCK_EVENTS: EventItem[] = [
     {
         id: "ev-1",
-        fullDate: "2026-06-20T18:00:00",
-        date: "June 20",
-        title: "VVS Lagos Private Showroom SS27",
-        venue: "Surulere Studio, Lagos",
-        time: "6:00 PM",
-        category: "Showroom Preview",
-        note: "SS27 Capsule Garments • Modular Outerwear Fitting • Live DJ Set",
-        xpCost: 100,
+        fullDate: "2026-07-05T19:00:00",
+        date: "July 5",
+        title: "VVS Convention — Opening Night",
+        venue: "British/Canadian Residence, Lagos",
+        time: "7:00 PM",
+        category: "Opening Gala",
+        note: "Honorary Awards • Recap Videos • Performances • Dinner • Comedy • 5th Anniversary Celebration",
+        xpCost: 200,
     },
     {
         id: "ev-2",
-        fullDate: "2026-07-05T15:00:00",
-        date: "July 5",
-        title: "Creative Roundtable 04: Sonic Archives",
-        venue: "Onikan Center, Lagos",
-        time: "3:00 PM",
-        category: "Discussion Panel",
-        note: "Sound Preservation • Electronic Architecture • Cocktail Mixer",
+        fullDate: "2026-07-06T10:00:00",
+        date: "July 6",
+        title: "VVS Convention — Panel Sessions",
+        venue: "Alliance Française Lagos",
+        time: "10:00 AM",
+        category: "Panel Discussion",
+        note: "5 Sessions • Industry Panelists • Networking • Q&A",
         xpCost: 50,
     },
     {
         id: "ev-3",
-        fullDate: "2026-07-05T19:00:00",
-        date: "July 5",
-        title: "VVS Lagos Grand Opening Night",
-        venue: "Nahous, Victoria Island",
-        time: "7:00 PM",
-        category: "Opening Gala",
-        note: "Gemstone Awards Ceremony • Curated Performances • Afterparty @ Bar 77",
-        xpCost: 200,
+        fullDate: "2026-07-07T09:00:00",
+        date: "July 7 – 12",
+        title: "VVS Convention Week",
+        venue: "Multiple Venues, Lagos",
+        time: "9:00 AM",
+        category: "Convention",
+        note: "Workshops • Themed Events • Dress Code Parties • Creative Sessions • Networking",
+        xpCost: 100,
     },
     {
         id: "ev-4",
-        fullDate: "2026-07-12T10:00:00",
-        date: "July 12",
-        title: "Tokyo James Casting Call Callback",
-        venue: "Surulere Main, Lagos",
-        time: "10:00 AM",
-        category: "Scouting Casting",
-        note: "Paris Runway Briefing • Model Walk Assessments • Portfolio Reviews",
+        fullDate: "2026-07-08T11:00:00",
+        date: "July 8 – 10",
+        title: "VVS Convention — Pop-Up Shop",
+        venue: "Convention Hall, Lagos",
+        time: "11:00 AM",
+        category: "Pop-Up",
+        note: "Exclusive Merch • Limited Drops • Brand Collaborations",
         xpCost: 0,
+    },
+    {
+        id: "ev-5",
+        fullDate: "2026-07-10T19:00:00",
+        date: "July 10",
+        title: "VVS Convention — Showcase Night",
+        venue: "Convention Hall, Lagos",
+        time: "7:00 PM",
+        category: "Showcase",
+        note: "Creative Showcases • Live Performances • Brand Reveals",
+        xpCost: 100,
+    },
+    {
+        id: "ev-6",
+        fullDate: "2026-07-12T18:00:00",
+        date: "July 12",
+        title: "VVS Convention — Closing Ceremony",
+        venue: "Convention Hall, Lagos",
+        time: "6:00 PM",
+        category: "Closing Event",
+        note: "Awards Recap • Final Performances • Afterparty",
+        xpCost: 150,
     },
 ];
 
@@ -144,7 +166,7 @@ export default function SocialPage() {
                     >
                         My Passes
                         {myTickets.length > 0 && (
-                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-vvs-accent text-[9px] text-white font-bold leading-none">
+                            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-vvs-gold text-[9px] text-white font-bold leading-none">
                                 {myTickets.length}
                             </span>
                         )}
@@ -235,7 +257,7 @@ export default function SocialPage() {
                                             className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 ${
                                                 hasPass
                                                     ? "bg-vvs-green/10 border border-vvs-green/30 text-vvs-green cursor-not-allowed"
-                                                    : "bg-text-primary text-vvs-bg hover:bg-vvs-accent hover:text-text-primary cursor-pointer shadow-md"
+                                                    : "bg-text-primary text-vvs-bg hover:bg-vvs-gold hover:text-text-primary cursor-pointer shadow-md"
                                             }`}
                                         >
                                             {hasPass ? "Pass Claimed ✓" : "Claim Pass"}

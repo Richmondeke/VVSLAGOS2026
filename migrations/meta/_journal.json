@@ -5,57 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1773623370611,
-      "tag": "0000_dusty_invisible_woman",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1773626873500,
-      "tag": "0001_remarkable_dark_phoenix",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1773628582191,
-      "tag": "0002_bright_hex",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1773631590476,
-      "tag": "0003_lively_sabretooth",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1773636199207,
-      "tag": "0004_thin_tinkerer",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1773641838119,
-      "tag": "0005_polite_rockslide",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1773643081316,
-      "tag": "0006_round_sentry",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1773652350884,
-      "tag": "0007_lying_saracen",
+      "when": 1781302204468,
+      "tag": "0000_cheerful_supreme_intelligence",
       "breakpoints": true
     }
   ]

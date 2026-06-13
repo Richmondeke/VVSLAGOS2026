@@ -4,6 +4,7 @@ import {
     integer,
     jsonb,
     pgSchema,
+    pgTable,
     primaryKey,
     text,
     timestamp,
@@ -53,3 +54,13 @@ export const consumerOffsets = outboxSchema.table(
     },
     (table) => [primaryKey({ columns: [table.consumerName, table.eventId] })],
 );
+
+export const rsvps = pgTable("rsvps", {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    attendance: text("attendance").notNull(),
+    events: text("events").array(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+

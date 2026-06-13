@@ -1,1 +1,0 @@
-ALTER TABLE "auth"."member_tiers" ADD COLUMN "seq" integer NOT NULL GENERATED ALWAYS AS IDENTITY (sequence name "auth"."member_tiers_seq_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1);

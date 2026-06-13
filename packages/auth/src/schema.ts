@@ -11,7 +11,7 @@ import {
     uuid,
 } from "drizzle-orm/pg-core";
 
-export const authSchema = pgSchema("auth");
+export const authSchema = pgSchema("vvs_auth");
 
 // --- users ---
 

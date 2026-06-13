@@ -63,21 +63,6 @@ const MOCK_OPPORTUNITIES: Opportunity[] = [
             "We are hunting for a super creative lead stylist to direct styling for the upcoming VVS Lagos high-fashion capsule drop. Bring your A-game fashion presence.",
     },
     {
-        id: "opp-2",
-        title: "Technical Design Assistant (Afromodernist Outerwear)",
-        brand: "TJ-WHO",
-        brandLogo: "https://www.vvslagos.com/assets/TJ %20WHO.webp",
-        isVerifiedBrand: true,
-        type: "Gigs",
-        category: "Fashion",
-        location: "Lagos, Nigeria",
-        deadline: "June 25, 2026",
-        budget: "₦650,000",
-        xpReward: "+200 XP",
-        description:
-            "Join TJ-WHO to assist with pattern cutting and structural styling of their upcoming SS27 minimalist afromodern utilitarian collection. High craft, no copy-copy.",
-    },
-    {
         id: "opp-3",
         title: "Creative Lead for Capsule Showcase Campaign",
         brand: "Hertunba",
@@ -364,24 +349,6 @@ export default function DiscoverPage() {
                         high-fashion casting briefs, and global creative grants.
                     </p>
                 </div>
-
-                {/* Search Bar */}
-                <div className="w-full max-w-md md:max-w-xs">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            placeholder={
-                                currentView === "opportunities"
-                                    ? "Search opportunities..."
-                                    : "Search creatives..."
-                            }
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="glass-input w-full rounded-full px-5 py-3 pl-11 text-sm text-text-primary placeholder-text-muted focus:outline-none"
-                        />
-                        <span className="absolute left-4 top-3.5 text-sm opacity-50">🔍</span>
-                    </div>
-                </div>
             </div>
 
             {/* ── Diamond-Cut Brand Banner (Reference-style) ── */}
@@ -440,6 +407,24 @@ export default function DiscoverPage() {
                             }`}
                         />
                     ))}
+                </div>
+            </div>
+
+            {/* Search Bar - Positioned above switcher */}
+            <div className="mb-6 w-full max-w-full">
+                <div className="relative">
+                    <input
+                        type="text"
+                        placeholder={
+                            currentView === "opportunities"
+                                ? "Search opportunities..."
+                                : "Search creatives..."
+                        }
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="glass-input w-full rounded-full px-5 py-3.5 pl-11 text-sm text-text-primary placeholder-text-muted focus:outline-none"
+                    />
+                    <span className="absolute left-4 top-4 text-sm opacity-50">🔍</span>
                 </div>
             </div>
 
@@ -549,7 +534,7 @@ export default function DiscoverPage() {
                                             <span className="pill-tag text-[10px]">{opp.type}</span>
                                         </div>
 
-                                        <h3 className="text-base font-bold leading-snug text-text-primary group-hover:text-vvs-accent transition-colors">
+                                        <h3 className="text-base font-bold leading-snug text-text-primary group-hover:text-vvs-gold transition-colors">
                                             {opp.title}
                                         </h3>
                                         <p className="text-sm text-text-secondary mt-2.5 line-clamp-3 leading-relaxed">
@@ -575,7 +560,7 @@ export default function DiscoverPage() {
 
                                         <button
                                             onClick={() => handleApplyClick(opp)}
-                                            className="w-full text-center text-sm font-semibold py-3 bg-text-primary text-vvs-bg rounded-full transition-all duration-200 hover:bg-vvs-accent cursor-pointer"
+                                            className="w-full text-center text-sm font-semibold py-3 bg-text-primary text-vvs-bg rounded-full transition-all duration-200 hover:bg-vvs-gold cursor-pointer"
                                         >
                                             Quick Apply →
                                         </button>
@@ -671,7 +656,7 @@ export default function DiscoverPage() {
             {applyingOpp && user && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
                     <div className="glass-panel max-w-md w-full p-8 rounded-2xl relative overflow-hidden animate-float border border-text-secondary/15 shadow-2xl">
-                        <div className="absolute top-0 left-0 right-0 h-1.5 bg-vvs-accent" />
+                        <div className="absolute top-0 left-0 right-0 h-1.5 bg-vvs-gold" />
 
                         <button
                             onClick={() => setApplyingOpp(null)}
@@ -689,7 +674,7 @@ export default function DiscoverPage() {
                                     <h2 className="text-xl font-bold text-text-primary mt-1">
                                         Apply with Profile CV
                                     </h2>
-                                    <p className="text-xs text-vvs-accent font-semibold font-mono">
+                                    <p className="text-xs text-vvs-gold font-semibold font-mono">
                                         {applyingOpp.title}
                                     </p>
                                 </div>
@@ -760,7 +745,7 @@ export default function DiscoverPage() {
                                                 ))}
                                             </div>
                                         ) : (
-                                            <div className="p-2.5 rounded bg-vvs-accent/5 border border-vvs-accent/20 text-[10px] text-vvs-accent">
+                                            <div className="p-2.5 rounded bg-vvs-gold/5 border border-vvs-gold/20 text-[10px] text-vvs-gold">
                                                 ⚠️ No portfolio links active in your bio. Go to
                                                 profile to register them.
                                             </div>
@@ -788,7 +773,7 @@ export default function DiscoverPage() {
                                 <button
                                     type="submit"
                                     disabled={isApplying}
-                                    className="w-full text-center mono-caps text-[10px] font-bold py-3.5 bg-text-primary text-vvs-bg hover:bg-vvs-accent hover:text-text-primary rounded-full transition-all glow-accent flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                                    className="w-full text-center mono-caps text-[10px] font-bold py-3.5 bg-text-primary text-vvs-bg hover:bg-vvs-gold hover:text-text-primary rounded-full transition-all glow-accent flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                                 >
                                     {isApplying ? (
                                         <>
@@ -875,7 +860,7 @@ export default function DiscoverPage() {
                                         onClick={() => setSelectedCategory(category)}
                                         className={`text-xs px-3.5 py-2 rounded-full font-semibold transition-all cursor-pointer ${
                                             selectedCategory === category
-                                                ? "bg-vvs-accent text-text-primary"
+                                                ? "bg-vvs-gold text-vvs-black"
                                                 : "bg-tag-bg text-text-secondary hover:bg-tag-bg-hover"
                                         }`}
                                     >
@@ -898,7 +883,7 @@ export default function DiscoverPage() {
                             </button>
                             <button
                                 onClick={() => setIsFilterOpen(false)}
-                                className="flex-1 text-center py-3 bg-text-primary text-vvs-bg rounded-full text-xs font-bold hover:bg-vvs-accent transition-all cursor-pointer"
+                                className="flex-1 text-center py-3 bg-text-primary text-vvs-bg rounded-full text-xs font-bold hover:bg-vvs-gold transition-all cursor-pointer"
                             >
                                 Apply Filters
                             </button>

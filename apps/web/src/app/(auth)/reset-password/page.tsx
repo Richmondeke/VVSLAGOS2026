@@ -22,15 +22,24 @@ function ResetPasswordForm() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-
     if (!token) {
         return (
-            <div className="text-center">
-                <h1 className="mb-2 text-2xl font-bold text-vvs-primary">Invalid Link</h1>
-                <p className="mb-6 text-gray-600">This reset link is invalid or has expired.</p>
-                <Link href="/forgot-password" className="text-vvs-accent hover:underline">
-                    Request a new link
-                </Link>
+            <div className="text-center space-y-6 text-white">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-2xl animate-pulse">
+                    ⚠️
+                </div>
+                <div className="space-y-1">
+                    <h1 className="text-lg font-bold text-white uppercase tracking-widest font-mono">// INVALID_LINK</h1>
+                    <p className="text-xs text-text-muted">This reset link is invalid or has expired.</p>
+                </div>
+                <div className="pt-2">
+                    <Link
+                        href="/forgot-password"
+                        className="inline-block w-full text-center rounded-full bg-white hover:bg-white/90 px-4 py-3 text-xs font-bold text-black transition-all cursor-pointer shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+                    >
+                        Request New Link
+                    </Link>
+                </div>
             </div>
         );
     }
@@ -62,16 +71,21 @@ function ResetPasswordForm() {
     }
 
     return (
-        <>
-            <h1 className="mb-6 text-center text-2xl font-bold text-vvs-primary">New Password</h1>
+        <div className="space-y-6 text-white">
+            <div className="text-center space-y-1">
+                <h1 className="text-lg font-bold text-white uppercase tracking-widest font-mono">// NEW_PASSWORD</h1>
+                <p className="text-xs text-text-secondary">Enter a new secure decryption key.</p>
+            </div>
 
             {error && (
-                <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+                <div className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-400 font-medium tracking-wide flex gap-2 items-center">
+                    <span>⚠️</span> {error}
+                </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label htmlFor="password" className="mb-1 block text-sm font-medium text-gray-700">
+                <div className="space-y-1.5">
+                    <label htmlFor="password" className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block font-mono">
                         New Password
                     </label>
                     <input
@@ -81,12 +95,13 @@ function ResetPasswordForm() {
                         minLength={8}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-vvs-accent focus:outline-none focus:ring-1 focus:ring-vvs-accent"
+                        className="w-full glass-input px-4 py-3 text-sm placeholder:text-white/20 transition-all"
+                        placeholder="At least 8 characters"
                     />
                 </div>
 
-                <div>
-                    <label htmlFor="confirmPassword" className="mb-1 block text-sm font-medium text-gray-700">
+                <div className="space-y-1.5">
+                    <label htmlFor="confirmPassword" className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block font-mono">
                         Confirm Password
                     </label>
                     <input
@@ -96,18 +111,19 @@ function ResetPasswordForm() {
                         minLength={8}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-vvs-accent focus:outline-none focus:ring-1 focus:ring-vvs-accent"
+                        className="w-full glass-input px-4 py-3 text-sm placeholder:text-white/20 transition-all"
+                        placeholder="Confirm password"
                     />
                 </div>
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-lg bg-vvs-accent px-4 py-2.5 font-medium text-text-primary transition-colors hover:bg-vvs-accent/90 disabled:opacity-50"
+                    className="w-full pill-btn pill-btn-primary py-4 justify-center text-sm font-bold tracking-wide mt-6 shadow-[0_0_20px_rgba(255,255,255,0.05)] disabled:opacity-50"
                 >
-                    {loading ? "Resetting..." : "Reset Password"}
+                    {loading ? "Decrypting..." : "Reset Password"}
                 </button>
             </form>
-        </>
+        </div>
     );
 }

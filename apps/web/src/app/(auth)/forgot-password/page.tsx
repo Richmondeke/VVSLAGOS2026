@@ -34,33 +34,46 @@ export default function ForgotPasswordPage() {
 
     if (sent) {
         return (
-            <div className="text-center">
-                <h1 className="mb-2 text-2xl font-bold text-vvs-primary">Check Your Email</h1>
-                <p className="mb-6 text-gray-600">
-                    If an account exists for {email}, we&#39;ve sent password reset instructions.
+            <div className="text-center space-y-6 text-white">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-vvs-gold/10 border border-vvs-gold/20 text-vvs-gold text-2xl animate-pulse">
+                    ✉️
+                </div>
+                <div className="space-y-1">
+                    <h1 className="text-lg font-bold text-white uppercase tracking-widest font-mono">// SIGNAL_TRANSMITTED</h1>
+                    <p className="text-xs text-vvs-gold font-mono uppercase tracking-wider">Check your inbox</p>
+                </div>
+                <p className="text-xs text-text-secondary leading-relaxed px-2">
+                    If an account exists for <span className="font-mono text-white bg-white/5 px-1.5 py-0.5 rounded border border-white/10">{email}</span>, we have sent password reset instructions.
                 </p>
-                <Link href="/login" className="text-vvs-accent hover:underline">
-                    Back to sign in
-                </Link>
+                <div className="pt-2">
+                    <Link
+                        href="/login"
+                        className="inline-block w-full text-center rounded-full bg-white hover:bg-white/90 px-4 py-3 text-xs font-bold text-black transition-all cursor-pointer shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+                    >
+                        Back to Login
+                    </Link>
+                </div>
             </div>
         );
     }
 
     return (
-        <>
-            <h1 className="mb-2 text-center text-2xl font-bold text-vvs-primary">Reset Password</h1>
-            <p className="mb-6 text-center text-sm text-gray-600">
-                Enter your email and we&#39;ll send you a reset link.
-            </p>
+        <div className="space-y-6 text-white">
+            <div className="text-center space-y-1">
+                <h1 className="text-lg font-bold text-white uppercase tracking-widest font-mono">// RESET_PASSWORD</h1>
+                <p className="text-xs text-text-secondary">Enter your email to receive a decryption key.</p>
+            </div>
 
             {error && (
-                <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+                <div className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-400 font-medium tracking-wide flex gap-2 items-center">
+                    <span>⚠️</span> {error}
+                </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
-                        Email
+                <div className="space-y-1.5">
+                    <label htmlFor="email" className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block font-mono">
+                        Email Address
                     </label>
                     <input
                         id="email"
@@ -68,24 +81,25 @@ export default function ForgotPasswordPage() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-vvs-accent focus:outline-none focus:ring-1 focus:ring-vvs-accent"
+                        className="w-full glass-input px-4 py-3 text-sm placeholder:text-white/20 transition-all"
+                        placeholder="yourname@email.com"
                     />
                 </div>
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-lg bg-vvs-accent px-4 py-2.5 font-medium text-text-primary transition-colors hover:bg-vvs-accent/90 disabled:opacity-50"
+                    className="w-full pill-btn pill-btn-primary py-4 justify-center text-sm font-bold tracking-wide mt-6 shadow-[0_0_20px_rgba(255,255,255,0.05)] disabled:opacity-50"
                 >
-                    {loading ? "Sending..." : "Send Reset Link"}
+                    {loading ? "Transmitting..." : "Send Reset Link"}
                 </button>
             </form>
 
-            <p className="mt-4 text-center text-sm">
-                <Link href="/login" className="text-vvs-accent hover:underline">
-                    Back to sign in
+            <p className="text-center text-xs">
+                <Link href="/login" className="text-vvs-gold hover:text-vvs-gold-muted transition-colors font-bold font-mono uppercase tracking-wider">
+                    ← Back to Sign In
                 </Link>
             </p>
-        </>
+        </div>
     );
 }

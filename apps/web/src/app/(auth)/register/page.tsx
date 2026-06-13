@@ -22,7 +22,7 @@ export default function RegisterPage() {
     async function handleInviteSubmit(e: React.FormEvent) {
         e.preventDefault();
         if (!inviteCode.trim()) {
-            setError("PLEASE PROVIDE A VALID REFERRAL KEY");
+            setError("Please enter a valid invite code.");
             return;
         }
         setError(null);
@@ -39,9 +39,9 @@ export default function RegisterPage() {
             setStep("pending");
         } catch (err) {
             if (err instanceof ApiError) {
-                setError(err.message.toUpperCase());
+                setError(err.message);
             } else {
-                setError("REGISTRATION CRITICAL FAULT // RETRY");
+                setError("Something went wrong. Please try again.");
             }
         } finally {
             setLoading(false);
@@ -50,23 +50,23 @@ export default function RegisterPage() {
 
     if (step === "pending") {
         return (
-            <div className="text-center space-y-6">
+            <div className="text-center space-y-6 text-white">
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-vvs-gold/10 border border-vvs-gold/20 text-vvs-gold text-2xl animate-bounce">
                     ⚡
                 </div>
                 <div className="space-y-1">
-                    <h1 className="text-xl font-bold text-text-primary uppercase tracking-wider">SECURE LINK PENDING</h1>
-                    <p className="mono-caps text-[9px] text-vvs-gold tracking-widest">DECRYPTING CREATIVE CREDENTIALS</p>
+                    <h1 className="text-lg font-bold text-white uppercase tracking-widest font-mono">// ACCESS_PENDING</h1>
+                    <p className="text-xs text-vvs-gold font-mono uppercase tracking-wider">Verifying invitation packet...</p>
                 </div>
                 <p className="text-xs text-text-secondary leading-relaxed px-2">
-                    Your application packet has been registered under access key <span className="font-mono text-text-primary bg-text-secondary/5 px-1.5 py-0.5 rounded border border-text-secondary/10">{inviteCode}</span>. VVS node validators are examining your professional reputation.
+                    Your key <span className="font-mono text-white bg-white/5 px-1.5 py-0.5 rounded border border-white/10">{inviteCode}</span> has been staged. Complete the registration sequence to proceed.
                 </p>
                 <div className="pt-2">
                     <Link
                         href="/login"
-                        className="inline-block w-full text-center rounded-vvs-md bg-vvs-accent hover:shadow-[0_0_15px_rgba(255,59,92,0.3)] px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-text-primary transition-all"
+                        className="inline-block w-full text-center rounded-full bg-white hover:bg-white/90 px-4 py-3 text-xs font-bold text-black transition-all cursor-pointer shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                     >
-                        RETURN TO LOGIN
+                        Go to Login
                     </Link>
                 </div>
             </div>
@@ -75,22 +75,22 @@ export default function RegisterPage() {
 
     if (step === "invite") {
         return (
-            <div className="space-y-6">
+            <div className="space-y-6 text-white">
                 <div className="text-center space-y-1">
-                    <h1 className="text-xl font-bold text-text-primary uppercase tracking-tight">VERIFY INVITATION KEY</h1>
-                    <p className="text-xs text-text-secondary">Enter your selective referral code to open credentials setup.</p>
+                    <h1 className="text-lg font-bold text-white uppercase tracking-widest font-mono">// ACCESS_CODE</h1>
+                    <p className="text-xs text-text-secondary">VVS Lagos is currently invite-only. Enter invite key.</p>
                 </div>
 
                 {error && (
-                    <div className="relative overflow-hidden rounded-vvs-md border border-vvs-accent/20 bg-vvs-accent/5 px-4 py-3 text-xs text-vvs-accent font-mono tracking-wide flex gap-2 items-center">
-                        <span className="animate-pulse">●</span> {error}
+                    <div className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-400 font-medium tracking-wide flex gap-2 items-center">
+                        <span>⚠️</span> {error}
                     </div>
                 )}
 
                 <form onSubmit={handleInviteSubmit} className="space-y-4">
-                    <div className="space-y-1">
-                        <label htmlFor="inviteCode" className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest block">
-                            DECRYPT ACCESS KEY
+                    <div className="space-y-1.5">
+                        <label htmlFor="inviteCode" className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block font-mono">
+                            Invite Key
                         </label>
                         <input
                             id="inviteCode"
@@ -98,23 +98,23 @@ export default function RegisterPage() {
                             required
                             value={inviteCode}
                             onChange={(e) => setInviteCode(e.target.value)}
-                            className="w-full rounded-vvs-md glass-input px-4 py-2.5 text-sm placeholder:text-text-muted focus:border-vvs-accent focus:ring-1 focus:ring-vvs-accent font-mono uppercase tracking-widest text-center"
+                            className="w-full glass-input px-4 py-3 text-sm placeholder:text-white/20 transition-all font-mono uppercase tracking-widest text-center"
                             placeholder="VVS-XXXX-XXXX"
                         />
                     </div>
 
                     <button
                         type="submit"
-                        className="relative w-full overflow-hidden rounded-vvs-md bg-vvs-accent px-4 py-3 font-semibold text-xs tracking-wider uppercase text-text-primary transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,59,92,0.4)] active:scale-[0.98]"
+                        className="w-full pill-btn pill-btn-primary py-4 justify-center text-sm font-bold tracking-wide mt-4 shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                     >
-                        CONTINUE REGISTRATION
+                        Continue
                     </button>
                 </form>
 
                 <p className="text-center text-xs text-text-secondary">
-                    Already authenticated?{" "}
-                    <Link href="/login" className="text-vvs-accent hover:underline font-semibold tracking-wide">
-                        SIGN IN
+                    Already have an account?{" "}
+                    <Link href="/login" className="text-vvs-gold hover:text-vvs-gold-muted transition-colors font-bold font-mono">
+                        Log In
                     </Link>
                 </p>
             </div>
@@ -123,22 +123,22 @@ export default function RegisterPage() {
 
     // step === "account"
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 text-white">
             <div className="text-center space-y-1">
-                <h1 className="text-xl font-bold text-text-primary uppercase tracking-tight">CREATE MEMBER PROFILE</h1>
-                <p className="text-xs text-text-secondary">Establish your credentials on the network.</p>
+                <h1 className="text-lg font-bold text-white uppercase tracking-widest font-mono">// ACCOUNT_SETUP</h1>
+                <p className="text-xs text-text-secondary">Set up your credentials to join VVS.</p>
             </div>
 
             {error && (
-                <div className="relative overflow-hidden rounded-vvs-md border border-vvs-accent/20 bg-vvs-accent/5 px-4 py-3 text-xs text-vvs-accent font-mono tracking-wide flex gap-2 items-center">
-                    <span className="animate-pulse">●</span> {error}
+                <div className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-400 font-medium tracking-wide flex gap-2 items-center">
+                    <span>⚠️</span> {error}
                 </div>
             )}
 
             <form onSubmit={handleAccountSubmit} className="space-y-4">
-                <div className="space-y-1">
-                    <label htmlFor="email" className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest block">
-                        SECURE TERMINAL EMAIL
+                <div className="space-y-1.5">
+                    <label htmlFor="email" className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block font-mono">
+                        Email Address
                     </label>
                     <input
                         id="email"
@@ -146,14 +146,14 @@ export default function RegisterPage() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full rounded-vvs-md glass-input px-4 py-2.5 text-sm placeholder:text-text-muted focus:border-vvs-accent focus:ring-1 focus:ring-vvs-accent font-mono"
-                        placeholder="yourname@vvs.co"
+                        className="w-full glass-input px-4 py-3 text-sm placeholder:text-white/20 transition-all"
+                        placeholder="yourname@email.com"
                     />
                 </div>
 
-                <div className="space-y-1">
-                    <label htmlFor="password" className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest block">
-                        PASSPHRASE ENCRYPTION
+                <div className="space-y-1.5">
+                    <label htmlFor="password" className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block font-mono">
+                        Password
                     </label>
                     <input
                         id="password"
@@ -162,7 +162,7 @@ export default function RegisterPage() {
                         minLength={8}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full rounded-vvs-md glass-input px-4 py-2.5 text-sm placeholder:text-text-muted focus:border-vvs-accent focus:ring-1 focus:ring-vvs-accent font-mono"
+                        className="w-full glass-input px-4 py-3 text-sm placeholder:text-white/20 transition-all"
                         placeholder="At least 8 characters"
                     />
                 </div>
@@ -170,19 +170,18 @@ export default function RegisterPage() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="relative w-full overflow-hidden rounded-vvs-md bg-vvs-accent px-4 py-3 font-semibold text-xs tracking-wider uppercase text-text-primary transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,59,92,0.4)] active:scale-[0.98] disabled:opacity-50"
+                    className="w-full pill-btn pill-btn-primary py-4 justify-center text-sm font-bold tracking-wide mt-6 shadow-[0_0_20px_rgba(255,255,255,0.05)] disabled:opacity-50"
                 >
-                    <span className="relative z-10">{loading ? "PROCESSING HANDSHAKE..." : "INITIALIZE MEMBERSHIP"}</span>
+                    {loading ? "Creating Account..." : "Sign Up"}
                 </button>
             </form>
 
             <button
                 onClick={() => setStep("invite")}
-                className="w-full text-center text-xs text-text-muted hover:text-text-secondary mono-caps tracking-widest"
+                className="w-full text-center text-xs text-text-secondary hover:text-white transition-colors font-bold uppercase tracking-widest font-mono"
             >
-                ← BACK TO DECRYPT KEY
+                ← Back
             </button>
         </div>
     );
 }
-

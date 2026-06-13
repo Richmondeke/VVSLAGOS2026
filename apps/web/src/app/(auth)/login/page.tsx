@@ -36,12 +36,17 @@ function LoginForm() {
 
         try {
             await login(email, password);
-            router.push(redirect);
+            const isOnboardingComplete = localStorage.getItem("vvs_onboarding_complete") === "true";
+            if (isOnboardingComplete) {
+                router.push(redirect);
+            } else {
+                router.push("/welcome");
+            }
         } catch (err) {
             if (err instanceof ApiError) {
-                setError(err.status === 401 ? "INVALID CREDENTIALS // DOUBLE CHECK ENTRY" : err.message);
+                setError(err.status === 401 ? "Incorrect email or password. Please try again." : err.message);
             } else {
-                setError("SYSTEM TIMEOUT // ATTEMPT RE-ENTRY");
+                setError("Something went wrong. Please try again.");
             }
         } finally {
             setLoading(false);
@@ -49,21 +54,21 @@ function LoginForm() {
     }
 
     return (
-        <div className="space-y-6 text-vvs-black">
+        <div className="space-y-6 text-white">
             <div className="space-y-2 text-center">
-                <h2 className="text-3xl font-bold tracking-tight text-vvs-black font-serif">Sign in</h2>
-                <p className="text-xs text-vvs-black/60">Enter your registered details to access your account.</p>
+                <h2 className="text-2xl font-bold tracking-wider text-white font-serif uppercase">// SECURE_LOGIN</h2>
+                <p className="text-xs text-text-secondary">Enter your credentials to enter the void.</p>
             </div>
 
             {error && (
-                <div className="relative overflow-hidden rounded-2xl border border-red-500/10 bg-red-500/5 px-4 py-3 text-xs text-red-600 font-medium tracking-wide flex gap-2 items-center">
+                <div className="relative overflow-hidden rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-400 font-medium tracking-wide flex gap-2 items-center">
                     <span>⚠️</span> {error}
                 </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-1.5">
-                    <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-vvs-black/70 block">
+                    <label htmlFor="email" className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block font-mono">
                         Email Address
                     </label>
                     <input
@@ -72,17 +77,17 @@ function LoginForm() {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-vvs-black focus:outline-none focus:ring-2 focus:ring-vvs-gold/40 placeholder:text-black/30 transition-all"
-                        placeholder="identity@vvs.co"
+                        className="w-full glass-input px-4 py-3 text-sm placeholder:text-white/20 transition-all"
+                        placeholder="yourname@email.com"
                     />
                 </div>
 
                 <div className="space-y-1.5">
                     <div className="flex justify-between items-center">
-                        <label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-vvs-black/70 block">
+                        <label htmlFor="password" className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block font-mono">
                             Password
                         </label>
-                        <Link href="/forgot-password" className="text-xs font-bold text-vvs-gold hover:underline">
+                        <Link href="/forgot-password" className="text-xs font-bold text-vvs-gold hover:text-vvs-gold-muted transition-colors font-mono">
                             Forgot?
                         </Link>
                     </div>
@@ -92,7 +97,7 @@ function LoginForm() {
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-vvs-black focus:outline-none focus:ring-2 focus:ring-vvs-gold/40 placeholder:text-black/30 transition-all"
+                        className="w-full glass-input px-4 py-3 text-sm placeholder:text-white/20 transition-all"
                         placeholder="••••••••••••"
                     />
                 </div>
@@ -100,29 +105,29 @@ function LoginForm() {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full rounded-full bg-vvs-black py-4 font-bold text-white hover:bg-vvs-black/95 transition-all text-sm tracking-wide disabled:opacity-50 cursor-pointer text-center mt-6"
+                    className="w-full pill-btn pill-btn-primary py-4 justify-center text-sm font-bold tracking-wide mt-6 shadow-[0_0_20px_rgba(255,255,255,0.05)] disabled:opacity-50"
                 >
-                    {loading ? "Authenticating..." : "Continue"}
+                    {loading ? "Decrypting..." : "Log In"}
                 </button>
             </form>
 
             <div className="relative flex py-2 items-center">
-                <div className="flex-grow border-t border-black/5"></div>
-                <span className="flex-shrink mx-4 text-[10px] font-bold text-vvs-black/40 uppercase tracking-widest">New Member?</span>
-                <div className="flex-grow border-t border-black/5"></div>
+                <div className="flex-grow border-t border-white/5"></div>
+                <span className="flex-shrink mx-4 text-[9px] font-mono font-bold text-text-muted uppercase tracking-[0.2em]">New Member?</span>
+                <div className="flex-grow border-t border-white/5"></div>
             </div>
 
             {/* Exclusive Invite-Only Prompt */}
-            <div className="rounded-2xl border border-vvs-gold/20 bg-[#FFFDF6] p-5 space-y-3 relative overflow-hidden text-left shadow-sm">
+            <div className="rounded-2xl border border-vvs-gold/15 bg-vvs-gold/5 p-5 space-y-3 relative overflow-hidden text-left">
                 <div className="space-y-1">
-                    <h4 className="text-xs font-bold text-vvs-black uppercase tracking-wide">Referral Access</h4>
-                    <p className="text-xs text-vvs-black/60 leading-relaxed">VVS operates on an exclusive invite pool. Verify your access code to initialize register pipeline.</p>
+                    <h4 className="text-xs font-bold text-vvs-gold uppercase tracking-widest font-mono">Invite-Only Access</h4>
+                    <p className="text-xs text-text-secondary leading-relaxed">VVS Lagos is currently invite-only. Please enter your invite code to sign up.</p>
                 </div>
                 <Link
                     href="/register"
-                    className="block w-full text-center rounded-full bg-white border border-black/10 hover:bg-black/5 py-2.5 text-xs font-bold text-vvs-black transition-all cursor-pointer"
+                    className="block w-full text-center rounded-full bg-white/5 border border-white/10 hover:bg-white/10 py-2.5 text-xs font-bold text-white transition-all cursor-pointer"
                 >
-                    Verify Invite Code
+                    Enter Invite Code
                 </Link>
             </div>
         </div>

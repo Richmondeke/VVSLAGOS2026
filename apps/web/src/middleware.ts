@@ -11,6 +11,12 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
+    // Allow static files with standard extensions in public folder (e.g. logo images, fonts)
+    const staticExtensionRegex = /\.(png|jpg|jpeg|gif|svg|webp|avif|ico|woff2|woff|ttf)$/i;
+    if (staticExtensionRegex.test(pathname)) {
+        return NextResponse.next();
+    }
+
     // Allow API routes and static assets
     if (pathname.startsWith("/api") || pathname.startsWith("/_next") || pathname.startsWith("/favicon")) {
         return NextResponse.next();

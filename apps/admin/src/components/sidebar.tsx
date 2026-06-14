@@ -51,12 +51,12 @@ export function Sidebar() {
     return (
         <aside className="flex h-screen w-60 flex-col border-r border-admin-border bg-admin-surface z-50">
             <div className="border-b border-admin-border p-4 flex items-center gap-3">
-                <div className="w-10 h-10 relative rounded overflow-hidden flex-shrink-0">
+                <div className="w-10 h-10 relative rounded flex-shrink-0">
                     <Image 
                         src={isDark ? "/assets/VVSMASKBLACK.png" : "/assets/VVSWhiteMAsk.png"} 
                         alt="VVS Logo" 
                         fill 
-                        className="object-cover" 
+                        className="object-contain" 
                     />
                 </div>
                 <div>

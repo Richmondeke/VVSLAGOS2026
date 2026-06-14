@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
+import Image from "next/image";
 
 const NAV_ITEMS = [
     { href: "/", label: "Dashboard", icon: "grid" },
@@ -20,33 +21,17 @@ const ICONS: Record<string, string> = {
     cog: "\u2699",
 };
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-
-export function Sidebar({ onClose }: { onClose?: () => void }) {
+export function Sidebar({ 
+    onClose, 
+    isDark, 
+    toggleTheme 
+}: { 
+    onClose?: () => void;
+    isDark: boolean;
+    toggleTheme: () => void;
+}) {
     const pathname = usePathname();
     const { user, logout } = useAuth();
-    const [isDark, setIsDark] = useState(false);
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const isDarkMode = document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
-            setIsDark(isDarkMode);
-            if (isDarkMode) document.documentElement.classList.add('dark');
-        }
-    }, []);
-
-    const toggleTheme = () => {
-        const nextTheme = !isDark;
-        setIsDark(nextTheme);
-        if (nextTheme) {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        }
-    };
 
     return (
         <aside className="flex h-screen w-60 flex-col border-r border-admin-border bg-admin-surface z-50">
@@ -103,9 +88,9 @@ export function Sidebar({ onClose }: { onClose?: () => void }) {
                     <span className="text-xs font-semibold text-admin-primary">Theme</span>
                     <button 
                         onClick={toggleTheme}
-                        className="w-10 h-5 bg-admin-border rounded-full relative transition-colors focus:outline-none focus:ring-2 focus:ring-admin-accent/50"
+                        className="text-[10px] font-bold uppercase tracking-wider text-admin-muted hover:text-admin-primary focus:outline-none transition-colors border border-admin-border px-3 py-1.5 rounded-lg hover:bg-admin-surface"
                     >
-                        <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-admin-surface rounded-full transition-transform shadow-sm ${isDark ? 'translate-x-5' : ''}`} />
+                        {isDark ? "Light Mode" : "Dark Mode"}
                     </button>
                 </div>
                 <div className="mb-2 text-xs text-admin-muted font-mono truncate">

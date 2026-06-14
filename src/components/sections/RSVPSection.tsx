@@ -1,17 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import { useSearchParams } from "next/navigation";
 
 interface RSVPSectionProps {
     theme?: "light" | "dark";
 }
 
-export default function RSVPSection({ theme = "dark" }: RSVPSectionProps) {
+function RSVPForm({ isDark }: { isDark: boolean }) {
     const [email, setEmail] = useState("");
     const [submitted, setSubmitted] = useState(false);
-    const isDark = theme === "dark";
+    const searchParams = useSearchParams();
+    const referredBy = searchParams.get("ref");
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -22,6 +24,7 @@ export default function RSVPSection({ theme = "dark" }: RSVPSectionProps) {
                     email: email.trim(),
                     attendance: "yes",
                     events: [],
+                    referred_by_admin: referredBy || null,
                     created_at: new Date().toISOString()
                 }]);
             } catch (err) {
@@ -103,5 +106,13 @@ export default function RSVPSection({ theme = "dark" }: RSVPSectionProps) {
                 </motion.div>
             </div>
         </section>
+    );
+}
+
+export default function RSVPSection({ theme = "dark" }: RSVPSectionProps) {
+    return (
+        <Suspense fallback={<div className="py-20 text-center">Loading...</div>}>
+            <RSVPForm isDark={theme === "dark"} />
+        </Suspense>
     );
 }

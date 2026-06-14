@@ -6,10 +6,15 @@ import { Check } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import LiquidNavbar from "@/components/sections/LiquidNavbar";
 import { triggerHaptic } from "@/utils/haptic";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function RSVPPage() {
+function RSVPContent() {
     const containerRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({ container: containerRef });
+    
+    const searchParams = useSearchParams();
+    const referredBy = searchParams.get("ref");
     
     const [rsvpData, setRsvpData] = useState({
         name: "",
@@ -27,6 +32,7 @@ export default function RSVPPage() {
                 email: rsvpData.email.trim(),
                 attendance: rsvpData.attendance,
                 events: rsvpData.events,
+                referred_by_admin: referredBy || null,
                 created_at: new Date().toISOString()
             }]);
 
@@ -199,5 +205,13 @@ export default function RSVPPage() {
                 <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-white/5 blur-[150px] rounded-full mix-blend-screen" />
             </div>
         </div>
+    );
+}
+
+export default function RSVPPage() {
+    return (
+        <Suspense fallback={<div className="bg-black min-h-screen text-white flex items-center justify-center font-mono text-sm tracking-widest uppercase">Loading...</div>}>
+            <RSVPContent />
+        </Suspense>
     );
 }

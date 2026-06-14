@@ -7,8 +7,8 @@ import Image from "next/image";
 
 const NAV_ITEMS = [
     { href: "/", label: "Dashboard", icon: "grid" },
-    { href: "/rsvps", label: "RSVPs", icon: "inbox" },
-    { href: "/members", label: "Members", icon: "users" },
+    // { href: "/rsvps", label: "RSVPs", icon: "inbox" },
+    // { href: "/members", label: "Members", icon: "users" },
 ];
 
 const ICONS: Record<string, string> = {

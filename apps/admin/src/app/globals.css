@@ -1,18 +1,80 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-display: swap;
+  font-style: normal;
+}
+
 @theme {
-    --color-admin-primary: #1e293b;
-    --color-admin-accent: #6366f1;
-    --color-admin-success: #22c55e;
-    --color-admin-warning: #f59e0b;
-    --color-admin-danger: #ef4444;
-    --color-admin-info: #3b82f6;
-    --color-admin-muted: #94a3b8;
-    --color-admin-surface: #f8fafc;
-    --color-admin-border: #e2e8f0;
+    /* VVS Lagos Design Palette */
+    --color-admin-primary: #000000; /* Black Text */
+    --color-admin-accent: #c5a059; /* VVS Gold */
+    --color-admin-accent-hover: #b39150;
+    --color-admin-success: #15be53;
+    --color-admin-warning: #9b6829;
+    --color-admin-danger: #ea2261;
+    --color-admin-info: #2874ad;
+    --color-admin-muted: rgba(0, 0, 0, 0.5); /* Faded Black */
+    --color-admin-surface: #FAF7F2; /* Cream Background */
+    --color-admin-border: rgba(0, 0, 0, 0.1); /* Soft Border */
+    --color-admin-brand-dark: #000000;
 
     /* Tier Colors */
     --color-tier-free: #9ca3af;
     --color-tier-verified: #3b82f6;
     --color-tier-pro: #d4a843;
+
+    /* Stripe Shadows */
+    --shadow-stripe-ambient: rgba(23,23,23,0.06) 0px 3px 6px;
+    --shadow-stripe-standard: rgba(23,23,23,0.08) 0px 15px 35px;
+    --shadow-stripe-elevated: rgba(50,50,93,0.25) 0px 30px 45px -30px, rgba(0,0,0,0.1) 0px 18px 36px -18px;
+    --shadow-stripe-deep: rgba(3,3,39,0.25) 0px 14px 21px -14px, rgba(0,0,0,0.1) 0px 8px 17px -8px;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+    --color-admin-primary: #ffffff;
+    --color-admin-surface: #0a0a0a;
+    --color-admin-border: rgba(255, 255, 255, 0.1);
+    --color-admin-muted: rgba(255, 255, 255, 0.5);
+    --color-admin-accent: #c5a059;
+    --color-admin-accent-hover: #b39150;
+    --shadow-stripe-ambient: rgba(0,0,0,0.5) 0px 3px 6px;
+    --shadow-stripe-standard: rgba(0,0,0,0.5) 0px 15px 35px;
+    --shadow-stripe-elevated: rgba(0,0,0,0.8) 0px 30px 45px -30px, rgba(0,0,0,0.5) 0px 18px 36px -18px;
+}
+
+body {
+    font-family: 'Satoshi', sans-serif;
+    font-feature-settings: "ss01";
+    background-color: var(--color-admin-surface);
+    color: var(--color-admin-primary);
 }

@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    if (pathname.startsWith("/_next") || pathname.startsWith("/favicon")) {
+    if (pathname.startsWith("/_next") || pathname.startsWith("/favicon") || pathname.startsWith("/assets") || pathname === "/icon.png") {
         return NextResponse.next();
     }
 

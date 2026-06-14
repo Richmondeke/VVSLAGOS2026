@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Sidebar } from "@/components/sidebar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+    const { user, loading } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     if (loading) {

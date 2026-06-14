@@ -36,8 +36,8 @@ export default async function RSVPsPage() {
                     <p className="text-sm">{error.message}</p>
                 </div>
             ) : (
-                <div className="bg-admin-surface border border-admin-border rounded-xl shadow-[var(--shadow-stripe-ambient)] overflow-hidden">
-                    <table className="w-full text-sm text-left">
+                <div className="bg-admin-surface border border-admin-border rounded-xl shadow-[var(--shadow-stripe-ambient)] overflow-x-auto">
+                    <table className="w-full text-sm text-left min-w-[600px]">
                         <thead className="bg-admin-surface text-admin-muted uppercase text-[10px] tracking-wider border-b border-admin-border">
                             <tr>
                                 <th className="px-6 py-4 font-bold">Email</th>

@@ -83,7 +83,7 @@ function MembersContent() {
 
     return (
         <div>
-            <div className="mb-6 flex items-center justify-between">
+            <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <h1 className="text-2xl font-bold text-admin-primary">Members</h1>
                 <Link
                     href="/members?status=pending_approval"
@@ -94,7 +94,7 @@ function MembersContent() {
             </div>
 
             {/* Filters */}
-            <div className="mb-4 flex gap-3">
+            <div className="mb-4 flex flex-col sm:flex-row gap-3">
                 <input
                     type="text"
                     placeholder="Search by email..."
@@ -118,7 +118,7 @@ function MembersContent() {
 
             {/* Table */}
             <div className="overflow-x-auto rounded-xl border border-admin-border bg-white">
-                <table className="w-full text-sm">
+                <table className="w-full text-sm min-w-[600px]">
                     <thead>
                         <tr className="border-b border-admin-border bg-gray-50">
                             <th className="px-4 py-3 text-left font-medium text-gray-600">Email</th>

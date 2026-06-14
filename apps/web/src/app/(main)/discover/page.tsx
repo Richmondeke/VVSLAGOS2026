@@ -3,6 +3,7 @@
 import Countdown from "@/components/countdown";
 import { useAuth } from "@/lib/auth-context";
 import { useEffect, useState } from "react";
+import { apiClient } from "@/lib/api-client";
 
 type Opportunity = {
     id: string;
@@ -268,7 +269,8 @@ const getDaysLeft = (deadlineStr: string) => {
 export default function DiscoverPage() {
     const { user, addXp } = useAuth();
     const [currentView, setCurrentTab] = useState<"opportunities" | "creatives">("opportunities");
-    const [opportunities, setOpportunities] = useState<Opportunity[]>(MOCK_OPPORTUNITIES);
+    const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+    const [isLoadingOpps, setIsLoadingOpps] = useState(true);
     const [selectedType, setSelectedType] = useState<string>("All");
     const [selectedCategory, setSelectedCategory] = useState<string>("All");
     const [searchQuery, setSearchQuery] = useState("");
@@ -290,6 +292,21 @@ export default function DiscoverPage() {
             setActiveAd((prev) => (prev + 1) % BANNER_ADS.length);
         }, 6000);
         return () => clearInterval(timer);
+    }, []);
+
+    // Fetch opportunities dynamically
+    useEffect(() => {
+        async function fetchOpps() {
+            try {
+                const data = await apiClient<Opportunity[]>("/api/content/opportunities");
+                setOpportunities(data);
+            } catch (err) {
+                console.error("Failed to load opportunities", err);
+            } finally {
+                setIsLoadingOpps(false);
+            }
+        }
+        fetchOpps();
     }, []);
 
     // Filter logic
@@ -477,7 +494,12 @@ export default function DiscoverPage() {
             {currentView === "opportunities" && (
                 <div className="space-y-8">
                     {/* Opportunities Feed Grid */}
-                    {filteredOpportunities.length === 0 ? (
+                    {isLoadingOpps ? (
+                        <div className="text-center py-20 rounded-vvs-xl bg-vvs-card max-w-xl mx-auto">
+                            <span className="text-5xl animate-pulse inline-block">⚡</span>
+                            <h3 className="text-lg font-bold mt-4 text-text-primary">Loading Opportunities...</h3>
+                        </div>
+                    ) : filteredOpportunities.length === 0 ? (
                         <div className="text-center py-20 rounded-vvs-xl bg-vvs-card max-w-xl mx-auto">
                             <span className="text-5xl">📭</span>
                             <h3 className="text-lg font-bold mt-4 text-text-primary">
@@ -503,19 +525,19 @@ export default function DiscoverPage() {
                                                         opp.brandLogo.startsWith("/")) ? (
                                                         <img
                                                             src={opp.brandLogo}
-                                                            alt={opp.brand}
+                                                            alt={opp.brand || "Brand Logo"}
                                                             className="h-full w-full object-cover"
                                                         />
                                                     ) : (
-                                                        <span className="text-xl">
-                                                            {opp.brandLogo ?? "⚡"}
+                                                        <span className="text-xl font-bold">
+                                                            {opp.brand ? opp.brand.charAt(0).toUpperCase() : "⚡"}
                                                         </span>
                                                     )}
                                                 </div>
                                                 <div>
                                                     <div className="flex items-center gap-1.5">
                                                         <h4 className="text-sm font-bold text-text-primary leading-none">
-                                                            {opp.brand}
+                                                            {opp.brand || "Independent"}
                                                         </h4>
                                                         {opp.isVerifiedBrand && (
                                                             <span
@@ -553,7 +575,7 @@ export default function DiscoverPage() {
                                             <div className="text-right">
                                                 <span className="text-text-muted">Deadline</span>
                                                 <span className="text-text-secondary font-semibold ml-1.5">
-                                                    {getDaysLeft(opp.deadline)}
+                                                    {opp.deadline ? getDaysLeft(opp.deadline) : "N/A"}
                                                 </span>
                                             </div>
                                         </div>

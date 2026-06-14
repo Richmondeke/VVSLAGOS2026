@@ -8,6 +8,7 @@ import { marketplaceRoutes } from "@vvs/marketplace";
 import { socialRoutes } from "@vvs/social";
 import { platformRoutes } from "@vvs/platform";
 import { adminApiRoutes } from "./admin-routes.js";
+import { contentRoutes } from "./content-routes.js";
 import Fastify from "fastify";
 import type { FastifyRequest } from "fastify";
 
@@ -153,6 +154,9 @@ export async function buildApp() {
 
     // Admin API routes (cross-domain queries for admin dashboard)
     await app.register(adminApiRoutes, { authDb, marketplaceDb, platformDb });
+
+    // Public CMS routes
+    await app.register(contentRoutes, { db: platformDb });
 
     return app;
 }

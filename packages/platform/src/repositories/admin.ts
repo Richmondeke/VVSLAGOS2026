@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm";
+import { eq, sql } from "@vvs/shared";
 import type { ScopedClient } from "@vvs/shared";
 import { adminUsers, platformSettings } from "../schema.js";
 
@@ -26,6 +26,14 @@ export function createAdminRepo(db: ScopedClient) {
                 .values({ userId: data.userId, role: data.role })
                 .returning();
             return rows[0]!;
+        },
+
+        async listAdmins(): Promise<AdminUserRow[]> {
+            return db.select().from(adminUsers);
+        },
+
+        async removeAdmin(userId: string): Promise<void> {
+            await db.delete(adminUsers).where(eq(adminUsers.userId, userId));
         },
 
         // --- Platform Settings ---

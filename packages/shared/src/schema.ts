@@ -9,6 +9,8 @@ import {
     text,
     timestamp,
     uniqueIndex,
+    uuid,
+    boolean,
 } from "drizzle-orm/pg-core";
 
 export const outboxSchema = pgSchema("outbox");
@@ -63,4 +65,64 @@ export const rsvps = pgTable("rsvps", {
     events: text("events").array(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
+
+export const contentEvents = pgTable(
+    "content_events",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        title: text("title").notNull(),
+        description: text("description").notNull(),
+        customSlug: text("custom_slug").notNull().unique(),
+        coverImage: text("cover_image"),
+        eventDate: timestamp("event_date", { withTimezone: true }),
+        isPublished: boolean("is_published").default(false).notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        uniqueIndex("idx_content_events_slug").on(table.customSlug),
+        index("idx_content_events_published").on(table.isPublished),
+    ]
+);
+
+export const contentNews = pgTable(
+    "content_news",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        title: text("title").notNull(),
+        content: text("content").notNull(),
+        coverImage: text("cover_image"),
+        isPublished: boolean("is_published").default(false).notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        index("idx_content_news_published").on(table.isPublished),
+    ]
+);
+
+export const contentOpportunities = pgTable(
+    "content_opportunities",
+    {
+        id: uuid("id").primaryKey().defaultRandom(),
+        title: text("title").notNull(),
+        brand: text("brand"), // Replaces 'company'
+        brandLogo: text("brand_logo"),
+        isVerifiedBrand: boolean("is_verified_brand").default(false).notNull(),
+        description: text("description").notNull(),
+        type: text("type").notNull(), // e.g. Job, Grant, Casting
+        category: text("category").notNull().default('Other'), // e.g. Fashion, Tech
+        location: text("location"),
+        deadline: timestamp("deadline", { withTimezone: true }),
+        budget: text("budget"),
+        xpReward: integer("xp_reward").default(0),
+        url: text("url"), // External apply link
+        isPublished: boolean("is_published").default(false).notNull(),
+        createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+        updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    },
+    (table) => [
+        index("idx_content_opportunities_published").on(table.isPublished),
+    ]
+);
 

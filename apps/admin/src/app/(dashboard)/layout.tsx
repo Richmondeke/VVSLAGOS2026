@@ -40,6 +40,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     if (!user) return null;
 
+    if (user.role !== "admin" && user.role !== "super_admin") {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-admin-surface dark">
+                <div className="text-center space-y-4">
+                    <h1 className="text-2xl font-bold text-red-500">Unauthorized Access</h1>
+                    <p className="text-admin-muted">You do not have administrator privileges.</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="flex min-h-screen bg-admin-surface">
             {/* Mobile Overlay */}

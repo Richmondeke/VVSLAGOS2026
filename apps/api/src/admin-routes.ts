@@ -1,6 +1,7 @@
 import type { FastifyPluginAsync } from "fastify";
 import type { ScopedClient } from "@vvs/shared";
-import { requireAdmin, requireRole, getAdminRole } from "@vvs/platform";
+import { contentEvents, contentNews, contentOpportunities, rsvps, eq, desc } from "@vvs/shared";
+import { requireAdmin, requireRole, getAdminRole, createAdminRepo } from "@vvs/platform";
 import { createUsersRepo, getPendingApprovals, approveUser, rejectUser } from "@vvs/auth";
 import { createOrdersRepo } from "@vvs/marketplace";
 
@@ -152,5 +153,140 @@ export const adminApiRoutes: FastifyPluginAsync<AdminApiOpts> = async (app, opts
         if (!userId) return reply.status(401).send({ message: "Not authenticated" });
         const role = await getAdminRole(platformDb, userId);
         return reply.send({ userId, role });
+    });
+
+    // --- Manage Admins ---
+    const adminRepo = createAdminRepo(platformDb);
+    
+    app.get("/admin/api/admins", async (request, reply) => {
+        const adminId = await checkAdmin(request);
+        await requireRole(platformDb, adminId, "super_admin");
+        const admins = await adminRepo.listAdmins();
+        return reply.send(admins);
+    });
+
+    app.post<{
+        Body: { userId: string; role: string };
+    }>("/admin/api/admins", {
+        schema: {
+            body: {
+                type: "object",
+                required: ["userId", "role"],
+                properties: {
+                    userId: { type: "string" },
+                    role: { type: "string" },
+                },
+            },
+        },
+    }, async (request, reply) => {
+        const adminId = await checkAdmin(request);
+        await requireRole(platformDb, adminId, "super_admin");
+        const newAdmin = await adminRepo.createAdmin(request.body);
+        return reply.status(201).send(newAdmin);
+    });
+
+    app.delete<{ Params: { id: string } }>("/admin/api/admins/:id", async (request, reply) => {
+        const adminId = await checkAdmin(request);
+        await requireRole(platformDb, adminId, "super_admin");
+        // Prevent removing yourself if you are the last super admin (optional, for now just allow deletion)
+        await adminRepo.removeAdmin(request.params.id);
+        return reply.status(204).send();
+    });
+
+    // --- CMS Events ---
+    app.get("/admin/api/content/events", async (request, reply) => {
+        await checkAdmin(request);
+        const events = await platformDb.select().from(contentEvents).orderBy(desc(contentEvents.createdAt));
+        return reply.send(events);
+    });
+
+    app.post<{ Body: any }>("/admin/api/content/events", async (request, reply) => {
+        await checkAdmin(request);
+        const data = request.body as Record<string, any>;
+        const [event] = await platformDb.insert(contentEvents).values(data as any).returning();
+        return reply.status(201).send(event);
+    });
+
+    app.put<{ Params: { id: string }, Body: any }>("/admin/api/content/events/:id", async (request, reply) => {
+        await checkAdmin(request);
+        const data = request.body as Record<string, any>;
+        const [event] = await platformDb.update(contentEvents)
+            .set({ ...data, updatedAt: new Date() })
+            .where(eq(contentEvents.id, request.params.id))
+            .returning();
+        return reply.send(event);
+    });
+
+    app.delete<{ Params: { id: string } }>("/admin/api/content/events/:id", async (request, reply) => {
+        await checkAdmin(request);
+        await platformDb.delete(contentEvents).where(eq(contentEvents.id, request.params.id));
+        return reply.status(204).send();
+    });
+
+    // --- CMS News ---
+    app.get("/admin/api/content/news", async (request, reply) => {
+        await checkAdmin(request);
+        const news = await platformDb.select().from(contentNews).orderBy(desc(contentNews.createdAt));
+        return reply.send(news);
+    });
+
+    app.post<{ Body: any }>("/admin/api/content/news", async (request, reply) => {
+        await checkAdmin(request);
+        const data = request.body as Record<string, any>;
+        const [newsItem] = await platformDb.insert(contentNews).values(data as any).returning();
+        return reply.status(201).send(newsItem);
+    });
+
+    app.put<{ Params: { id: string }, Body: any }>("/admin/api/content/news/:id", async (request, reply) => {
+        await checkAdmin(request);
+        const data = request.body as Record<string, any>;
+        const [newsItem] = await platformDb.update(contentNews)
+            .set({ ...data, updatedAt: new Date() })
+            .where(eq(contentNews.id, request.params.id))
+            .returning();
+        return reply.send(newsItem);
+    });
+
+    app.delete<{ Params: { id: string } }>("/admin/api/content/news/:id", async (request, reply) => {
+        await checkAdmin(request);
+        await platformDb.delete(contentNews).where(eq(contentNews.id, request.params.id));
+        return reply.status(204).send();
+    });
+
+    // --- CMS Opportunities ---
+    app.get("/admin/api/content/opportunities", async (request, reply) => {
+        await checkAdmin(request);
+        const opps = await platformDb.select().from(contentOpportunities).orderBy(desc(contentOpportunities.createdAt));
+        return reply.send(opps);
+    });
+
+    app.post<{ Body: any }>("/admin/api/content/opportunities", async (request, reply) => {
+        await checkAdmin(request);
+        const data = request.body as Record<string, any>;
+        const [opp] = await platformDb.insert(contentOpportunities).values(data as any).returning();
+        return reply.status(201).send(opp);
+    });
+
+    app.put<{ Params: { id: string }, Body: any }>("/admin/api/content/opportunities/:id", async (request, reply) => {
+        await checkAdmin(request);
+        const data = request.body as Record<string, any>;
+        const [opp] = await platformDb.update(contentOpportunities)
+            .set({ ...data, updatedAt: new Date() })
+            .where(eq(contentOpportunities.id, request.params.id))
+            .returning();
+        return reply.send(opp);
+    });
+
+    app.delete<{ Params: { id: string } }>("/admin/api/content/opportunities/:id", async (request, reply) => {
+        await checkAdmin(request);
+        await platformDb.delete(contentOpportunities).where(eq(contentOpportunities.id, request.params.id));
+        return reply.status(204).send();
+    });
+
+    // --- RSVPs List ---
+    app.get("/admin/api/rsvps", async (request, reply) => {
+        await checkAdmin(request);
+        const allRsvps = await platformDb.select().from(rsvps).orderBy(desc(rsvps.createdAt));
+        return reply.send(allRsvps);
     });
 };

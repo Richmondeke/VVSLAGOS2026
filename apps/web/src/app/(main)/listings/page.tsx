@@ -241,12 +241,6 @@ export default function MarketplacePage() {
                         >
                             Buy Now
                         </Link>
-                        <Link
-                            href="/listings/new"
-                            className="px-6 py-3 rounded-full bg-vvs-black text-white font-bold text-xs hover:bg-vvs-black/90 transition-all"
-                        >
-                            Explore More
-                        </Link>
                     </div>
                 </div>
 

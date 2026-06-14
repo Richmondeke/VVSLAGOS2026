@@ -48,7 +48,7 @@ export default function DashboardPage() {
     const [myReferralsCount, setMyReferralsCount] = useState<number>(0);
 
     // Unified Table State
-    const [activeTab, setActiveTab] = useState<"rsvps" | "signups">("rsvps");
+    const [activeTab, setActiveTab] = useState<"rsvps" | "signups" | "admins">("rsvps");
     const [searchQuery, setSearchQuery] = useState("");
     const [panelData, setPanelData] = useState<PanelData | null>(null);
 
@@ -60,25 +60,26 @@ export default function DashboardPage() {
     const [membersPage, setMembersPage] = useState(1);
     const [membersLoading, setMembersLoading] = useState(false);
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://rdoldxaclybdlggayjnc.supabase.co";
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkb2xkeGFjbHliZGxnZ2F5am5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyNzA4OTgsImV4cCI6MjA5Njg0Njg5OH0.n5hUc0sFDOHHS-1ljPXl93wgt_Bp2Hk3VdFQ3FzCi7o";
-    const headers = { 'apikey': supabaseAnonKey, 'Authorization': `Bearer ${supabaseAnonKey}` };
+    // Admins Data
+    const [admins, setAdmins] = useState<any[]>([]);
+    const [adminsLoading, setAdminsLoading] = useState(false);
+    const [newAdminEmail, setNewAdminEmail] = useState("");
+    const [newAdminRole, setNewAdminRole] = useState("admin");
+
+    // Removed hardcoded supabase keys as they are now handled by API Client
 
     async function loadStatsAndRsvps() {
         setLoading(true);
         try {
-            // Fetch RSVPs
-            const rsvpRes = await fetch(`${supabaseUrl}/rest/v1/rsvps?select=*&order=created_at.desc`, { headers });
-            if (rsvpRes.ok) {
-                const rsvpsList = await rsvpRes.json();
-                setRsvps(rsvpsList);
-                setRsvpsCount(rsvpsList.length);
+            const rsvpsList = await apiClient<any[]>("/admin/api/rsvps");
+            setRsvps(rsvpsList);
+            setRsvpsCount(rsvpsList.length);
 
-                // My Referrals
-                if (user?.email) {
-                    const myRefs = rsvpsList.filter((r: any) => r.referred_by_admin === user.email);
-                    setMyReferralsCount(myRefs.length);
-                }
+            if (user?.email) {
+                // Adjust if referral logic changes. Assuming referred_by_admin exists in your API or just count organic for now.
+                // If it doesn't exist on rsvps, this will just be 0.
+                const myRefs = rsvpsList.filter((r: any) => r.referred_by_admin === user.email);
+                setMyReferralsCount(myRefs.length);
             }
         } catch (err) {
             console.error("Failed to load RSVPs", err);
@@ -103,6 +104,44 @@ export default function DashboardPage() {
         }
     }
 
+    async function loadAdmins() {
+        setAdminsLoading(true);
+        try {
+            const result = await apiClient<any[]>(`/admin/api/admins`);
+            setAdmins(result);
+        } catch (err) {
+            console.error("Failed to load admins", err);
+        } finally {
+            setAdminsLoading(false);
+        }
+    }
+
+    async function handleAddAdmin() {
+        if (!newAdminEmail) return;
+        try {
+            await apiClient(`/admin/api/admins`, {
+                method: "POST",
+                body: JSON.stringify({ userId: newAdminEmail, role: newAdminRole })
+            });
+            setNewAdminEmail("");
+            loadAdmins();
+        } catch (err) {
+            console.error("Failed to add admin", err);
+            alert("Failed to add admin");
+        }
+    }
+
+    async function handleRemoveAdmin(userId: string) {
+        if (!confirm("Are you sure you want to remove this admin?")) return;
+        try {
+            await apiClient(`/admin/api/admins/${userId}`, { method: "DELETE" });
+            loadAdmins();
+        } catch (err) {
+            console.error("Failed to remove admin", err);
+            alert("Failed to remove admin");
+        }
+    }
+
     useEffect(() => {
         if (user) {
             loadStatsAndRsvps();
@@ -112,6 +151,9 @@ export default function DashboardPage() {
     useEffect(() => {
         if (user && activeTab === "signups") {
             loadMembers();
+        }
+        if (user && activeTab === "admins") {
+            loadAdmins();
         }
     }, [user, activeTab, membersPage, searchQuery]);
 
@@ -152,6 +194,7 @@ export default function DashboardPage() {
                         onClick={() => {
                             loadStatsAndRsvps();
                             if (activeTab === "signups") loadMembers();
+                            if (activeTab === "admins") loadAdmins();
                         }}
                         className="rounded-lg border border-admin-border px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-admin-primary hover:bg-admin-surface shadow-sm transition-all"
                     >
@@ -197,19 +240,25 @@ export default function DashboardPage() {
             
             {/* Unified Data Tables */}
             <div className="bg-admin-surface border border-admin-border rounded-xl shadow-[var(--shadow-stripe-ambient)] overflow-hidden">
-                <div className="p-4 border-b border-admin-border flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between bg-gray-50/50">
+                <div className="p-4 border-b border-admin-border flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between bg-admin-surface">
                     <div className="flex space-x-2">
                         <button 
                             onClick={() => { setActiveTab("rsvps"); setSearchQuery(""); }}
-                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === "rsvps" ? "bg-admin-accent text-white" : "text-admin-muted hover:bg-gray-100 hover:text-admin-primary"}`}
+                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === "rsvps" ? "bg-admin-accent text-white" : "text-admin-muted hover:bg-admin-border/20 hover:text-admin-primary"}`}
                         >
                             RSVPs
                         </button>
                         <button 
                             onClick={() => { setActiveTab("signups"); setSearchQuery(""); setMembersPage(1); }}
-                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === "signups" ? "bg-admin-accent text-white" : "text-admin-muted hover:bg-gray-100 hover:text-admin-primary"}`}
+                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === "signups" ? "bg-admin-accent text-white" : "text-admin-muted hover:bg-admin-border/20 hover:text-admin-primary"}`}
                         >
                             App Signups
+                        </button>
+                        <button 
+                            onClick={() => { setActiveTab("admins"); setSearchQuery(""); }}
+                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === "admins" ? "bg-admin-accent text-white" : "text-admin-muted hover:bg-admin-border/20 hover:text-admin-primary"}`}
+                        >
+                            Admins
                         </button>
                     </div>
                     <div className="relative w-full sm:w-64">
@@ -248,7 +297,7 @@ export default function DashboardPage() {
                                         <tr 
                                             key={rsvp.id} 
                                             onClick={() => setPanelData({ type: "rsvp", data: rsvp })}
-                                            className="hover:bg-gray-50 cursor-pointer transition-colors"
+                                            className="hover:bg-admin-border/10 cursor-pointer transition-colors"
                                         >
                                             <td className="px-6 py-4 font-medium text-admin-primary">{rsvp.email}</td>
                                             <td className="px-6 py-4 text-admin-muted">{rsvp.name}</td>
@@ -263,7 +312,7 @@ export default function DashboardPage() {
                                                         {rsvp.referred_by_admin}
                                                     </span>
                                                 ) : (
-                                                    <span className="text-gray-400 italic">Organic</span>
+                                                    <span className="text-admin-muted/70 italic">Organic</span>
                                                 )}
                                             </td>
                                             <td className="px-6 py-4 text-admin-muted">
@@ -294,7 +343,7 @@ export default function DashboardPage() {
                                             <tr 
                                                 key={member.id} 
                                                 onClick={() => setPanelData({ type: "member", data: member })}
-                                                className="hover:bg-gray-50 cursor-pointer transition-colors"
+                                                className="hover:bg-admin-border/10 cursor-pointer transition-colors"
                                             >
                                                 <td className="px-6 py-4 font-medium text-admin-primary">{member.email}</td>
                                                 <td className="px-6 py-4">
@@ -310,7 +359,7 @@ export default function DashboardPage() {
                             </table>
                             {/* Pagination */}
                             {membersData && membersData.total > membersData.pageSize && (
-                                <div className="p-4 border-t border-admin-border flex items-center justify-between bg-gray-50">
+                                <div className="p-4 border-t border-admin-border flex items-center justify-between bg-admin-surface">
                                     <span className="text-xs text-admin-muted">
                                         Showing {(membersData.page - 1) * membersData.pageSize + 1}–{Math.min(membersData.page * membersData.pageSize, membersData.total)} of {membersData.total}
                                     </span>
@@ -318,20 +367,81 @@ export default function DashboardPage() {
                                         <button
                                             disabled={membersPage <= 1}
                                             onClick={() => setMembersPage(p => p - 1)}
-                                            className="rounded border border-admin-border px-3 py-1 text-xs font-bold disabled:opacity-50 hover:bg-white transition-colors"
+                                            className="rounded border border-admin-border px-3 py-1 text-xs font-bold disabled:opacity-50 hover:bg-admin-border/20 transition-colors"
                                         >
                                             Prev
                                         </button>
                                         <button
                                             disabled={membersPage * membersData.pageSize >= membersData.total}
                                             onClick={() => setMembersPage(p => p + 1)}
-                                            className="rounded border border-admin-border px-3 py-1 text-xs font-bold disabled:opacity-50 hover:bg-white transition-colors"
+                                            className="rounded border border-admin-border px-3 py-1 text-xs font-bold disabled:opacity-50 hover:bg-admin-border/20 transition-colors"
                                         >
                                             Next
                                         </button>
                                     </div>
                                 </div>
                             )}
+                        </div>
+                    ) : (
+                        <div className="p-4">
+                            <div className="mb-4 flex items-center gap-2">
+                                <input 
+                                    type="email" 
+                                    placeholder="User Email or ID" 
+                                    value={newAdminEmail}
+                                    onChange={(e) => setNewAdminEmail(e.target.value)}
+                                    className="px-3 py-1.5 border border-admin-border rounded text-sm bg-admin-surface text-admin-primary"
+                                />
+                                <select 
+                                    value={newAdminRole}
+                                    onChange={(e) => setNewAdminRole(e.target.value)}
+                                    className="px-3 py-1.5 border border-admin-border rounded text-sm bg-admin-surface text-admin-primary"
+                                >
+                                    <option value="admin">Admin</option>
+                                    <option value="super_admin">Super Admin</option>
+                                </select>
+                                <button 
+                                    onClick={handleAddAdmin}
+                                    className="bg-admin-accent text-white px-3 py-1.5 rounded text-sm font-bold hover:bg-admin-accent-hover"
+                                >
+                                    Add Admin
+                                </button>
+                            </div>
+                            <table className="w-full text-sm text-left min-w-[600px]">
+                                <thead className="bg-admin-surface text-admin-muted uppercase text-[10px] tracking-wider border-b border-admin-border">
+                                    <tr>
+                                        <th className="px-6 py-4 font-bold">User ID</th>
+                                        <th className="px-6 py-4 font-bold">Role</th>
+                                        <th className="px-6 py-4 font-bold text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-admin-border">
+                                    {adminsLoading ? (
+                                        <tr><td colSpan={3} className="px-6 py-8 text-center text-admin-muted">Loading...</td></tr>
+                                    ) : admins.length === 0 ? (
+                                        <tr><td colSpan={3} className="px-6 py-8 text-center text-admin-muted">No admins found.</td></tr>
+                                    ) : (
+                                        admins.map((admin) => (
+                                            <tr key={admin.userId} className="hover:bg-admin-border/10 transition-colors">
+                                                <td className="px-6 py-4 font-medium text-admin-primary">{admin.userId}</td>
+                                                <td className="px-6 py-4">
+                                                    <span className="px-2 py-1 bg-admin-info/10 text-admin-info rounded text-xs font-bold uppercase">
+                                                        {admin.role}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-right">
+                                                    <button 
+                                                        onClick={() => handleRemoveAdmin(admin.userId)}
+                                                        className="text-red-500 hover:text-red-600 text-xs font-bold uppercase"
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
                     )}
                 </div>

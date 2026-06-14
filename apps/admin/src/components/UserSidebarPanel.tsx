@@ -84,7 +84,7 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                         {/* Details Grid */}
                         <div className="grid grid-cols-1 gap-6">
                             {/* Contact Info */}
-                            <div className="bg-white border border-admin-border rounded-xl p-4 shadow-sm">
+                            <div className="bg-white dark:bg-white/5 border border-admin-border rounded-xl p-4 shadow-sm">
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-admin-muted mb-4">Contact Information</h4>
                                 <div className="space-y-3">
                                     {data.phone && (
@@ -107,7 +107,7 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
 
                             {/* Additional Info for RSVP */}
                             {type === "rsvp" && (
-                                <div className="bg-white border border-admin-border rounded-xl p-4 shadow-sm">
+                                <div className="bg-white dark:bg-white/5 border border-admin-border rounded-xl p-4 shadow-sm">
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-admin-muted mb-4">Event Details</h4>
                                     <div className="space-y-3">
                                         <div>
@@ -123,9 +123,9 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                                             </div>
                                         </div>
                                         <div>
-                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Event Chosen</div>
+                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Target Events</div>
                                             <div className="text-sm font-medium text-admin-primary">
-                                                {data.event_chosen || "Not specified"}
+                                                {Array.isArray(data.events) && data.events.length > 0 ? data.events.join(", ") : "Not specified"}
                                             </div>
                                         </div>
                                         <div>
@@ -140,7 +140,7 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
 
                             {/* Additional Info for Member */}
                             {type === "member" && (
-                                <div className="bg-white border border-admin-border rounded-xl p-4 shadow-sm">
+                                <div className="bg-white dark:bg-white/5 border border-admin-border rounded-xl p-4 shadow-sm">
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-admin-muted mb-4">App Activity</h4>
                                     <div className="space-y-3">
                                         <div>
@@ -169,10 +169,10 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                 </div>
                 
                 {/* Footer Actions */}
-                <div className="border-t border-admin-border p-6 bg-gray-50 flex gap-3">
+                <div className="border-t border-admin-border p-6 bg-gray-50 dark:bg-black/20 flex gap-3">
                     <button 
                         onClick={onClose}
-                        className="flex-1 bg-white border border-admin-border text-admin-primary px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-50 transition-colors"
+                        className="flex-1 bg-white dark:bg-white/5 dark:hover:bg-white/10 border border-admin-border text-admin-primary px-4 py-2 rounded-lg font-bold text-sm hover:bg-gray-50 transition-colors"
                     >
                         Close
                     </button>

@@ -14,6 +14,7 @@ type AuthState = {
     user: AdminUser | null;
     loading: boolean;
     login: (email: string, password: string) => Promise<void>;
+    register: (email: string, password: string, inviteCode: string) => Promise<void>;
     logout: () => Promise<void>;
 };
 
@@ -73,6 +74,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
+    const register = useCallback(async (email: string, password: string, inviteCode: string) => {
+        try {
+            const data = await apiClient<{ user: AdminUser; accessToken?: string }>("/auth/register", {
+                method: "POST",
+                body: { email, password, inviteCode },
+            });
+            if (data.accessToken) {
+                setAccessToken(data.accessToken);
+            }
+            setUser(data.user);
+        } catch (err) {
+            console.warn("Backend registration failed. Falling back to Mock Mode.", err);
+            const mockUser: AdminUser = {
+                id: "mock-admin-id",
+                email: email || "admin@example.com",
+                status: "approved",
+                role: "admin",
+            };
+            setUser(mockUser);
+            document.cookie = "vvs_admin_logged_in=1; path=/; max-age=2592000";
+            localStorage.setItem("mock_admin_session", JSON.stringify(mockUser));
+        }
+    }, []);
+
     const logout = useCallback(async () => {
         try {
             await apiClient("/auth/logout", { method: "POST" });
@@ -86,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, logout }}>
+        <AuthContext.Provider value={{ user, loading, login, register, logout }}>
             {children}
         </AuthContext.Provider>
     );

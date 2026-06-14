@@ -7,8 +7,9 @@ import Image from "next/image";
 
 const NAV_ITEMS = [
     { href: "/", label: "Dashboard", icon: "grid" },
-    // { href: "/rsvps", label: "RSVPs", icon: "inbox" },
-    // { href: "/members", label: "Members", icon: "users" },
+    { href: "/events", label: "Events", icon: "calendar" },
+    { href: "/news", label: "News", icon: "fileText" },
+    { href: "/opportunities", label: "Opportunities", icon: "briefcase" },
 ];
 
 const ICONS: Record<string, string> = {
@@ -19,6 +20,9 @@ const ICONS: Record<string, string> = {
     "alert-triangle": "\u26A0",
     wallet: "\u2B1A",
     cog: "\u2699",
+    calendar: "\u2637", // simplified calendar icon
+    fileText: "\u2636", // document icon
+    briefcase: "\u26C2", // simplified briefcase icon
 };
 
 export function Sidebar({ 

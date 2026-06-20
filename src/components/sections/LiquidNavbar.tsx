@@ -80,7 +80,7 @@ export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNa
             label: "Future Labs", 
             sub: "Incubator", 
             image: "/assets/VVSMASCOT7.png", 
-            action: () => openModal("labs"), 
+            action: () => { window.location.href = "/future-labs"; }, 
             icon: <Award size={14} className="text-vvs-gold" /> 
         },
         { 

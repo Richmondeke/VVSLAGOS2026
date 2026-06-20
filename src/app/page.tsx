@@ -12,7 +12,6 @@ import OurStory from "@/components/sections/OurStory";
 import CommunitySection from "@/components/sections/CommunitySection";
 import PastPartners from "@/components/sections/PastPartners";
 import RSVPSection from "@/components/sections/RSVPSection";
-import VVSFutureLabs from "@/components/sections/VVSFutureLabs";
 
 interface TimeLeft {
     days: number;
@@ -610,7 +609,6 @@ export default function TypeBLandingPage() {
             <FivePillars theme={theme} />
             <OurStory theme={theme} />
             <PastPartners theme={theme} />
-            <VVSFutureLabs theme={theme} />
 
             {/* 4. Countdown Section (Strict Brand Colors: White, Black, Gold, Obsidian) */}
             <section id="countdown" className={`py-24 border-y relative overflow-hidden ${
@@ -719,8 +717,8 @@ export default function TypeBLandingPage() {
                                 <p className="text-xs opacity-60 leading-relaxed font-light">{event.description}</p>
                             </div>
 
-                            {/* CTA Action button — ticket link for Runway Show, RSVP for all others */}
-                            {event.ticketUrl ? (
+                            {/* CTA Action button — ticket link for Runway Show only */}
+                            {event.ticketUrl && (
                                 <div className="shrink-0 flex items-center">
                                     <a
                                         href={event.ticketUrl}
@@ -730,19 +728,6 @@ export default function TypeBLandingPage() {
                                     >
                                         Buy Tickets
                                     </a>
-                                </div>
-                            ) : (
-                                <div className="shrink-0 flex items-center">
-                                    <button
-                                        onClick={() => {
-                                            triggerHaptic("medium");
-                                            setRsvpData(prev => ({ ...prev, events: [event.shortDate] }));
-                                            setIsRSVPOpen(true);
-                                        }}
-                                        className={`w-full lg:w-auto px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black`}
-                                    >
-                                        Get Invitation
-                                    </button>
                                 </div>
                             )}
                         </motion.div>

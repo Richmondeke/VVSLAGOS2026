@@ -19,19 +19,31 @@ function RSVPContent() {
     const [rsvpData, setRsvpData] = useState({
         name: "",
         email: "",
-        events: [] as string[],
+        phone: "",
+        gender: "",
+        occupation: "",
+        company: "",
+        role: "",
+        heard_about: "",
         attendance: "yes",
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
     
     const handleRSVPSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSubmitting(true);
         try {
             const { error } = await supabase.from("rsvps").insert([{
                 name: rsvpData.name.trim(),
                 email: rsvpData.email.trim(),
+                phone: rsvpData.phone.trim() || null,
+                gender: rsvpData.gender || null,
+                occupation: rsvpData.occupation.trim() || null,
+                company: rsvpData.company.trim() || null,
+                role: rsvpData.role.trim() || null,
+                heard_about: rsvpData.heard_about || null,
                 attendance: rsvpData.attendance,
-                events: rsvpData.events,
                 referred_by_admin: referredBy || null,
                 created_at: new Date().toISOString()
             }]);
@@ -44,13 +56,24 @@ function RSVPContent() {
         }
 
         triggerHaptic("success");
+        setIsSubmitting(false);
         setRsvpSubmitted(true);
     };
+
+    const inputClass = "w-full px-5 py-4 rounded-xl border text-sm focus:outline-none focus:border-[#c5a059] bg-white/5 border-white/10 text-white placeholder-white/20 transition-colors";
+    const labelClass = "text-[11px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-2";
 
     return (
         <div ref={containerRef} className="bg-black text-white min-h-screen relative overflow-y-auto w-full selection:bg-[#c5a059]/30 font-sans">
             {/* Navigation */}
             <LiquidNavbar containerRef={containerRef} scrollYProgress={scrollYProgress} />
+
+            {/* Background elements */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#050505] via-black to-[#0a0a0a]" />
+                <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#c5a059]/10 blur-[150px] rounded-full mix-blend-screen" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-white/5 blur-[150px] rounded-full mix-blend-screen" />
+            </div>
 
             {/* Main Content Area */}
             <div className="pt-32 pb-24 px-6 min-h-[100dvh] flex items-center justify-center relative z-10">
@@ -79,85 +102,120 @@ function RSVPContent() {
                             <p className="text-sm opacity-60 max-w-[320px]">Your invitation request has been logged. We will review details and follow up shortly.</p>
                         </motion.div>
                     ) : (
-                        <form onSubmit={handleRSVPSubmit} className="space-y-6">
+                        <form onSubmit={handleRSVPSubmit} className="space-y-5">
+                            {/* Full Name */}
                             <div>
-                                <label className="text-[11px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-2">Full Name</label>
+                                <label className={labelClass}>Full Name</label>
                                 <input
                                     type="text"
                                     required
                                     value={rsvpData.name}
                                     onChange={(e) => setRsvpData(prev => ({ ...prev, name: e.target.value }))}
-                                    className="w-full px-5 py-4 rounded-xl border text-sm focus:outline-none focus:border-[#c5a059] bg-white/5 border-white/10 text-white placeholder-white/20 transition-colors"
-                                    placeholder="Enter your name"
+                                    className={inputClass}
+                                    placeholder="Enter your full name"
                                 />
                             </div>
 
+                            {/* Gender */}
                             <div>
-                                <label className="text-[11px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-2">Email Address</label>
+                                <label className={labelClass}>Gender</label>
+                                <select
+                                    value={rsvpData.gender}
+                                    onChange={(e) => setRsvpData(prev => ({ ...prev, gender: e.target.value }))}
+                                    className={`${inputClass} cursor-pointer`}
+                                    style={{ background: "rgba(255,255,255,0.05)" }}
+                                >
+                                    <option value="" disabled style={{ background: "#111" }}>Select gender</option>
+                                    <option value="Male" style={{ background: "#111" }}>Male</option>
+                                    <option value="Female" style={{ background: "#111" }}>Female</option>
+                                    <option value="Non-binary" style={{ background: "#111" }}>Non-binary</option>
+                                    <option value="Prefer not to say" style={{ background: "#111" }}>Prefer not to say</option>
+                                </select>
+                            </div>
+
+                            {/* Phone */}
+                            <div>
+                                <label className={labelClass}>Phone Number</label>
+                                <input
+                                    type="tel"
+                                    value={rsvpData.phone}
+                                    onChange={(e) => setRsvpData(prev => ({ ...prev, phone: e.target.value }))}
+                                    className={inputClass}
+                                    placeholder="+234 000 0000 000"
+                                />
+                            </div>
+
+                            {/* Email Address */}
+                            <div>
+                                <label className={labelClass}>Email Address</label>
                                 <input
                                     type="email"
                                     required
                                     value={rsvpData.email}
                                     onChange={(e) => setRsvpData(prev => ({ ...prev, email: e.target.value }))}
-                                    className="w-full px-5 py-4 rounded-xl border text-sm focus:outline-none focus:border-[#c5a059] bg-white/5 border-white/10 text-white placeholder-white/20 transition-colors"
+                                    className={inputClass}
                                     placeholder="Enter your email"
                                 />
                             </div>
 
+                            {/* Occupation */}
                             <div>
-                                <label className="text-[11px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-3">Target Events (Select all that apply)</label>
-                                <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2 scrollbar-none">
-                                    {[
-                                        { value: "JULY 5", label: "July 5 - VVS Opening Gala" },
-                                        { value: "JULY 6", label: "July 6 - VVS Panel Sessions" },
-                                        { value: "JULY 7", label: "July 7 - Collectors Day Preview" },
-                                        { value: "JULY 8-11", label: "July 8-11 - Pop Up Exhibition" },
-                                        { value: "JULY 11", label: "July 11 - Film Experience" },
-                                        { value: "JULY 12", label: "July 12 - Runway Show & Afterparty" },
-                                    ].map((opt) => {
-                                        const isSelected = rsvpData.events.includes(opt.value);
-                                        return (
-                                            <div
-                                                key={opt.value}
-                                                onClick={() => {
-                                                    triggerHaptic("light");
-                                                    setRsvpData(prev => {
-                                                        const alreadySelected = prev.events.includes(opt.value);
-                                                        const nextEvents = alreadySelected
-                                                            ? prev.events.filter(e => e !== opt.value)
-                                                            : [...prev.events, opt.value];
-                                                        return { ...prev, events: nextEvents };
-                                                    });
-                                                }}
-                                                className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all ${
-                                                    isSelected
-                                                        ? "border-[#c5a059] bg-[#c5a059]/10 shadow-[0_0_15px_rgba(197,160,89,0.15)]"
-                                                        : "border-white/5 hover:border-white/20 hover:bg-white/5 bg-white/[0.02]"
-                                                }`}
-                                            >
-                                                <span className="text-sm font-medium uppercase tracking-wide">
-                                                    {opt.label}
-                                                </span>
-                                                <div className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${
-                                                    isSelected
-                                                        ? "bg-[#c5a059] border-[#c5a059] text-black"
-                                                        : "border-white/20"
-                                                }`}>
-                                                    {isSelected && <Check size={12} strokeWidth={4} />}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                                {rsvpData.events.length === 0 && (
-                                    <p className="text-[11px] text-red-500 font-mono mt-2">
-                                        * Please select at least one event.
-                                    </p>
-                                )}
+                                <label className={labelClass}>Occupation</label>
+                                <input
+                                    type="text"
+                                    value={rsvpData.occupation}
+                                    onChange={(e) => setRsvpData(prev => ({ ...prev, occupation: e.target.value }))}
+                                    className={inputClass}
+                                    placeholder="e.g. Creative Director, Entrepreneur"
+                                />
                             </div>
 
+                            {/* Company & Role — side by side on larger screens */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className={labelClass}>Company / Brand</label>
+                                    <input
+                                        type="text"
+                                        value={rsvpData.company}
+                                        onChange={(e) => setRsvpData(prev => ({ ...prev, company: e.target.value }))}
+                                        className={inputClass}
+                                        placeholder="Company name"
+                                    />
+                                </div>
+                                <div>
+                                    <label className={labelClass}>Your Role</label>
+                                    <input
+                                        type="text"
+                                        value={rsvpData.role}
+                                        onChange={(e) => setRsvpData(prev => ({ ...prev, role: e.target.value }))}
+                                        className={inputClass}
+                                        placeholder="e.g. Founder, Designer"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* How did you hear about us */}
                             <div>
-                                <label className="text-[11px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-3">Can you attend?</label>
+                                <label className={labelClass}>How did you hear about VVS Lagos?</label>
+                                <select
+                                    value={rsvpData.heard_about}
+                                    onChange={(e) => setRsvpData(prev => ({ ...prev, heard_about: e.target.value }))}
+                                    className={`${inputClass} cursor-pointer`}
+                                    style={{ background: "rgba(255,255,255,0.05)" }}
+                                >
+                                    <option value="" disabled style={{ background: "#111" }}>Select an option</option>
+                                    <option value="Social Media" style={{ background: "#111" }}>Social Media (Instagram, X, etc.)</option>
+                                    <option value="Friend / Referral" style={{ background: "#111" }}>Friend / Referral</option>
+                                    <option value="Press / Media" style={{ background: "#111" }}>Press / Media</option>
+                                    <option value="Previous Attendee" style={{ background: "#111" }}>Previous Attendee</option>
+                                    <option value="Brand Partner" style={{ background: "#111" }}>Brand Partner</option>
+                                    <option value="Other" style={{ background: "#111" }}>Other</option>
+                                </select>
+                            </div>
+
+                            {/* Can you attend */}
+                            <div>
+                                <label className={labelClass}>Can you attend?</label>
                                 <div className="flex gap-6 mt-2">
                                     <label className="flex items-center gap-3 text-sm cursor-pointer hover:text-[#c5a059] transition-colors">
                                         <input
@@ -174,8 +232,8 @@ function RSVPContent() {
                                         <input
                                             type="radio"
                                             name="attendance"
-                                            value="no"
-                                            checked={rsvpData.attendance === "no"}
+                                            value="maybe"
+                                            checked={rsvpData.attendance === "maybe"}
                                             onChange={(e) => setRsvpData(prev => ({ ...prev, attendance: e.target.value }))}
                                             className="accent-[#c5a059] w-4 h-4"
                                         />
@@ -186,23 +244,18 @@ function RSVPContent() {
 
                             <button
                                 type="submit"
-                                disabled={rsvpData.events.length === 0}
-                                className={`w-full py-5 mt-6 bg-[#c5a059] text-black text-sm uppercase tracking-widest font-bold rounded-xl hover:bg-white hover:text-black transition-all ${
-                                    rsvpData.events.length === 0 ? "opacity-45 cursor-not-allowed" : "active:scale-[0.98] hover:scale-[1.01] shadow-lg shadow-[#c5a059]/20"
+                                disabled={isSubmitting}
+                                className={`w-full py-5 mt-2 bg-[#c5a059] text-black text-sm uppercase tracking-widest font-bold rounded-xl transition-all ${
+                                    isSubmitting
+                                        ? "opacity-60 cursor-not-allowed"
+                                        : "hover:bg-white hover:text-black active:scale-[0.98] hover:scale-[1.01] shadow-lg shadow-[#c5a059]/20"
                                 }`}
                             >
-                                Submit Request
+                                {isSubmitting ? "Submitting..." : "Submit Request"}
                             </button>
                         </form>
                     )}
                 </motion.div>
-            </div>
-
-            {/* Background elements */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#050505] via-black to-[#0a0a0a]" />
-                <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#c5a059]/10 blur-[150px] rounded-full mix-blend-screen" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-white/5 blur-[150px] rounded-full mix-blend-screen" />
             </div>
         </div>
     );

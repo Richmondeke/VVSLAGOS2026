@@ -19,7 +19,6 @@ export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNa
     
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [activeModal, setActiveModal] = useState<"labs" | "app" | null>(null);
 
     useMotionValueEvent(scrollYProgress, "change", (latest) => {
         setIsScrolled(latest > 0.04);
@@ -50,16 +49,6 @@ export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNa
         }
     };
 
-    const openModal = (type: "labs" | "app") => {
-        triggerHaptic("medium");
-        setIsMenuOpen(false);
-        setActiveModal(type);
-    };
-
-    const closeModal = () => {
-        triggerHaptic("light");
-        setActiveModal(null);
-    };
 
     // Staggered navigation cards
     const navItems = [
@@ -67,14 +56,14 @@ export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNa
             label: "Our Journey", 
             sub: "VVS Evolution", 
             image: "/assets/evolution/VVS2022.png", 
-            action: () => scrollToPercent(0.20), 
+            action: () => isHomePage ? scrollToPercent(0.20) : (window.location.href = "/#journey"), 
             icon: <Layers size={14} className="text-vvs-gold" /> 
         },
         { 
             label: "The Festival", 
             sub: "July 7 - 11", 
             image: "/assets/evolution/VVS2024.png", 
-            action: () => scrollToPercent(0.58), 
+            action: () => isHomePage ? scrollToPercent(0.58) : (window.location.href = "/#festival"), 
             icon: <Calendar size={14} className="text-vvs-gold" /> 
         },
         { 
@@ -286,155 +275,6 @@ export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNa
 
             {/* Modals Section */}
             <AnimatePresence>
-                {activeModal === "labs" && (
-                    <>
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={closeModal}
-                            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
-                        />
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                            animate={{ 
-                                opacity: 1, 
-                                scale: 1, 
-                                y: 0,
-                                transition: {
-                                    type: "spring",
-                                    stiffness: 300,
-                                    damping: 22
-                                }
-                            }}
-                            exit={{ opacity: 0, scale: 0.9, y: 30 }}
-                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-2xl bg-vvs-black border border-vvs-gold/20 rounded-3xl z-[101] overflow-hidden shadow-[0_0_50px_rgba(197,160,89,0.15)]"
-                        >
-                            <div className="relative p-8 sm:p-12 text-vvs-white">
-                                <button
-                                    onClick={closeModal}
-                                    className="absolute top-6 right-6 text-vvs-white/50 hover:text-vvs-gold transition-colors"
-                                >
-                                    <X size={24} />
-                                </button>
-
-                                <span className="text-vvs-gold text-xs uppercase tracking-[0.4em] mb-3 block font-mono font-bold">
-                                    VVS INNOVATION
-                                </span>
-                                <h3 className="text-3xl sm:text-4xl font-serif font-extrabold uppercase tracking-tight mb-6 text-vvs-white">
-                                    Future <span className="text-vvs-gold">Labs</span>
-                                </h3>
-
-                                <div className="space-y-6 text-vvs-white/70 font-sans text-sm sm:text-base font-light leading-relaxed">
-                                    <p>
-                                        <strong className="text-vvs-white font-medium">Future Labs</strong> is the digital incubator program of VVS Lagos 2026. Sited at the intersection of cultural heritage, high-luxury fashion, and next-generation tech, the lab operates as a runway for ideas that shape the global creative workspace.
-                                    </p>
-                                    
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
-                                        <div className="border border-vvs-gold/10 p-5 rounded-2xl bg-vvs-white/[0.02] hover:bg-vvs-gold/[0.02] transition-colors">
-                                            <h4 className="font-serif font-bold text-vvs-white text-base mb-2">Digital Fashion & AI</h4>
-                                            <p className="text-xs leading-normal text-vvs-white/50">Incubating virtual showcases, generative fabrics, and smart apparel combining indigenous motifs with machine learning models.</p>
-                                        </div>
-                                        <div className="border border-vvs-gold/10 p-5 rounded-2xl bg-vvs-white/[0.02] hover:bg-vvs-gold/[0.02] transition-colors">
-                                            <h4 className="font-serif font-bold text-vvs-white text-base mb-2">Creative Tech Hack</h4>
-                                            <p className="text-xs leading-normal text-vvs-white/50">Bringing together developers, artists, and sound designers to build immersive WebGL spaces, AR filters, and digital collectibles.</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <p className="pt-4 text-xs font-mono text-vvs-gold uppercase tracking-widest text-center">
-                                        ✨ LAB SESSIONS COMMENCE JULY 8TH, John Randle Museum ✨
-                                    </p>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </>
-                )}
-
-                {activeModal === "app" && (
-                    <>
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={closeModal}
-                            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
-                        />
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                            animate={{ 
-                                opacity: 1, 
-                                scale: 1, 
-                                y: 0,
-                                transition: {
-                                    type: "spring",
-                                    stiffness: 300,
-                                    damping: 22
-                                }
-                            }}
-                            exit={{ opacity: 0, scale: 0.9, y: 30 }}
-                            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-2xl bg-vvs-black border border-vvs-gold/20 rounded-3xl z-[101] overflow-hidden shadow-[0_0_50px_rgba(197,160,89,0.15)]"
-                        >
-                            <div className="relative p-8 sm:p-12 text-vvs-white flex flex-col md:flex-row items-center gap-8">
-                                <button
-                                    onClick={closeModal}
-                                    className="absolute top-6 right-6 text-vvs-white/50 hover:text-vvs-gold transition-colors z-10"
-                                >
-                                    <X size={24} />
-                                </button>
-
-                                {/* Left Content */}
-                                <div className="flex-1">
-                                    <span className="text-vvs-gold text-xs uppercase tracking-[0.4em] mb-3 block font-mono font-bold">
-                                        GET CONNECTED
-                                    </span>
-                                    <h3 className="text-3xl sm:text-4xl font-serif font-extrabold uppercase tracking-tight mb-4 text-vvs-white">
-                                        VVS <span className="text-vvs-gold">App</span>
-                                    </h3>
-                                    <p className="text-vvs-white/70 font-sans text-xs sm:text-sm font-light leading-relaxed mb-6">
-                                        Unlock the ultimate festival companion. Claim exclusive digital collectible mascots, manage ticketing passes, explore live schedules, and interact with geolocation art exhibitions in Lagos.
-                                    </p>
-                                    
-                                    <div className="flex flex-col gap-3">
-                                        <button className="flex items-center gap-3 px-5 py-3 bg-white hover:bg-white/90 text-black rounded-xl font-bold transition-all text-xs justify-center shadow-lg">
-                                            <span></span> Download on App Store
-                                        </button>
-                                        <button className="flex items-center gap-3 px-5 py-3 bg-white/10 hover:bg-white/15 border border-white/10 text-white rounded-xl font-bold transition-all text-xs justify-center">
-                                            <span>▶</span> Download on Google Play
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Right Mockup */}
-                                <div className="w-48 h-80 shrink-0 border-[6px] border-vvs-white/20 rounded-[2.5rem] bg-black relative p-3 overflow-hidden shadow-2xl flex flex-col justify-between">
-                                    {/* Notch */}
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-4 bg-vvs-white/20 rounded-b-xl" />
-                                    
-                                    <div className="flex justify-between items-center text-[8px] font-mono text-vvs-white/40 mt-1">
-                                        <span>9:41</span>
-                                        <span>5G</span>
-                                    </div>
-
-                                    <div className="flex-1 flex flex-col items-center justify-center text-center mt-4">
-                                        <div className="w-16 h-16 relative mb-3">
-                                            <img
-                                                src="/assets/VVSMASCOT7.png"
-                                                alt="Mascot"
-                                                className="w-full h-full object-contain animate-bounce"
-                                                style={{ animationDuration: "3s" }}
-                                            />
-                                        </div>
-                                        <h4 className="text-[10px] font-mono font-bold tracking-widest text-vvs-gold mb-1">VVS COLLECTIVE</h4>
-                                        <p className="text-[8px] text-vvs-white/60 leading-normal max-w-[120px]">Scan physical codes to mint your digital mascot passes.</p>
-                                    </div>
-
-                                    <div className="bg-vvs-gold/15 border border-vvs-gold/30 rounded-xl p-2 text-center text-vvs-gold font-mono text-[8px] tracking-widest font-bold">
-                                        TICKET #2026-ACTIVE
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </>
-                )}
             </AnimatePresence>
         </>
     );

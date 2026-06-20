@@ -64,6 +64,13 @@ export const rsvps = pgTable("rsvps", {
     attendance: text("attendance").notNull(),
     events: text("events").array(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    phone: text("phone"),
+    gender: text("gender"),
+    occupation: text("occupation"),
+    company: text("company"),
+    role: text("role"),
+    heardAbout: text("heard_about"),
+    referredByAdmin: text("referred_by_admin"),
 });
 
 export const contentEvents = pgTable(

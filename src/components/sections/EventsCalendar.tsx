@@ -4,69 +4,71 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Countdown from "../ui/Countdown";
 
+const TICKET_URL = "https://paystack.com/pay/vvslagos2026";
+
 const events = [
     {
         fullDate: "2026-07-05T19:00:00",
         date: "July 5",
         title: "Opening Event",
-        venue: "British or Canadian Residence",
         time: "7:00 PM",
         category: "Gala & Awards",
         note: "Honorary Awards • Recap Videos • Performances • Dinner & Comedy • 5th Anniversary Celebration • Dress Coded Party",
+        ticketUrl: null,
     },
     {
         fullDate: "2026-07-06T10:00:00",
         date: "July 6",
         title: "VVS Panel Sessions",
-        venue: "Alliance Française, Lagos",
         time: "10:00 AM",
         category: "Conversations & Panels",
         note: "Fireside with Korede Roberts, Tega Mavin, Aisha Augie • Sustainability with Zara Odu, Kelvin Bumpa, Reni Folawiyo, Florentyna, Tolu Coye, Bola PSD, Wale Davies • Brand Building with Sade Okoya & Mutesi Jolly",
+        ticketUrl: null,
     },
     {
         fullDate: "2026-07-07T14:00:00",
         date: "July 7",
         title: "Collectors Day",
-        venue: "Windsor Gallery",
         time: "2:00 PM",
         category: "Private Viewing",
         note: "Artists Work Explanation • Curatorial Introduction Speech • Exclusive VIP Drinks & Networking",
+        ticketUrl: null,
     },
     {
         fullDate: "2026-07-08T12:00:00",
         date: "July 8 – 11",
         title: "Pop Up & Art Exhibition",
-        venue: "A White Space Ikoyi & Windsor Gallery",
         time: "12:00 PM",
         category: "Public Showcase",
         note: "Trunk Show Pop Up @ A White Space Ikoyi • Art Exhibition @ Windsor Gallery (Extending till end of month)",
+        ticketUrl: null,
     },
     {
         fullDate: "2026-07-11T14:00:00",
         date: "July 11",
         title: "VVS Film Experience",
-        venue: "Alliance Française, Lagos",
         time: "2:00 PM",
         category: "Cinema & Storytelling",
         note: "Partnership with AFRIFF • High-Level Film & Storytelling Panel Conversations • 'Descendants' Short Film Screening & Live Play",
+        ticketUrl: null,
     },
     {
         fullDate: "2026-07-12T17:00:00",
         date: "July 12",
         title: "VVS Runway Show",
-        venue: "Falomo Under the Bridge",
         time: "5:00 PM",
         category: "Haute Couture",
         note: "Model Runway Presentation • Featured Designer Brand Showcases",
+        ticketUrl: TICKET_URL,
     },
     {
         fullDate: "2026-07-12T22:00:00",
         date: "July 12",
         title: "VVS Afterparty",
-        venue: "Rooftop at Club 245",
         time: "10:00 PM",
         category: "Celebration",
         note: "Closing Afterparty Celebration • Curated DJs & Mixes",
+        ticketUrl: null,
     },
 ];
 
@@ -145,13 +147,22 @@ function EventCard({ event, index, mounted }: { event: typeof events[0]; index: 
                         )}
                     </div>
 
-                    {/* ── Right column: time, venue, countdown ── */}
-                    <div className="flex items-center justify-between md:flex-col md:items-end gap-3 md:gap-1 pt-3 md:pt-0 border-t border-vvs-gold/10 md:border-t-0 shrink-0">
-                        <div className="flex items-center gap-3 md:flex-col md:items-end md:gap-0">
-                            <span className="text-vvs-white text-sm sm:text-base md:text-lg font-mono font-bold tracking-tighter">{event.time}</span>
-                            <span className="text-vvs-gold/60 text-[10px] sm:text-xs uppercase tracking-widest font-mono">{event.venue}</span>
-                        </div>
-                        <Countdown targetDate={event.fullDate} variant="hero" className="scale-90 md:scale-95 origin-right" />
+                    {/* ── Right column: time + ticket/countdown ── */}
+                    <div className="flex items-center justify-between md:flex-col md:items-end gap-3 md:gap-2 pt-3 md:pt-0 border-t border-vvs-gold/10 md:border-t-0 shrink-0">
+                        <span className="text-vvs-white text-sm sm:text-base md:text-lg font-mono font-bold tracking-tighter">{event.time}</span>
+                        {event.ticketUrl ? (
+                            <a
+                                href={event.ticketUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-vvs-gold text-vvs-black text-[10px] uppercase tracking-[0.2em] font-extrabold hover:bg-white transition-colors shadow-[0_0_20px_rgba(197,160,89,0.4)] hover:shadow-[0_0_25px_rgba(255,255,255,0.3)]"
+                            >
+                                Buy Tickets
+                            </a>
+                        ) : (
+                            <Countdown targetDate={event.fullDate} variant="hero" className="scale-90 md:scale-95 origin-right" />
+                        )}
                     </div>
                 </div>
             </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon, ChevronLeft, ChevronRight, Calendar, Clock, MapPin, Check, Send } from "lucide-react";
+import { Menu, X, Sun, Moon, ChevronLeft, ChevronRight, Calendar, Clock, Check, Send } from "lucide-react";
 import { triggerHaptic } from "@/utils/haptic";
 import { supabase } from "@/lib/supabase";
 import ImpactStats from "@/components/sections/ImpactStats";
@@ -12,6 +12,7 @@ import OurStory from "@/components/sections/OurStory";
 import CommunitySection from "@/components/sections/CommunitySection";
 import PastPartners from "@/components/sections/PastPartners";
 import RSVPSection from "@/components/sections/RSVPSection";
+import VVSFutureLabs from "@/components/sections/VVSFutureLabs";
 
 interface TimeLeft {
     days: number;
@@ -166,10 +167,10 @@ export default function TypeBLandingPage() {
             shortDate: "JULY 12",
             time: "5:00 PM WAT",
             title: "VVS Runway Presentation",
-            venue: "Falomo Under the Bridge",
             category: "Haute Couture",
             description: "The main fashion runway showcase of VVS Lagos 2026. Afromodernist haute couture collections designed by our selected Innovators, presented under the iconic Falomo bridge structure in a raw, concrete architectural setting.",
-            image: "/assets/IN OFFICIAL.png"
+            image: "/assets/IN OFFICIAL.png",
+            ticketUrl: "https://paystack.com/pay/vvslagos2026",
         },
         {
             date: "July 12, 2026",
@@ -182,6 +183,8 @@ export default function TypeBLandingPage() {
             image: "/assets/TZAR STUDIOS.webp"
         }
     ], []);
+
+    const TICKET_URL = "https://paystack.com/pay/vvslagos2026";
 
     const innovators = useMemo(() => [
         {
@@ -510,28 +513,8 @@ export default function TypeBLandingPage() {
                     </h1>
                 </motion.div>
 
-                {/* Mascot heads floating layer */}
-                <div className="relative z-10 w-full max-w-5xl aspect-video sm:aspect-[2.4/1] flex items-center justify-center gap-6 sm:gap-12 mt-12">
-                    
-                    {/* Head Left (VVSMASCOT1) */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -60 }}
-                        animate={{ opacity: 1, x: 0, y: [0, -15, 0] }}
-                        transition={{
-                            opacity: { duration: 0.8, delay: 0.1 },
-                            x: { duration: 0.8, delay: 0.1 },
-                            y: { duration: 6, repeat: Infinity, ease: "easeInOut" }
-                        }}
-                        className="w-1/4 sm:w-1/5 relative cursor-pointer"
-                        whileHover={{ scale: 1.08 }}
-                    >
-                        <img
-                            src="/assets/VVSMASCOT1.webp"
-                            alt="VVS Mascot Head Left"
-                            className="w-full h-auto object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
-                        />
-                    </motion.div>
-
+                {/* Mascot — center main mascot only */}
+                <div className="relative z-10 w-full max-w-5xl flex items-center justify-center mt-12">
                     {/* Head Center */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
@@ -542,35 +525,15 @@ export default function TypeBLandingPage() {
                             y: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 },
                             x: { duration: 3, repeat: Infinity, ease: "linear", repeatDelay: 4 }
                         }}
-                        className="w-1/3 sm:w-1/4 relative cursor-pointer"
-                        whileHover={{ scale: 1.1 }}
+                        className="w-2/5 sm:w-1/3 md:w-1/4 relative cursor-pointer"
+                        whileHover={{ scale: 1.06 }}
                     >
                         <motion.img
                             animate={{ filter: ["hue-rotate(0deg)", "hue-rotate(0deg)", "hue-rotate(90deg) invert(1)", "hue-rotate(-90deg) blur(2px)", "hue-rotate(0deg)", "hue-rotate(0deg)"] }}
                             transition={{ duration: 3, repeat: Infinity, ease: "linear", repeatDelay: 4 }}
                             src={theme === "dark" ? "/assets/VVSWhiteMAsk.png" : "/assets/VVSMASKBLACK.png"}
-                            alt="VVS Mascot Head Center"
-                            className="w-full h-auto object-contain drop-shadow-[0_25px_50px_rgba(197,160,89,0.3)]"
-                        />
-                    </motion.div>
-
-                    {/* Head Right (Mirrored / Horizontally Flipped version of VVSMASCOT1) */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 60 }}
-                        animate={{ opacity: 1, x: 0, y: [0, -15, 0] }}
-                        transition={{
-                            opacity: { duration: 0.8, delay: 0.3 },
-                            x: { duration: 0.8, delay: 0.3 },
-                            y: { duration: 6, repeat: Infinity, ease: "easeInOut" }
-                        }}
-                        className="w-1/4 sm:w-1/5 relative cursor-pointer"
-                        whileHover={{ scale: 1.08 }}
-                    >
-                        <img
-                            src="/assets/VVSMASCOT1.webp"
-                            alt="VVS Mascot Head Right Flipped"
-                            className="w-full h-auto object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
-                            style={{ transform: "scaleX(-1)" }}
+                            alt="VVS Lagos Mascot"
+                            className="w-full h-auto object-contain drop-shadow-[0_30px_60px_rgba(197,160,89,0.35)]"
                         />
                     </motion.div>
                 </div>
@@ -647,6 +610,7 @@ export default function TypeBLandingPage() {
             <FivePillars theme={theme} />
             <OurStory theme={theme} />
             <PastPartners theme={theme} />
+            <VVSFutureLabs theme={theme} />
 
             {/* 4. Countdown Section (Strict Brand Colors: White, Black, Gold, Obsidian) */}
             <section id="countdown" className={`py-24 border-y relative overflow-hidden ${
@@ -748,9 +712,6 @@ export default function TypeBLandingPage() {
                                     {event.category}
                                 </span>
                                 <h3 className="text-lg sm:text-xl font-bold tracking-tight uppercase leading-snug break-words">{event.title}</h3>
-                                <p className="text-xs opacity-50 flex items-center gap-1.5 mt-1.5">
-                                    <MapPin size={12} className="text-[#c5a059]" /> {event.venue}
-                                </p>
                             </div>
 
                             {/* Description block */}
@@ -758,19 +719,32 @@ export default function TypeBLandingPage() {
                                 <p className="text-xs opacity-60 leading-relaxed font-light">{event.description}</p>
                             </div>
 
-                            {/* CTA Action button */}
-                            <div className="shrink-0 flex items-center">
-                                <button
-                                    onClick={() => {
-                                        triggerHaptic("medium");
-                                        setRsvpData(prev => ({ ...prev, events: [event.shortDate] }));
-                                        setIsRSVPOpen(true);
-                                    }}
-                                    className={`w-full lg:w-auto px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black`}
-                                >
-                                    Get Invitation
-                                </button>
-                            </div>
+                            {/* CTA Action button — ticket link for Runway Show, RSVP for all others */}
+                            {event.ticketUrl ? (
+                                <div className="shrink-0 flex items-center">
+                                    <a
+                                        href={event.ticketUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
+                                    >
+                                        Buy Tickets
+                                    </a>
+                                </div>
+                            ) : (
+                                <div className="shrink-0 flex items-center">
+                                    <button
+                                        onClick={() => {
+                                            triggerHaptic("medium");
+                                            setRsvpData(prev => ({ ...prev, events: [event.shortDate] }));
+                                            setIsRSVPOpen(true);
+                                        }}
+                                        className={`w-full lg:w-auto px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black`}
+                                    >
+                                        Get Invitation
+                                    </button>
+                                </div>
+                            )}
                         </motion.div>
                     ))}
                 </div>

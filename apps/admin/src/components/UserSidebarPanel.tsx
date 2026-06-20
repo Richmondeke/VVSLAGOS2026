@@ -108,6 +108,43 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                             {/* Additional Info for RSVP */}
                             {type === "rsvp" && (
                                 <div className="bg-white dark:bg-white/5 border border-admin-border rounded-xl p-4 shadow-sm">
+                                    <h4 className="text-xs font-bold uppercase tracking-wider text-admin-muted mb-4">Contact & Profile</h4>
+                                    <div className="space-y-3">
+                                        {data.phone && (
+                                            <div>
+                                                <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Phone</div>
+                                                <div className="text-sm font-medium text-admin-primary">{data.phone}</div>
+                                            </div>
+                                        )}
+                                        {data.gender && (
+                                            <div>
+                                                <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Gender</div>
+                                                <div className="text-sm font-medium text-admin-primary">{data.gender}</div>
+                                            </div>
+                                        )}
+                                        {data.occupation && (
+                                            <div>
+                                                <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Occupation</div>
+                                                <div className="text-sm font-medium text-admin-primary">{data.occupation}</div>
+                                            </div>
+                                        )}
+                                        {data.company && (
+                                            <div>
+                                                <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Company / Brand</div>
+                                                <div className="text-sm font-medium text-admin-primary">{data.company}</div>
+                                            </div>
+                                        )}
+                                        {data.role && (
+                                            <div>
+                                                <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Role</div>
+                                                <div className="text-sm font-medium text-admin-primary">{data.role}</div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                            {type === "rsvp" && (
+                                <div className="bg-white dark:bg-white/5 border border-admin-border rounded-xl p-4 shadow-sm">
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-admin-muted mb-4">Event Details</h4>
                                     <div className="space-y-3">
                                         <div>
@@ -122,6 +159,12 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                                                 )}
                                             </div>
                                         </div>
+                                        {data.heard_about && (
+                                            <div>
+                                                <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">How They Heard About VVS</div>
+                                                <div className="text-sm font-medium text-admin-primary">{data.heard_about}</div>
+                                            </div>
+                                        )}
                                         <div>
                                             <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Target Events</div>
                                             <div className="text-sm font-medium text-admin-primary">

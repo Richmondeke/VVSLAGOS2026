@@ -15,6 +15,7 @@ interface LiquidNavbarProps {
 export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNavbarProps) {
     const pathname = usePathname();
     const isRsvpPage = pathname === "/rsvp";
+    const isHomePage = pathname === "/";
     
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -180,7 +181,11 @@ export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNa
                                 <motion.div
                                     onClick={() => {
                                         triggerHaptic("medium");
-                                        window.dispatchEvent(new Event("open-rsvp"));
+                                        if (isHomePage) {
+                                            window.dispatchEvent(new Event("open-rsvp"));
+                                        } else {
+                                            window.location.href = "/rsvp";
+                                        }
                                         setIsMenuOpen(false);
                                     }}
                                     className="w-full mt-2 bg-vvs-gold text-black rounded-2xl p-4 flex justify-center items-center cursor-pointer active:scale-[0.98] transition-all font-bold uppercase tracking-[0.2em] text-[11px]"

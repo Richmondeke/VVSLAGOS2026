@@ -2,15 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import QuizFlow from "@/components/quiz/QuizFlow";
-import LiquidNavbar from "@/components/sections/LiquidNavbar";
-import { useScroll, useSpring } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 export default function StyleQuizPage() {
     // For LiquidNavbar to attach its scroll progress
-    const { scrollYProgress } = useScroll();
-    const smoothProgress = useSpring(scrollYProgress, {
-        stiffness: 100,
         damping: 30,
         restDelta: 0.001
     });
@@ -172,9 +167,6 @@ export default function StyleQuizPage() {
             <div className="pt-20">
                 <QuizFlow />
             </div>
-
-            {/* Floating Bottom Dock */}
-            <LiquidNavbar scrollYProgress={smoothProgress} containerRef={{ current: null }} />
         </main>
     );
 }

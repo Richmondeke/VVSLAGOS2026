@@ -7,9 +7,18 @@ type RequestOptions = {
 };
 
 let accessToken: string | null = null;
+let adminUserId: string | null = null;
 
 export function setAccessToken(token: string | null) {
     accessToken = token;
+}
+
+export function setAdminUserId(id: string | null) {
+    adminUserId = id;
+}
+
+export function getAdminUserId(): string | null {
+    return adminUserId;
 }
 
 export function getAccessToken(): string | null {
@@ -44,6 +53,10 @@ export async function apiClient<T = unknown>(
 
     if (accessToken) {
         reqHeaders.Authorization = `Bearer ${accessToken}`;
+    }
+
+    if (adminUserId) {
+        reqHeaders["x-admin-user-id"] = adminUserId;
     }
 
     let res = await fetch(`${API_BASE}${path}`, {

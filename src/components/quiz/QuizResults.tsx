@@ -345,11 +345,20 @@ export default function QuizResults({ aiData }: QuizResultsProps) {
                                 ref={summaryCardRef}
                                 className="relative w-full aspect-[9/16] bg-[#111111] overflow-hidden flex flex-col border border-[#c5a059]/30 rounded-2xl"
                             >
-                                {/* Gold header bar */}
-                                <div className="w-full bg-[#c5a059] px-5 py-4 flex items-center justify-between flex-shrink-0">
-                                    <p className="text-[9px] font-mono text-black/70 uppercase tracking-[0.25em] font-bold">
-                                        VVS Lagos &apos;26
-                                    </p>
+                                {/* Gold header bar with mascot logo */}
+                                <div className="w-full bg-[#c5a059] px-5 py-3 flex items-center justify-between flex-shrink-0">
+                                    <div className="flex items-center gap-2">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img
+                                            src="/assets/VVSWhiteMAsk.png"
+                                            alt="VVS Logo"
+                                            className="w-7 h-7 object-contain"
+                                            style={{ filter: "brightness(0)" }}
+                                        />
+                                        <p className="text-[9px] font-mono text-black/70 uppercase tracking-[0.25em] font-bold">
+                                            VVS Lagos &apos;26
+                                        </p>
+                                    </div>
                                     <p className="text-[9px] font-mono text-black/70 uppercase tracking-[0.25em] font-bold">
                                         Style Report
                                     </p>

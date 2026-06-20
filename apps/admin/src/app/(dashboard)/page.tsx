@@ -323,7 +323,7 @@ export default function DashboardPage() {
                                 )}
                             </tbody>
                         </table>
-                    ) : (
+                    ) : activeTab === "signups" ? (
                         <div>
                             <table className="w-full text-sm text-left min-w-[600px]">
                                 <thead className="bg-admin-surface text-admin-muted uppercase text-[10px] tracking-wider border-b border-admin-border">

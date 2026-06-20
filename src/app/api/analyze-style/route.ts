@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
         await new Promise(resolve => setTimeout(resolve, 3000));
         
         return NextResponse.json({
-            archetype: "FUTURIST",
+            archetype: "STREETWEAR",
             reading: "Your silhouette speaks of a cyber-punk tomorrow. The stark architectural lines combined with raw metal accents show a fearless embrace of the digital age.",
             colors: ["#000000", "#c5a059", "#444444"]
         });
@@ -46,14 +46,26 @@ export async function POST(req: NextRequest) {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
-You are an elite, avant-garde fashion critic for VVS Lagos. Analyze the provided images. 
-Return a JSON response mapping the user to one of our four exact archetypes: "REBEL", "FUTURIST", "MINIMALIST", or "ARCHIVIST". 
-Include a personalized 2-sentence 'fashion reading' and identify their 3 dominant wardrobe colors.
+You are an elite fashion analyst for VVS Lagos. Analyze the provided images of clothing, outfits, or style grids.
+Classify the user into exactly ONE of these 10 style archetypes based on visible clothing, silhouettes, colors, and accessories:
+
+"FUTURIST" — sleek, experimental, tech-inspired
+"STREETWEAR" — urban, casual, sneaker-focused
+"MINIMALIST" — clean lines, neutral colors, understated
+"VINTAGE" — retro-inspired, nostalgic influences
+"FORMAL" — refined, polished, traditional tailoring
+"CASUAL" — relaxed, everyday, effortless style
+"ATHLEISURE" — sporty, functional, comfort-focused
+"BOHEMIAN" — eclectic, free-spirited, layered textures
+"LUXURY" — premium, designer-oriented, high-end
+"AVANT_GARDE" — artistic, unconventional, boundary-pushing
+
+Include a personalized 2-sentence 'fashion reading' and identify their 3 dominant wardrobe colors as hex codes.
 
 Respond strictly in valid JSON format like this:
 {
-  "archetype": "FUTURIST",
-  "reading": "Your silhouette speaks of a cyber-punk tomorrow. The stark architectural lines combined with raw metal accents show a fearless embrace of the digital age.",
+  "archetype": "STREETWEAR",
+  "reading": "Your wardrobe radiates urban confidence. Bold graphic layers and statement sneakers mark you as a true street culture connoisseur.",
   "colors": ["#000000", "#c5a059", "#444444"]
 }
 `;

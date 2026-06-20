@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import { apiClient, setAccessToken, ApiError } from "./api-client";
+import { apiClient, setAccessToken, setAdminUserId, ApiError } from "./api-client";
 
 type AdminUser = {
     id: string;
@@ -31,13 +31,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     method: "POST",
                 });
                 setAccessToken(data.accessToken);
+                setAdminUserId(data.user.id);
                 setUser(data.user);
                 document.cookie = "vvs_admin_logged_in=1; path=/; max-age=2592000";
             } catch (err) {
                 // Check localStorage for mock session fallback
                 const mockSession = localStorage.getItem("mock_admin_session");
                 if (mockSession) {
-                    setUser(JSON.parse(mockSession));
+                    const parsed = JSON.parse(mockSession);
+                    setAdminUserId(parsed.id);
+                    setUser(parsed);
                     document.cookie = "vvs_admin_logged_in=1; path=/; max-age=2592000";
                 } else {
                     setAccessToken(null);
@@ -57,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 body: { email, password },
             });
             setAccessToken(data.accessToken);
+            setAdminUserId(data.user.id);
             setUser(data.user);
             document.cookie = "vvs_admin_logged_in=1; path=/; max-age=2592000";
         } catch (err) {
@@ -68,6 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 status: "approved",
                 role: "admin",
             };
+            setAdminUserId(mockUser.id);
             setUser(mockUser);
             document.cookie = "vvs_admin_logged_in=1; path=/; max-age=2592000";
             localStorage.setItem("mock_admin_session", JSON.stringify(mockUser));
@@ -105,6 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // ignore
         }
         setAccessToken(null);
+        setAdminUserId(null);
         setUser(null);
         document.cookie = "vvs_admin_logged_in=; path=/; max-age=0";
         localStorage.removeItem("mock_admin_session");

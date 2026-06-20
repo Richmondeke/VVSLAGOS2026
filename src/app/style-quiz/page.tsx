@@ -1,27 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import QuizFlow from "@/components/quiz/QuizFlow";
+import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import QuizFlow from "@/components/quiz/QuizFlow";
 
 export default function StyleQuizPage() {
-    // For LiquidNavbar to attach its scroll progress
-        damping: 30,
-        restDelta: 0.001
-    });
-
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    useEffect(() => {
-        document.body.style.overflow = "auto";
-        window.scrollTo(0, 0);
-    }, []);
-
     return (
-        <main className="min-h-screen bg-black relative">
-            
-            {/* CSS Glitch Keyframes */}
-            <style jsx global>{`
+        <main className="relative min-h-screen bg-black text-white overflow-x-hidden">
+            <style>{`
                 @keyframes glitch {
                     0% {
                         transform: translate(0);
@@ -100,24 +88,9 @@ export default function StyleQuizPage() {
                             href="/"
                             className="flex items-center justify-center w-14 h-14 relative group cursor-pointer"
                         >
-                            {/* Cyan Split layer */}
-                            <img
-                                src="/assets/VVSWhiteMAsk.png"
-                                alt=""
-                                className="absolute w-10 h-10 object-contain glitch-split-cyan opacity-40 group-hover:opacity-75 transition-opacity"
-                            />
-                            {/* Magenta Split layer */}
-                            <img
-                                src="/assets/VVSWhiteMAsk.png"
-                                alt=""
-                                className="absolute w-10 h-10 object-contain glitch-split-magenta opacity-40 group-hover:opacity-75 transition-opacity"
-                            />
-                            {/* Main Mask Image */}
-                            <img
-                                src="/assets/VVSWhiteMAsk.png"
-                                alt="VVS Mask Logo"
-                                className="w-10 h-10 object-contain glitch-img group-hover:scale-110 transition-transform duration-300"
-                            />
+                            <img src="/assets/VVSWhiteMAsk.png" alt="" className="absolute w-10 h-10 object-contain glitch-split-cyan opacity-40 group-hover:opacity-75 transition-opacity" />
+                            <img src="/assets/VVSWhiteMAsk.png" alt="" className="absolute w-10 h-10 object-contain glitch-split-magenta opacity-40 group-hover:opacity-75 transition-opacity" />
+                            <img src="/assets/VVSWhiteMAsk.png" alt="VVS Mask Logo" className="w-10 h-10 object-contain glitch-img group-hover:scale-110 transition-transform duration-300" />
                         </a>
                     </div>
 
@@ -125,15 +98,12 @@ export default function StyleQuizPage() {
                     <div className="flex items-center gap-4 ml-auto lg:ml-0">
                         <a href="/" className="text-[11px] uppercase tracking-[0.2em] font-bold text-[#c5a059] hover:text-white transition-colors">Home</a>
                         <button
-                            onClick={() => {
-                                window.location.href = "/#rsvp";
-                            }}
+                            onClick={() => { window.location.href = "/#rsvp"; }}
                             className="px-5 py-2.5 rounded-full text-[10px] uppercase tracking-[0.18em] font-extrabold bg-white text-black hover:bg-[#c5a059] hover:text-white transition-all shadow-md active:scale-95"
                         >
                             RSVP NOW
                         </button>
                         
-                        {/* Mobile Hamburger (Only visible on small screens) */}
                         <button 
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             className="lg:hidden p-2 text-white"
@@ -163,7 +133,7 @@ export default function StyleQuizPage() {
                 </div>
             )}
 
-            {/* Content Container (padding added to account for fixed top navbar) */}
+            {/* Content Container */}
             <div className="pt-20">
                 <QuizFlow />
             </div>

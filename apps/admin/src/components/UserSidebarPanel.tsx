@@ -83,7 +83,8 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
 
                         {/* Details Grid */}
                         <div className="grid grid-cols-1 gap-6">
-                            {/* Contact Info */}
+                            {/* Contact Info — members only (RSVPs use Contact & Profile section below) */}
+                            {type === "member" && (
                             <div className="bg-white dark:bg-white/5 border border-admin-border rounded-xl p-4 shadow-sm">
                                 <h4 className="text-xs font-bold uppercase tracking-wider text-admin-muted mb-4">Contact Information</h4>
                                 <div className="space-y-3">
@@ -104,6 +105,7 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                                     )}
                                 </div>
                             </div>
+                            )}
 
                             {/* Additional Info for RSVP */}
                             {type === "rsvp" && (

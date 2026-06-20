@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { motion, AnimatePresence, useAnimation } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { designers } from "../sections/Designers";
 import * as htmlToImage from "html-to-image";
 import { triggerHaptic } from "@/utils/haptic";
@@ -20,6 +20,86 @@ const ALL_STYLE_TWINS = [
 
 import type { AIStyleData } from "./QuizFlow";
 
+// ── 10 Archetype definitions ──
+const ARCHETYPE_MAP: Record<string, {
+    title: string;
+    type: string;
+    color: string;
+    brands: string[];
+    tagline: string;
+}> = {
+    FUTURIST: {
+        title: "You are a Futurist",
+        type: "FUTURIST",
+        color: "#c5a059",
+        brands: ["LFJ OFFICIAL", "TJ-WHO", "PIECE ET PATCH"],
+        tagline: "Sleek · Experimental · Tech-Inspired",
+    },
+    STREETWEAR: {
+        title: "You are Streetwear",
+        type: "STREETWEAR",
+        color: "#e74c3c",
+        brands: ["TOKYO JAMES", "TZAR STUDIOS", "I AM ISIGO"],
+        tagline: "Urban · Casual · Sneaker-Focused",
+    },
+    MINIMALIST: {
+        title: "You are a Minimalist",
+        type: "MINIMALIST",
+        color: "#95a5a6",
+        brands: ["HERTUNBA", "FRUCHÉ", "ONALAJA"],
+        tagline: "Clean Lines · Neutral · Understated",
+    },
+    VINTAGE: {
+        title: "You are Vintage",
+        type: "VINTAGE",
+        color: "#d4a574",
+        brands: ["RE LAGOS", "IN OFFICIAL", "ONALAJA"],
+        tagline: "Retro-Inspired · Nostalgic · Timeless",
+    },
+    FORMAL: {
+        title: "You are Formal",
+        type: "FORMAL",
+        color: "#2c3e50",
+        brands: ["HERTUNBA", "FRUCHÉ", "ONALAJA"],
+        tagline: "Refined · Polished · Traditional",
+    },
+    CASUAL: {
+        title: "You are Casual",
+        type: "CASUAL",
+        color: "#27ae60",
+        brands: ["I AM ISIGO", "RE LAGOS", "TZAR STUDIOS"],
+        tagline: "Relaxed · Everyday · Effortless",
+    },
+    ATHLEISURE: {
+        title: "You are Athleisure",
+        type: "ATHLEISURE",
+        color: "#3498db",
+        brands: ["TOKYO JAMES", "LFJ OFFICIAL", "PIECE ET PATCH"],
+        tagline: "Sporty · Functional · Comfort-Focused",
+    },
+    BOHEMIAN: {
+        title: "You are Bohemian",
+        type: "BOHEMIAN",
+        color: "#e67e22",
+        brands: ["ONALAJA", "IN OFFICIAL", "FRUCHÉ"],
+        tagline: "Eclectic · Free-Spirited · Textured",
+    },
+    LUXURY: {
+        title: "You are Luxury",
+        type: "LUXURY",
+        color: "#c5a059",
+        brands: ["HERTUNBA", "FRUCHÉ", "TOKYO JAMES"],
+        tagline: "Premium · Designer · High-End",
+    },
+    AVANT_GARDE: {
+        title: "You are Avant-Garde",
+        type: "AVANT-GARDE",
+        color: "#9b59b6",
+        brands: ["TJ-WHO", "PIECE ET PATCH", "LFJ OFFICIAL"],
+        tagline: "Artistic · Unconventional · Bold",
+    },
+};
+
 interface QuizResultsProps {
     aiData: AIStyleData;
 }
@@ -30,40 +110,9 @@ export default function QuizResults({ aiData }: QuizResultsProps) {
     const [isDownloading, setIsDownloading] = useState(false);
 
     const archetype = useMemo(() => {
-        const type = aiData.archetype || "REBEL";
-        if (type === "REBEL") {
-            return {
-                title: "You are a Rebel",
-                type: "REBEL",
-                desc: aiData.reading,
-                color: "#ffffff",
-                brands: ["TOKYO JAMES", "I AM ISIGO", "TZAR STUDIOS"]
-            };
-        } else if (type === "FUTURIST") {
-            return {
-                title: "You are a Futurist",
-                type: "FUTURIST",
-                desc: aiData.reading,
-                color: "#c5a059",
-                brands: ["LFJ OFFICIAL", "TJ-WHO", "PIECE ET PATCH"]
-            };
-        } else if (type === "MINIMALIST") {
-            return {
-                title: "You are a Minimalist",
-                type: "MINIMALIST",
-                desc: aiData.reading,
-                color: "#c5a059",
-                brands: ["HERTUNBA", "FRUCHÉ", "ONALAJA"]
-            };
-        } else {
-            return {
-                title: "You are an Archivist",
-                type: "ARCHIVIST",
-                desc: aiData.reading,
-                color: "#ffffff",
-                brands: ["IN OFFICIAL", "ONALAJA", "RE LAGOS"]
-            };
-        }
+        const type = (aiData.archetype || "STREETWEAR").toUpperCase().replace(/-/g, "_");
+        const match = ARCHETYPE_MAP[type] || ARCHETYPE_MAP.STREETWEAR;
+        return { ...match, desc: aiData.reading };
     }, [aiData]);
 
     // Pick 3 style twins
@@ -81,7 +130,6 @@ export default function QuizResults({ aiData }: QuizResultsProps) {
 
     // Auto-advance stories
     useEffect(() => {
-        // Slide 1 (Tinder cards) auto-advances when cards finish swiping, so we handle it separately
         if (storyIndex !== 1 && storyIndex < STORIES_COUNT - 1) {
             const timer = setTimeout(() => {
                 setStoryIndex(p => p + 1);
@@ -95,7 +143,6 @@ export default function QuizResults({ aiData }: QuizResultsProps) {
         const clickX = e.clientX - rect.left;
         const width = rect.width;
 
-        // Skip manual tapping for Tinder slide to avoid breaking card swipe
         if (storyIndex === 1) return;
 
         if (clickX < width * 0.3 && storyIndex > 0) {
@@ -113,185 +160,143 @@ export default function QuizResults({ aiData }: QuizResultsProps) {
         triggerHaptic("medium");
         setIsDownloading(true);
         try {
-            await htmlToImage.toPng(summaryCardRef.current, { skipFonts: true, pixelRatio: 3, backgroundColor: "#ffffff" });
-            const dataUrl = await htmlToImage.toPng(summaryCardRef.current, { skipFonts: true, pixelRatio: 3, backgroundColor: "#ffffff" });
+            await htmlToImage.toPng(summaryCardRef.current, { skipFonts: true, pixelRatio: 3, backgroundColor: "#111111" });
+            const dataUrl = await htmlToImage.toPng(summaryCardRef.current, { skipFonts: true, pixelRatio: 3, backgroundColor: "#111111" });
             const link = document.createElement("a");
             link.download = `VVS-${archetype.type}-Match.png`;
             link.href = dataUrl;
             link.click();
+            triggerHaptic("success");
         } catch (err) {
-            console.error("Download failed", err);
+            console.error("Download error:", err);
         } finally {
             setIsDownloading(false);
-            triggerHaptic("success");
         }
     };
 
-    // --- Tinder Swipe logic for Story 2 ---
-    const [cardIndex, setCardIndex] = useState(0);
-    const cardControls = useAnimation();
-
-    useEffect(() => {
-        if (storyIndex === 1 && cardIndex < matchedBrands.length) {
-            // Wait for 1.8s, then swipe the current card out
-            const timer = setTimeout(async () => {
-                triggerHaptic("light");
-                await cardControls.start(i => {
-                    if (i === cardIndex) {
-                        return {
-                            x: 400,
-                            rotate: 20,
-                            opacity: 0,
-                            transition: { duration: 0.65, ease: "easeOut" }
-                        };
-                    }
-                    if (i === cardIndex + 1) {
-                        return {
-                            scale: 1,
-                            y: 0,
-                            filter: "brightness(1)",
-                            transition: { duration: 0.65, delay: 0.1 }
-                        };
-                    }
-                    return {};
-                });
-                setCardIndex(p => p + 1);
-            }, 2000);
-            return () => clearTimeout(timer);
-        } else if (storyIndex === 1 && cardIndex >= matchedBrands.length) {
-            // Once all swiped, move to next slide
-            const timer = setTimeout(() => {
-                setStoryIndex(2);
-            }, 600);
-            return () => clearTimeout(timer);
-        }
-    }, [storyIndex, cardIndex, matchedBrands, cardControls]);
-
     return (
-        <div className="w-full min-h-screen bg-[#141414] flex items-center justify-center p-4">
-            
-            {/* Phone-sized Container Player */}
+        <div className="w-full min-h-screen bg-black flex items-center justify-center p-0">
             <div
                 onClick={handleScreenTap}
-                className="w-full max-w-[375px] h-[720px] rounded-[2.5rem] border-[8px] border-[#222] bg-black overflow-hidden relative shadow-[0_20px_50px_rgba(0,0,0,0.8)] flex flex-col justify-between"
+                className="relative w-full max-w-[420px] aspect-[9/16] bg-black overflow-hidden mx-auto cursor-pointer select-none"
             >
-                
-                {/* Story Progress Indicators */}
-                <div className="absolute top-4 inset-x-4 flex gap-1.5 z-50 pointer-events-none">
-                    {Array.from({ length: STORIES_COUNT }).map((_, idx) => (
-                        <div key={idx} className="h-[3px] flex-1 bg-white/20 rounded-full overflow-hidden">
+                {/* Progress bars */}
+                <div className="absolute top-2 left-3 right-3 z-30 flex gap-1">
+                    {Array.from({ length: STORIES_COUNT }).map((_, i) => (
+                        <div key={i} className="flex-1 h-[3px] rounded-full bg-white/20 overflow-hidden">
                             <motion.div
-                                className="h-full bg-[#c5a059] rounded-full"
-                                initial={{ width: storyIndex > idx ? "100%" : "0%" }}
+                                className="h-full rounded-full"
+                                style={{ backgroundColor: archetype.color }}
+                                initial={{ width: "0%" }}
                                 animate={{
-                                    width: storyIndex > idx ? "100%" : storyIndex === idx ? "100%" : "0%",
+                                    width: i < storyIndex ? "100%" : i === storyIndex ? "100%" : "0%",
                                 }}
-                                transition={{
-                                    duration: storyIndex === idx ? (storyIndex === 1 ? (STORY_DURATION * 0.95) / 1000 : STORY_DURATION / 1000) : 0.15,
-                                    ease: "linear",
-                                }}
+                                transition={
+                                    i === storyIndex
+                                        ? { duration: STORY_DURATION / 1000, ease: "linear" }
+                                        : { duration: 0.2 }
+                                }
                             />
                         </div>
                     ))}
                 </div>
 
-                {/* ─────────────── SLIDE 0: Archetype Intro ─────────────── */}
                 <AnimatePresence mode="wait">
+                    {/* ─────────────── SLIDE 0: Archetype Reveal ─────────────── */}
                     {storyIndex === 0 && (
                         <motion.div
                             key="s0"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            exit={{ opacity: 0, scale: 0.96 }}
-                            className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center z-10"
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 flex flex-col items-center justify-center p-8 z-10"
                         >
                             <motion.p
-                                initial={{ opacity: 0, y: 15 }}
+                                initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.3 }}
-                                className="text-[#c5a059] uppercase tracking-[0.3em] text-[10px] font-mono mb-6"
+                                className="text-[10px] font-mono uppercase tracking-[0.35em] text-white/40 mb-4"
                             >
-                                VVS Lagos &apos;26 Archetype
+                                Your Style Archetype
                             </motion.p>
-                            
-                            <motion.h2
+                            <motion.h1
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.5, type: "spring", stiffness: 100 }}
-                                className="text-4xl font-extrabold uppercase leading-none tracking-tight mb-4"
+                                transition={{ delay: 0.6, type: "spring", stiffness: 120 }}
+                                className="text-5xl sm:text-6xl font-black uppercase tracking-tighter text-center mb-3"
                                 style={{ color: archetype.color }}
                             >
-                                {archetype.title}
-                            </motion.h2>
-
+                                {archetype.type}
+                            </motion.h1>
                             <motion.p
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 1 }}
-                                className="text-white/70 text-xs sm:text-sm leading-relaxed max-w-[280px]"
+                                className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/50 mb-8"
                             >
-                                {archetype.desc}
+                                {archetype.tagline}
                             </motion.p>
-
-                            {/* Logo mask background */}
-                            <div className="absolute inset-x-0 bottom-16 flex justify-center opacity-[0.03] z-0 select-none pointer-events-none">
-                                <img src="/assets/VVSWhiteMAsk.png" alt="" className="w-48 object-contain" />
-                            </div>
+                            <motion.p
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 1.5 }}
+                                className="text-sm text-white/70 text-center leading-relaxed max-w-xs italic"
+                            >
+                                &ldquo;{archetype.desc}&rdquo;
+                            </motion.p>
                         </motion.div>
                     )}
 
-                    {/* ─────────────── SLIDE 1: Match Brands (Tinder Style) ─────────────── */}
+                    {/* ─────────────── SLIDE 1: Brand Matches ─────────────── */}
                     {storyIndex === 1 && (
                         <motion.div
                             key="s1"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="absolute inset-0 flex flex-col justify-center px-6 pt-12 z-10"
+                            className="absolute inset-0 flex flex-col items-center justify-center p-8 z-10"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                triggerHaptic("light");
+                                setStoryIndex(2);
+                            }}
                         >
-                            <h3 className="text-2xl font-extrabold text-white leading-tight mb-8 uppercase text-center">
-                                Brands that match your style
-                            </h3>
-
-                            {/* Stack Container */}
-                            <div className="relative w-full aspect-[3/4] flex justify-center items-center">
-                                {matchedBrands.map((brand, i) => {
-                                    const isCurrent = i === cardIndex;
-                                    const isStacked = i > cardIndex;
-
-                                    if (i < cardIndex) return null; // Already swiped
-
-                                    return (
+                            <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-white/40 mb-6">
+                                Matched Brands
+                            </p>
+                            <div className="flex flex-col items-center gap-4">
+                                {matchedBrands.length > 0
+                                    ? matchedBrands.map((brand, i) => (
                                         <motion.div
                                             key={brand.name}
-                                            custom={i}
-                                            animate={cardControls}
-                                            style={{ zIndex: matchedBrands.length - i }}
-                                            initial={{ 
-                                                scale: isCurrent ? 1 : 0.92,
-                                                y: isCurrent ? 0 : 20,
-                                                opacity: 1,
-                                                filter: isCurrent ? "brightness(1)" : "brightness(0.3)"
-                                            }}
-                                            transition={{ duration: 0.4 }}
-                                            className="absolute w-full h-full max-w-[260px] rounded-2xl overflow-hidden border border-[#c5a059]/30 bg-[#151515] flex flex-col justify-between shadow-2xl"
+                                            initial={{ opacity: 0, x: -30 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.3 + i * 0.2 }}
+                                            className="flex items-center gap-4 bg-white/5 px-6 py-4 rounded-xl border border-white/10"
                                         >
-                                            <div className="aspect-[3/4] overflow-hidden relative flex-1">
-                                                <img
-                                                    src={brand.image}
-                                                    alt={brand.name}
-                                                    className="w-full h-full object-cover grayscale"
-                                                />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
-                                            </div>
-                                            <div className="p-4 bg-black/90">
-                                                <h4 className="text-xs font-mono font-bold tracking-widest text-[#c5a059] uppercase">{brand.name}</h4>
-                                                <span className="text-[9px] text-white/50 uppercase tracking-widest block mt-0.5">VVS Innovator</span>
+                                            {brand.image && (
+                                                // eslint-disable-next-line @next/next/no-img-element
+                                                <img src={brand.image} alt={brand.name} className="w-12 h-12 rounded-lg object-cover" />
+                                            )}
+                                            <div>
+                                                <p className="text-white font-bold text-sm uppercase tracking-wide">{brand.name}</p>
+                                                {brand.tagline && <p className="text-white/40 text-[10px]">{brand.tagline}</p>}
                                             </div>
                                         </motion.div>
-                                    );
-                                })}
+                                    ))
+                                    : archetype.brands.map((name, i) => (
+                                        <motion.div
+                                            key={name}
+                                            initial={{ opacity: 0, x: -30 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ delay: 0.3 + i * 0.2 }}
+                                            className="px-6 py-3 bg-white/5 rounded-xl border border-white/10"
+                                        >
+                                            <p className="text-white font-bold text-sm uppercase tracking-wider">{name}</p>
+                                        </motion.div>
+                                    ))}
                             </div>
+                            <p className="text-white/20 text-[9px] mt-8 font-mono uppercase tracking-widest">Tap to continue</p>
                         </motion.div>
                     )}
 
@@ -302,31 +307,24 @@ export default function QuizResults({ aiData }: QuizResultsProps) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10 bg-[#c5a059]"
+                            className="absolute inset-0 flex flex-col items-center justify-center p-8 z-10"
                         >
-                            <motion.p
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 }}
-                                className="text-black/50 uppercase tracking-[0.3em] text-[10px] font-mono mb-10"
-                            >
-                                Your Style Twins
-                            </motion.p>
-                            
-                            <div className="flex flex-col items-center gap-6 w-full">
+                            <p className="text-[10px] font-mono uppercase tracking-[0.35em] text-white/40 mb-6">
+                                Your Influencer Twins
+                            </p>
+                            <div className="flex flex-col items-center gap-5">
                                 {styleTwins.map((twin, i) => (
                                     <motion.div
                                         key={twin}
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.4 + i * 0.4 }}
-                                        className="text-center"
+                                        transition={{ delay: 0.3 + i * 0.3 }}
                                     >
-                                        <span className="block text-2xl sm:text-3xl font-black italic uppercase tracking-tighter text-black">
+                                        <span className="block text-2xl sm:text-3xl font-black italic uppercase tracking-tighter text-white">
                                             {twin}
                                         </span>
                                         {i < styleTwins.length - 1 && (
-                                            <div className="mt-3 w-8 h-[1px] bg-black/20 mx-auto" />
+                                            <div className="mt-3 w-8 h-[1px] bg-white/20 mx-auto" />
                                         )}
                                     </motion.div>
                                 ))}
@@ -334,7 +332,7 @@ export default function QuizResults({ aiData }: QuizResultsProps) {
                         </motion.div>
                     )}
 
-                    {/* ─────────────── SLIDE 3: Summary White Card Report ─────────────── */}
+                    {/* ─────────────── SLIDE 3: Summary Card (Report Card Style) ─────────────── */}
                     {storyIndex === 3 && (
                         <motion.div
                             key="s3"
@@ -342,89 +340,125 @@ export default function QuizResults({ aiData }: QuizResultsProps) {
                             animate={{ opacity: 1 }}
                             className="absolute inset-0 flex flex-col items-center justify-center p-3 z-10 bg-black"
                         >
-                            {/* Summary Card (White Background / Image Background) */}
+                            {/* Report Card */}
                             <div
                                 ref={summaryCardRef}
-                                className="relative w-full aspect-[9/16] bg-[#111111] overflow-hidden flex flex-col border border-black/10 rounded-2xl"
+                                className="relative w-full aspect-[9/16] bg-[#111111] overflow-hidden flex flex-col border border-[#c5a059]/30 rounded-2xl"
                             >
-                                {/* AI Image Background */}
-                                {aiData.userImage && (
-                                    <>
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img 
-                                            src={aiData.userImage} 
-                                            alt="User aesthetic" 
-                                            className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity opacity-40 grayscale"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-b from-[#111111]/80 via-[#111111]/50 to-[#111111]/90" />
-                                    </>
-                                )}
-
-                                <div className="relative z-10 flex-1 flex flex-col px-6 pt-8 pb-0">
-                                    <p className="text-[9px] font-mono text-white/50 uppercase tracking-[0.25em] mb-4">
-                                        VVS Lagos &apos;26 · Style Match
+                                {/* Gold header bar */}
+                                <div className="w-full bg-[#c5a059] px-5 py-4 flex items-center justify-between flex-shrink-0">
+                                    <p className="text-[9px] font-mono text-black/70 uppercase tracking-[0.25em] font-bold">
+                                        VVS Lagos &apos;26
                                     </p>
-
-                                    <h2 className="text-3xl font-extrabold uppercase mb-1" style={{ color: archetype.color }}>
-                                        {archetype.type}
-                                    </h2>
-                                    <p className="text-[10px] font-mono uppercase tracking-widest text-[#c5a059] mb-6">
-                                        Archetype Match
+                                    <p className="text-[9px] font-mono text-black/70 uppercase tracking-[0.25em] font-bold">
+                                        Style Report
                                     </p>
-
-                                    <p className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-mono mb-2">
-                                        Matched Brands
-                                    </p>
-                                    <div className="flex flex-col gap-1.5 mb-6">
-                                        {matchedBrands.slice(0, 3).map((b) => (
-                                            <span
-                                                key={b.name}
-                                                className="px-3 py-1.5 bg-[#c5a059] text-black text-[9px] font-bold uppercase tracking-wider rounded-md inline-block max-w-max"
-                                            >
-                                                {b.name}
-                                            </span>
-                                        ))}
-                                    </div>
-
-                                    <p className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-mono mb-2">
-                                        Dominant Palette
-                                    </p>
-                                    <div className="flex gap-2 mb-6">
-                                        {aiData.colors?.map((c) => (
-                                            <div key={c} className="w-6 h-6 rounded-full border border-white/20 shadow-md" style={{ backgroundColor: c }} />
-                                        ))}
-                                    </div>
-
-                                    <p className="text-[9px] uppercase tracking-[0.2em] text-white/40 font-mono mb-2">
-                                        Influencer Twins
-                                    </p>
-                                    <div className="flex flex-col gap-1.5">
-                                        {styleTwins.map((t) => (
-                                            <span
-                                                key={t}
-                                                className="text-sm font-bold italic text-white uppercase tracking-tight"
-                                            >
-                                                {t}
-                                            </span>
-                                        ))}
-                                    </div>
-
-                                    <div className="mt-auto pb-4">
-                                        <p className="text-[8px] font-mono uppercase tracking-[0.3em] text-white/30">
-                                            #VVSLagos26
-                                        </p>
-                                    </div>
                                 </div>
 
-                                {/* Mascot Peeking at the bottom of the card on a gold bar */}
-                                <div className="relative w-full h-[100px] flex-shrink-0 overflow-hidden bg-transparent">
-                                    <div className="absolute bottom-0 left-0 w-full h-1/3 bg-[#c5a059]" />
-                                    <img
-                                        src="/assets/VVSMASCOT1.webp"
-                                        alt="Mascot peeking"
-                                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[160px] object-contain object-top"
-                                        style={{ height: "180px", objectPosition: "top center" }}
-                                    />
+                                <div className="relative z-10 flex-1 flex flex-col px-5 pt-5 pb-4 gap-0">
+                                    {/* ID Photo + Archetype Header */}
+                                    <div className="flex items-start gap-4 mb-5">
+                                        {/* ID-style user photo */}
+                                        <div className="w-[90px] h-[110px] rounded-lg overflow-hidden border-2 border-[#c5a059]/40 bg-white/5 flex-shrink-0">
+                                            {aiData.userImage ? (
+                                                // eslint-disable-next-line @next/next/no-img-element
+                                                <img
+                                                    src={aiData.userImage}
+                                                    alt="Your style"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-white/20 text-[8px] font-mono uppercase">
+                                                    No Photo
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Archetype info */}
+                                        <div className="flex-1 pt-1">
+                                            <p className="text-[8px] font-mono uppercase tracking-[0.2em] text-[#c5a059]/70 mb-1">
+                                                Archetype Match
+                                            </p>
+                                            <h2 className="text-2xl font-extrabold uppercase leading-tight" style={{ color: archetype.color }}>
+                                                {archetype.type}
+                                            </h2>
+                                            <p className="text-[9px] text-white/40 font-mono mt-1 uppercase tracking-wider">
+                                                {archetype.tagline}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Divider */}
+                                    <div className="w-full h-[1px] bg-white/10 mb-4" />
+
+                                    {/* Reading */}
+                                    <div className="mb-4">
+                                        <p className="text-[8px] uppercase tracking-[0.2em] text-white/30 font-mono mb-2">
+                                            AI Reading
+                                        </p>
+                                        <p className="text-[11px] text-white/70 leading-relaxed italic">
+                                            &ldquo;{archetype.desc}&rdquo;
+                                        </p>
+                                    </div>
+
+                                    {/* Matched Brands */}
+                                    <div className="mb-4">
+                                        <p className="text-[8px] uppercase tracking-[0.2em] text-white/30 font-mono mb-2">
+                                            Matched Brands
+                                        </p>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {archetype.brands.map((b) => (
+                                                <span
+                                                    key={b}
+                                                    className="px-3 py-1.5 bg-[#c5a059]/15 border border-[#c5a059]/30 text-[#c5a059] text-[8px] font-bold uppercase tracking-wider rounded-md"
+                                                >
+                                                    {b}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Dominant Palette */}
+                                    <div className="mb-4">
+                                        <p className="text-[8px] uppercase tracking-[0.2em] text-white/30 font-mono mb-2">
+                                            Dominant Palette
+                                        </p>
+                                        <div className="flex gap-2">
+                                            {aiData.colors?.map((c) => (
+                                                <div key={c} className="flex items-center gap-1.5">
+                                                    <div className="w-5 h-5 rounded-full border border-white/20 shadow-md" style={{ backgroundColor: c }} />
+                                                    <span className="text-[8px] font-mono text-white/30 uppercase">{c}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Influencer Twins */}
+                                    <div className="mb-auto">
+                                        <p className="text-[8px] uppercase tracking-[0.2em] text-white/30 font-mono mb-2">
+                                            Influencer Twins
+                                        </p>
+                                        <div className="flex flex-col gap-1">
+                                            {styleTwins.map((t) => (
+                                                <span
+                                                    key={t}
+                                                    className="text-xs font-bold italic text-white/80 uppercase tracking-tight"
+                                                >
+                                                    {t}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Footer */}
+                                    <div className="pt-3 border-t border-white/10 flex items-center justify-between">
+                                        <p className="text-[7px] font-mono uppercase tracking-[0.3em] text-white/20">
+                                            #VVSLagos26
+                                        </p>
+                                        <p className="text-[7px] font-mono uppercase tracking-[0.2em] text-white/20">
+                                            vvslagos.com
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -435,13 +469,13 @@ export default function QuizResults({ aiData }: QuizResultsProps) {
                                     disabled={isDownloading}
                                     className="flex-1 py-3 bg-[#c5a059] text-black font-bold uppercase tracking-wider text-[9px] rounded-xl hover:bg-white transition-colors"
                                 >
-                                    {isDownloading ? "Saving…" : "Save Card"}
+                                    {isDownloading ? "Saving\u2026" : "Save Card"}
                                 </button>
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         triggerHaptic("light");
-                                        window.location.href = "/type-b";
+                                        window.location.href = "/";
                                     }}
                                     className="flex-1 py-3 border border-white/20 text-white font-bold uppercase tracking-wider text-[9px] rounded-xl hover:bg-white hover:text-black transition-colors"
                                 >

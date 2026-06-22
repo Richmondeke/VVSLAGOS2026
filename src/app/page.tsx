@@ -54,9 +54,24 @@ export default function TypeBLandingPage() {
     const [rsvpData, setRsvpData] = useState<{
         name: string;
         email: string;
+        phone: string;
+        gender: string;
+        occupation: string;
+        companyRole: string;
+        referral: string;
         attendance: string;
         events: string[];
-    }>({ name: "", email: "", attendance: "yes", events: ["JULY 5"] });
+    }>({ 
+        name: "", 
+        email: "", 
+        phone: "",
+        gender: "",
+        occupation: "",
+        companyRole: "",
+        referral: "",
+        attendance: "yes", 
+        events: ["JULY 5"] 
+    });
     const [newsletterEmail, setNewsletterEmail] = useState("");
     const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
     const [activeMask, setActiveMask] = useState<"white" | "black">("white");
@@ -280,6 +295,11 @@ export default function TypeBLandingPage() {
                         {
                             name: rsvpData.name,
                             email: rsvpData.email,
+                            phone: rsvpData.phone,
+                            gender: rsvpData.gender,
+                            occupation: rsvpData.occupation,
+                            company_role: rsvpData.companyRole,
+                            referral: rsvpData.referral,
                             attendance: rsvpData.attendance,
                             events: rsvpData.events,
                             created_at: new Date().toISOString()
@@ -297,7 +317,17 @@ export default function TypeBLandingPage() {
         setTimeout(() => {
             setIsRSVPOpen(false);
             setRsvpSubmitted(false);
-            setRsvpData({ name: "", email: "", attendance: "yes", events: [] });
+            setRsvpData({ 
+                name: "", 
+                email: "", 
+                phone: "",
+                gender: "",
+                occupation: "",
+                companyRole: "",
+                referral: "",
+                attendance: "yes", 
+                events: [] 
+            });
         }, 2500);
     };
 
@@ -968,7 +998,7 @@ export default function TypeBLandingPage() {
                                     <p className="text-xs opacity-60 max-w-[280px]">Your invitation request has been logged. We will review details and follow up shortly.</p>
                                 </motion.div>
                             ) : (
-                                <form onSubmit={handleRSVPSubmit} className="space-y-4 font-sans">
+                                <form onSubmit={handleRSVPSubmit} className="space-y-4 font-sans max-h-[70vh] overflow-y-auto pr-2 scrollbar-none">
                                     <div>
                                         <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">Full Name</label>
                                         <input
@@ -983,18 +1013,102 @@ export default function TypeBLandingPage() {
                                         />
                                     </div>
 
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">Email Address</label>
+                                            <input
+                                                type="email"
+                                                required
+                                                value={rsvpData.email}
+                                                onChange={(e) => setRsvpData(prev => ({ ...prev, email: e.target.value }))}
+                                                className={`w-full px-4 py-3 rounded-xl border text-xs focus:outline-none focus:border-[#c5a059] ${
+                                                    theme === "dark" ? "bg-white/5 border-white/15 text-white" : "bg-black/5 border-black/15 text-black"
+                                                }`}
+                                                placeholder="Enter your email"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">Phone Number</label>
+                                            <input
+                                                type="tel"
+                                                required
+                                                value={rsvpData.phone}
+                                                onChange={(e) => setRsvpData(prev => ({ ...prev, phone: e.target.value }))}
+                                                className={`w-full px-4 py-3 rounded-xl border text-xs focus:outline-none focus:border-[#c5a059] ${
+                                                    theme === "dark" ? "bg-white/5 border-white/15 text-white" : "bg-black/5 border-black/15 text-black"
+                                                }`}
+                                                placeholder="+234..."
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">Gender</label>
+                                            <select
+                                                required
+                                                value={rsvpData.gender}
+                                                onChange={(e) => setRsvpData(prev => ({ ...prev, gender: e.target.value }))}
+                                                className={`w-full px-4 py-3 rounded-xl border text-xs focus:outline-none focus:border-[#c5a059] ${
+                                                    theme === "dark" ? "bg-black border-white/15 text-white" : "bg-white border-black/15 text-black"
+                                                }`}
+                                            >
+                                                <option value="" disabled className="text-gray-500">Select gender</option>
+                                                <option value="female">Female</option>
+                                                <option value="male">Male</option>
+                                                <option value="non-binary">Non-binary</option>
+                                                <option value="prefer-not-to-say">Prefer not to say</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">Occupation</label>
+                                            <input
+                                                type="text"
+                                                required
+                                                value={rsvpData.occupation}
+                                                onChange={(e) => setRsvpData(prev => ({ ...prev, occupation: e.target.value }))}
+                                                className={`w-full px-4 py-3 rounded-xl border text-xs focus:outline-none focus:border-[#c5a059] ${
+                                                    theme === "dark" ? "bg-white/5 border-white/15 text-white" : "bg-black/5 border-black/15 text-black"
+                                                }`}
+                                                placeholder="e.g. Designer, Curator"
+                                            />
+                                        </div>
+                                    </div>
+
                                     <div>
-                                        <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">Email Address</label>
+                                        <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">Company & Role</label>
                                         <input
-                                            type="email"
+                                            type="text"
                                             required
-                                            value={rsvpData.email}
-                                            onChange={(e) => setRsvpData(prev => ({ ...prev, email: e.target.value }))}
+                                            value={rsvpData.companyRole}
+                                            onChange={(e) => setRsvpData(prev => ({ ...prev, companyRole: e.target.value }))}
                                             className={`w-full px-4 py-3 rounded-xl border text-xs focus:outline-none focus:border-[#c5a059] ${
                                                 theme === "dark" ? "bg-white/5 border-white/15 text-white" : "bg-black/5 border-black/15 text-black"
                                             }`}
-                                            placeholder="Enter your email"
+                                            placeholder="e.g. Creative Director at BrandX"
                                         />
+                                    </div>
+
+                                    <div>
+                                        <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">How did you hear about the event?</label>
+                                        <select
+                                            required
+                                            value={rsvpData.referral}
+                                            onChange={(e) => setRsvpData(prev => ({ ...prev, referral: e.target.value }))}
+                                            className={`w-full px-4 py-3 rounded-xl border text-xs focus:outline-none focus:border-[#c5a059] ${
+                                                theme === "dark" ? "bg-black border-white/15 text-white" : "bg-white border-black/15 text-black"
+                                            }`}
+                                        >
+                                            <option value="" disabled className="text-gray-500">Select an option</option>
+                                            <option value="instagram">Instagram</option>
+                                            <option value="twitter-x">Twitter / X</option>
+                                            <option value="friend-word-of-mouth">Friend / Word of mouth</option>
+                                            <option value="newsletter">Email Newsletter</option>
+                                            <option value="search-press">Search / Press Article</option>
+                                            <option value="other">Other</option>
+                                        </select>
                                     </div>
 
                                     <div>

@@ -116,6 +116,7 @@ export default function TypeBLandingPage() {
             shortDate: "JULY 5",
             time: "7:00 PM WAT",
             title: "VVS Opening Gala & 5th Anniversary Celebration",
+            venue: "British or Canadian Residence, Ikoyi",
             category: "Gala & Awards",
             description: "An exclusive celebration commemorating 5 years of VVS creative boundary-pushing, honoring our 11 selected VVS Innovators. Features the honorary VVS awards, anniversary recap films, curated dinner, live comedy, and dress-coded theme party for 100 guests.",
             image: "/assets/ONALAJA.webp"
@@ -125,6 +126,7 @@ export default function TypeBLandingPage() {
             shortDate: "JULY 6",
             time: "10:00 AM WAT",
             title: "VVS Conversations & Panel Sessions",
+            venue: "Alliance Française, Lagos",
             category: "Conversations & Panels",
             description: "Five panel sessions on design, creative industry strategies, and technology integrations. Featuring fireside sessions with Korede Roberts, Tega Mavin, Aisha Augie. Panel insights on sustainability with Zara Odu, Kelvin Bumpa, Reni Folawiyo, Florentyna, Tolu Coye, Bola PSD, Wale Davies, Sade Okoya, and Mutesi Jolly. 120 guests.",
             image: "/assets/FRUCHE.webp"
@@ -134,6 +136,7 @@ export default function TypeBLandingPage() {
             shortDate: "JULY 7",
             time: "2:00 PM WAT",
             title: "VVS Collectors Day Preview",
+            venue: "Windsor Gallery, Lagos",
             category: "Private Viewing",
             description: "A private curated viewing for VIP art collectors and international buyers, showcasing exclusive work from our VVS Innovator collective. Features detailed artist explanations of their work, a curatorial introduction speech, and drinks. 150 HNIs.",
             image: "/assets/PIECE ET PATCH.webp"
@@ -143,6 +146,7 @@ export default function TypeBLandingPage() {
             shortDate: "JULY 8-11",
             time: "12:00 PM WAT",
             title: "VVS Pop Up & Art Exhibition Public Opening",
+            venue: "A White Space Ikoyi & Windsor Gallery",
             category: "Public Showcase",
             description: "The official public trunk show pop-up at A White Space Ikoyi presenting retail collections of the 11 VVS Innovator brands (including Hertunba, Onalaja, Fruché, I.N Official, TJ-Who), alongside the contemporary art exhibition extending at Windsor. 150 daily visitors.",
             image: "/assets/TJ WHO.webp"
@@ -152,6 +156,7 @@ export default function TypeBLandingPage() {
             shortDate: "JULY 11",
             time: "2:00 PM WAT",
             title: "VVS Film Experience & Panel Discussions",
+            venue: "Alliance Française, Lagos",
             category: "Cinema & Storytelling",
             description: "Co-hosted in partnership with AFRIFF. Cinematic panel sessions discussing digital storytelling and film archives. Screening the brand narrative 'Descendants' short film, live plays, and cultural documentaries celebrating VVS Innovators.",
             image: "/assets/LFJ OFFICIAL.webp"
@@ -164,20 +169,21 @@ export default function TypeBLandingPage() {
             category: "Haute Couture",
             description: "The main fashion runway showcase of VVS Lagos 2026. Afromodernist haute couture collections designed by our selected Innovators, presented under the iconic Falomo bridge structure in a raw, concrete architectural setting.",
             image: "/assets/IN OFFICIAL.png",
-            ticketUrl: "https://paystack.com/pay/vvslagos2026",
+            ticketUrl: "https://www.pv.rsvp/vvs-fashion-show",
         },
         {
             date: "July 12, 2026",
             shortDate: "JULY 12",
             time: "10:00 PM WAT",
             title: "VVS Closing Party",
+            venue: "Rooftop at Club 245, Ikoyi",
             category: "Afterparty",
             description: "The final celebratory gathering. Bringing together VVS Innovators, partners, model cohorts, sponsors, and guests for a rooftop celebration. Curated DJ sets, drinks, and networking for 150 people.",
             image: "/assets/TZAR STUDIOS.webp"
         }
     ], []);
 
-    const TICKET_URL = "https://paystack.com/pay/vvslagos2026";
+    const TICKET_URL = "https://www.pv.rsvp/vvs-fashion-show";
 
     const innovators = useMemo(() => [
         {
@@ -401,7 +407,6 @@ export default function TypeBLandingPage() {
                     <div className="flex items-center gap-4 ml-auto lg:ml-0">
                         <div className="hidden lg:flex items-center gap-6 mr-4">
                             <a href="/style-quiz" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">Style Quiz</a>
-                            <a href="/future-labs" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">Future Labs</a>
                         </div>
 
                         {/* Theme Toggle */}
@@ -458,7 +463,6 @@ export default function TypeBLandingPage() {
                         <button onClick={() => scrollSection("countdown")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Kickoff Countdown</button>
                         <button onClick={() => scrollSection("calendar")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Upcoming Events</button>
                         <a href="/style-quiz" className="text-[12px] uppercase tracking-widest font-bold py-2">Style Quiz</a>
-                        <a href="/future-labs" className="text-[12px] uppercase tracking-widest font-bold py-2">Future Labs</a>
                         
                         <div className="flex gap-4 mt-4 border-t pt-4 border-white/10">
                             <button

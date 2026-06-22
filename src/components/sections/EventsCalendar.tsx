@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Countdown from "../ui/Countdown";
 
-const TICKET_URL = "https://paystack.com/pay/vvslagos2026";
+const TICKET_URL = "https://www.pv.rsvp/vvs-fashion-show";
 
 const events = [
     {

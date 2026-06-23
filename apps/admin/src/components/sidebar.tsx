@@ -8,6 +8,7 @@ import Image from "next/image";
 const NAV_ITEMS = [
     { href: "/", label: "Dashboard", icon: "grid" },
     { href: "/events", label: "Events", icon: "calendar" },
+    { href: "/community", label: "Community", icon: "users" },
     { href: "/news", label: "News", icon: "fileText" },
     { href: "/opportunities", label: "Opportunities", icon: "briefcase" },
 ];
@@ -15,7 +16,7 @@ const NAV_ITEMS = [
 const ICONS: Record<string, string> = {
     grid: "\u25A6",
     inbox: "\u2709", // envelope/inbox
-    users: "\u2B24",
+    users: "\u25CF", // filled circle for users/community
     package: "\u25A3",
     "alert-triangle": "\u26A0",
     wallet: "\u2B1A",

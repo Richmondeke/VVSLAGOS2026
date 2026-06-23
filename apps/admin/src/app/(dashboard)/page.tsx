@@ -11,6 +11,7 @@ type Member = {
     email: string;
     phone: string | null;
     status: string;
+    source: string;
     createdAt: string;
 };
 
@@ -330,14 +331,15 @@ export default function DashboardPage() {
                                     <tr>
                                         <th className="px-6 py-4 font-bold">Email</th>
                                         <th className="px-6 py-4 font-bold">Status</th>
+                                        <th className="px-6 py-4 font-bold">Source</th>
                                         <th className="px-6 py-4 font-bold">Registered</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-admin-border">
                                     {membersLoading ? (
-                                        <tr><td colSpan={3} className="px-6 py-8 text-center text-admin-muted">Loading...</td></tr>
+                                        <tr><td colSpan={4} className="px-6 py-8 text-center text-admin-muted">Loading...</td></tr>
                                     ) : !membersData?.items.length ? (
-                                        <tr><td colSpan={3} className="px-6 py-8 text-center text-admin-muted">No members found.</td></tr>
+                                        <tr><td colSpan={4} className="px-6 py-8 text-center text-admin-muted">No members found.</td></tr>
                                     ) : (
                                         membersData.items.map((member) => (
                                             <tr 
@@ -348,6 +350,13 @@ export default function DashboardPage() {
                                                 <td className="px-6 py-4 font-medium text-admin-primary">{member.email}</td>
                                                 <td className="px-6 py-4">
                                                     <StatusBadge status={member.status} />
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                                                        member.source === "community" ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"
+                                                    }`}>
+                                                        {member.source || "app"}
+                                                    </span>
                                                 </td>
                                                 <td className="px-6 py-4 text-admin-muted">
                                                     {new Date(member.createdAt).toLocaleDateString()}

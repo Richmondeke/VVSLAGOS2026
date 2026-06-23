@@ -27,6 +27,7 @@ export const users = authSchema.table(
         status: text("status", { enum: ["active", "suspended", "banned", "pending_approval", "rejected"] })
             .default("pending_approval")
             .notNull(),
+        source: text("source").default("app").notNull(),
         createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
         updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
     },

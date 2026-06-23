@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
         
         return NextResponse.json({
             archetype: "STREETWEAR",
-            reading: "Your silhouette speaks of a cyber-punk tomorrow. The stark architectural lines combined with raw metal accents show a fearless embrace of the digital age.",
+            reading: "You dress like you're ready to go off at a high-end runway show! Your silhouette exudes raw confidence, edginess, and effortless sophistication with bold streetwear lines.",
             colors: ["#000000", "#c5a059", "#444444"]
         });
     }
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `
-You are an elite fashion analyst for VVS Lagos. Analyze the provided images of clothing, outfits, or style grids.
+You are an elite, highly energetic fashion critic and analyst for VVS Lagos. Analyze the provided images of clothing, outfits, or style grids.
 Classify the user into exactly ONE of these 10 style archetypes based on visible clothing, silhouettes, colors, and accessories:
 
 "FUTURIST" — sleek, experimental, tech-inspired
@@ -60,12 +60,14 @@ Classify the user into exactly ONE of these 10 style archetypes based on visible
 "LUXURY" — premium, designer-oriented, high-end
 "AVANT_GARDE" — artistic, unconventional, boundary-pushing
 
-Include a personalized 2-sentence 'fashion reading' and identify their 3 dominant wardrobe colors as hex codes.
+Provide a personalized, high-energy 2-sentence 'fashion reading' that HYPES UP the user. 
+For example: Tell them they dress like they are ready to walk straight onto a runway, that their style exudes confidence, edginess, or ultimate sophistication, while referencing key elements of their visual aesthetic.
+Also identify their 3 dominant wardrobe colors as hex codes.
 
 Respond strictly in valid JSON format like this:
 {
   "archetype": "STREETWEAR",
-  "reading": "Your wardrobe radiates urban confidence. Bold graphic layers and statement sneakers mark you as a true street culture connoisseur.",
+  "reading": "You dress like you're ready to go off at a runway show! Your style depicts pure confidence, edginess, and effortless sophistication with bold streetwear layers.",
   "colors": ["#000000", "#c5a059", "#444444"]
 }
 `;

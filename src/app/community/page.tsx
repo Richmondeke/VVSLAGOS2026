@@ -83,6 +83,8 @@ export default function CommunityPage() {
         handleFileChange(file);
     }, []);
 
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!form.selfieFile) {
@@ -98,7 +100,28 @@ export default function CommunityPage() {
         setError(null);
 
         try {
-            // 1. Upload selfie to Supabase Storage
+            // 1. Register/Sign up the user in Supabase Auth
+            // Using the generic password: 'VVSmember2026'
+            const { error: signUpError } = await supabase.auth.signUp({
+                email: form.email.trim(),
+                password: "VVSmember2026",
+                options: {
+                    data: {
+                        name: form.name.trim(),
+                        age: parseInt(form.age),
+                        occupation: form.occupation.trim(),
+                        city: form.city,
+                        gender: form.gender,
+                    }
+                }
+            });
+
+            if (signUpError) {
+                // If user already exists, we skip throwing so they can still register/update community table
+                console.warn("Auth signup error or user already exists:", signUpError.message);
+            }
+
+            // 2. Upload selfie to Supabase Storage
             const fileExt = form.selfieFile.name.split(".").pop();
             const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
             const filePath = `community/${fileName}`;
@@ -115,7 +138,7 @@ export default function CommunityPage() {
                 console.warn("Selfie upload warning:", uploadError.message);
             }
 
-            // 2. Insert community member record
+            // 3. Insert community member record
             const { error: insertError } = await supabase
                 .from("community_members")
                 .insert([{
@@ -134,6 +157,7 @@ export default function CommunityPage() {
                 throw new Error(insertError.message);
             }
 
+            setShowSuccessModal(true);
             setSubmitted(true);
         } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : "Something went wrong. Please try again.";
@@ -447,6 +471,63 @@ export default function CommunityPage() {
                     <p>© 2026 VERY VERY SPECIAL. ALL RIGHTS RESERVED.</p>
                 </div>
             </footer>
+
+            {/* Success Modal */}
+            <AnimatePresence>
+                {showSuccessModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setShowSuccessModal(false)}
+                            className="absolute inset-0 bg-black/85 backdrop-blur-md"
+                        />
+
+                        {/* Modal Container */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="bg-[#0b0b0b] border border-[#c5a059]/30 rounded-3xl p-8 max-w-md w-full text-center relative z-10 shadow-[0_20px_50px_rgba(197,160,89,0.15)]"
+                        >
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+                                className="w-20 h-20 bg-[#c5a059]/10 border border-[#c5a059] rounded-full flex items-center justify-center mx-auto mb-6 text-[#c5a059]"
+                            >
+                                <CheckCircle2 size={40} />
+                            </motion.div>
+
+                            <h3 className="text-2xl font-extrabold uppercase tracking-tight text-[#c5a059] mb-3">
+                                Welcome to the VVS Community!
+                            </h3>
+
+                            <p className="text-xs text-white/70 mb-4 leading-relaxed">
+                                Your application has been successfully submitted and you've been registered with our community database!
+                            </p>
+
+                            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-left">
+                                <p className="text-[10px] font-mono uppercase text-white/40 mb-1">Temporary Login Details</p>
+                                <p className="text-xs text-white mb-1"><span className="text-[#c5a059] font-mono">Email:</span> {form.email}</p>
+                                <p className="text-xs text-white"><span className="text-[#c5a059] font-mono">Password:</span> VVSmember2026</p>
+                                <p className="text-[9px] text-[#c5a059] font-mono mt-3 opacity-80">
+                                    ★ An email invitation has been triggered. You can log in using the credentials above and update your password at any time.
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={() => setShowSuccessModal(false)}
+                                className="w-full py-3 bg-[#c5a059] hover:bg-white text-black font-bold uppercase tracking-widest text-[11px] rounded-xl transition-all"
+                            >
+                                Got it
+                            </button>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

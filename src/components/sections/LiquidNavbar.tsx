@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, MotionValue, useMotionValueEvent } from "framer-motion";
 import { triggerHaptic } from "@/utils/haptic";
-import { X, Smartphone, Layers, Compass, Calendar, Award, Menu } from "lucide-react";
+import { X, Smartphone, Layers, Compass, Calendar, Award, Menu, Users } from "lucide-react";
 
 import { usePathname } from "next/navigation";
 
@@ -79,6 +79,13 @@ export default function LiquidNavbar({ containerRef, scrollYProgress }: LiquidNa
             image: "/assets/VVSMASCOT1.webp", 
             action: () => { window.location.href = "/style-quiz"; }, 
             icon: <Smartphone size={14} className="text-vvs-gold" /> 
+        },
+        { 
+            label: "Community", 
+            sub: "Join the movement", 
+            image: "/assets/VVSWhiteMAsk.png", 
+            action: () => { window.location.href = "/community"; }, 
+            icon: <Users size={14} className="text-vvs-gold" /> 
         },
     ];
 

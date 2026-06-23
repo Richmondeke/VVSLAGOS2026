@@ -5,10 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
-    { name: "Theme", href: "#theme" },
-    { name: "Journey", href: "#journey" },
-    { name: "Events", href: "#events" },
-    { name: "Designers", href: "#designers" },
+    { name: "Theme", href: "#theme", isAnchor: true },
+    { name: "Journey", href: "#journey", isAnchor: true },
+    { name: "Events", href: "#events", isAnchor: true },
+    { name: "Designers", href: "#designers", isAnchor: true },
+    { name: "Community", href: "/community", isAnchor: false },
 ];
 
 const triggerHaptic = (type: "light" | "medium") => {
@@ -34,11 +35,15 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, link: { href: string; isAnchor: boolean }) => {
         e.preventDefault();
         triggerHaptic("light");
         setIsOpen(false);
-        const el = document.querySelector(href);
+        if (!link.isAnchor) {
+            window.location.href = link.href;
+            return;
+        }
+        const el = document.querySelector(link.href);
         if (el) {
             el.scrollIntoView({ behavior: "smooth", block: "start" });
         }
@@ -84,8 +89,12 @@ export default function Navbar() {
                         <a
                             key={link.name}
                             href={link.href}
-                            onClick={(e) => handleNavClick(e, link.href)}
-                            className="text-sm uppercase tracking-widest text-vvs-white/70 hover:text-vvs-gold transition-colors font-medium cursor-pointer"
+                            onClick={(e) => handleNavClick(e, link)}
+                            className={`text-sm uppercase tracking-widest transition-colors font-medium cursor-pointer ${
+                                link.href === "/community"
+                                    ? "text-[#c5a059] hover:text-white"
+                                    : "text-vvs-white/70 hover:text-vvs-gold"
+                            }`}
                         >
                             {link.name}
                         </a>
@@ -120,8 +129,12 @@ export default function Navbar() {
                             <a
                                 key={link.name}
                                 href={link.href}
-                                onClick={(e) => handleNavClick(e, link.href)}
-                                className="text-lg uppercase tracking-widest text-vvs-white hover:text-vvs-gold transition-colors cursor-pointer"
+                                onClick={(e) => handleNavClick(e, link)}
+                                className={`text-lg uppercase tracking-widest transition-colors cursor-pointer ${
+                                    link.href === "/community"
+                                        ? "text-[#c5a059]"
+                                        : "text-vvs-white hover:text-vvs-gold"
+                                }`}
                             >
                                 {link.name}
                             </a>

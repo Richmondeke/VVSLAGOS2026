@@ -8,7 +8,6 @@ import { timelineData } from "@/components/sections/Journey";
 import Countdown from "@/components/ui/Countdown";
 import Footer from "@/components/layout/Footer";
 import RSVPBanner from "@/components/sections/RSVPBanner";
-import LiquidNavbar from "@/components/sections/LiquidNavbar";
 
 // Config for deterministic item positioning to avoid SSR hydration mismatch
 const INNER_COUNT = 12;
@@ -953,8 +952,6 @@ export default function GuestsPage() {
                 )}
             </AnimatePresence>
 
-            {/* Liquid morphing navbar and menu overlay */}
-            <LiquidNavbar containerRef={containerRef} scrollYProgress={scrollYProgress} />
         </div>
     );
 }

@@ -4,7 +4,6 @@ import React, { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useScroll } from "framer-motion";
-import LiquidNavbar from "@/components/sections/LiquidNavbar";
 import { supabase } from "@/lib/supabase";
 import { Camera, Upload, CheckCircle2, ArrowRight, X, Loader2 } from "lucide-react";
 
@@ -153,8 +152,6 @@ export default function CommunityPage() {
             ref={containerRef}
             className="bg-black text-white min-h-screen relative overflow-y-auto w-full selection:bg-[#c5a059]/30 font-sans"
         >
-            <LiquidNavbar containerRef={containerRef} scrollYProgress={scrollYProgress} />
-
             {/* Hero Section */}
             <section className="relative pt-32 pb-16 px-6 overflow-hidden">
                 {/* Background glow */}

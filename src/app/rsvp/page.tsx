@@ -64,10 +64,7 @@ function RSVPContent() {
     const labelClass = "text-[11px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-2";
 
     return (
-        <div ref={containerRef} className="bg-black text-white min-h-screen relative overflow-y-auto w-full selection:bg-[#c5a059]/30 font-sans">
-            {/* Navigation */}
-            <LiquidNavbar containerRef={containerRef} scrollYProgress={scrollYProgress} />
-
+        <div className="bg-black text-white min-h-screen relative overflow-y-auto w-full selection:bg-[#c5a059]/30 font-sans">
             {/* Background elements */}
             <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#050505] via-black to-[#0a0a0a]" />

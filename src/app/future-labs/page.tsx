@@ -1,19 +1,11 @@
 "use client";
 
-import React, { useRef } from "react";
-import { useScroll } from "framer-motion";
-import LiquidNavbar from "@/components/sections/LiquidNavbar";
+import React from "react";
 import VVSFutureLabs from "@/components/sections/VVSFutureLabs";
 
 export default function FutureLabsPage() {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({ container: containerRef });
-
     return (
-        <div ref={containerRef} className="bg-black text-white min-h-screen relative overflow-y-auto w-full selection:bg-[#c5a059]/30 font-sans">
-            {/* Navigation */}
-            <LiquidNavbar containerRef={containerRef} scrollYProgress={scrollYProgress} />
-
+        <div className="bg-black text-white min-h-screen relative overflow-y-auto w-full selection:bg-[#c5a059]/30 font-sans">
             {/* Future Labs Section */}
             <div className="pt-20">
                 <VVSFutureLabs theme="dark" />

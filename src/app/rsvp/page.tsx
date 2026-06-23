@@ -2,9 +2,9 @@
 
 import React, { useState, useRef } from "react";
 import { motion, useScroll } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import LiquidNavbar from "@/components/sections/LiquidNavbar";
+import Link from "next/link";
 import { triggerHaptic } from "@/utils/haptic";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";

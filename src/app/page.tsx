@@ -12,6 +12,7 @@ import OurStory from "@/components/sections/OurStory";
 import CommunitySection from "@/components/sections/CommunitySection";
 import PastPartners from "@/components/sections/PastPartners";
 import RSVPSection from "@/components/sections/RSVPSection";
+import VVSFutureLabs from "@/components/sections/VVSFutureLabs";
 
 interface TimeLeft {
     days: number;
@@ -638,6 +639,7 @@ export default function TypeBLandingPage() {
             <ImpactStats theme={theme} />
             <FivePillars theme={theme} />
             <OurStory theme={theme} />
+            <VVSFutureLabs theme={theme} />
             <PastPartners theme={theme} />
 
             {/* 4. Countdown Section (Strict Brand Colors: White, Black, Gold, Obsidian) */}

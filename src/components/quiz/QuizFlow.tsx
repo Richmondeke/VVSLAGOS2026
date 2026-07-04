@@ -110,6 +110,7 @@ export default function VvsPassAndVotingFlow() {
   const [isSavingPass, setIsSavingPass] = useState(false);
   const [isSavingVotePass, setIsSavingVotePass] = useState(false);
   const [memberId] = useState(() => `VVS-2026-${Math.floor(1000 + Math.random() * 9000)}`);
+  const [alreadyVoted, setAlreadyVoted] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const memberCardRef = useRef<HTMLDivElement>(null);
@@ -147,6 +148,17 @@ export default function VvsPassAndVotingFlow() {
     setCheckingEmail(true);
 
     try {
+      // 1. Check if user already has votes in award_votes table
+      const { data: existingVotes, error: votesErr } = await supabase
+        .from("award_votes")
+        .select("category, nominee")
+        .eq("email", email.trim().toLowerCase());
+
+      if (votesErr) {
+        throw votesErr;
+      }
+
+      // 2. Fetch member info from community_members
       const res = await fetch("/api/check-member", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -159,13 +171,36 @@ export default function VvsPassAndVotingFlow() {
 
       const { exists, member } = await res.json();
 
-      if (exists && member) {
-        setName(member.name);
-        setSelfieUrl(member.selfie_url);
-        setUsername(member.name.toLowerCase().replace(/[^a-z0-9]/g, ""));
-        await submitVotesOnly(email.trim().toLowerCase());
+      if (existingVotes && existingVotes.length > 0) {
+        // User has already voted before!
+        const loadedVotes: Record<string, string> = {};
+        existingVotes.forEach(v => {
+          loadedVotes[v.category] = v.nominee;
+        });
+        setVotes(loadedVotes);
+        setAlreadyVoted(true);
+
+        if (exists && member) {
+          setName(member.name);
+          setSelfieUrl(member.selfie_url);
+          setUsername(member.name.toLowerCase().replace(/[^a-z0-9]/g, ""));
+          localStorage.setItem("vvs_voter_email", email.trim().toLowerCase());
+          triggerHaptic("success");
+          setPhase("success");
+        } else {
+          // If voted but community member details are missing, direct to signup info gathering
+          setPhase("signup");
+        }
       } else {
-        setPhase("signup");
+        // User has NOT voted yet
+        if (exists && member) {
+          setName(member.name);
+          setSelfieUrl(member.selfie_url);
+          setUsername(member.name.toLowerCase().replace(/[^a-z0-9]/g, ""));
+          await submitVotesOnly(email.trim().toLowerCase());
+        } else {
+          setPhase("signup");
+        }
       }
     } catch (err: any) {
       console.error("Email verification error:", err);
@@ -668,9 +703,13 @@ export default function VvsPassAndVotingFlow() {
             >
               <div className="text-center mb-10">
                 <Check className="w-12 h-12 text-green-400 bg-green-500/10 p-2.5 rounded-full border border-green-500/20 mb-3 mx-auto" />
-                <h2 className="text-2xl sm:text-3xl font-extrabold uppercase tracking-tight">Votes Submitted!</h2>
+                <h2 className="text-2xl sm:text-3xl font-extrabold uppercase tracking-tight">
+                  {alreadyVoted ? "Welcome Back!" : "Votes Submitted!"}
+                </h2>
                 <p className="text-white/40 text-xs mt-2 max-w-sm">
-                  Your votes have been successfully logged. Download your VVS passes below.
+                  {alreadyVoted 
+                    ? "You have already voted. Your previous VVS Pass and VVS Top Picks ballot are shown below." 
+                    : "Your votes have been successfully logged. Download your VVS passes below."}
                 </p>
               </div>
 
@@ -727,14 +766,14 @@ export default function VvsPassAndVotingFlow() {
                   </button>
                 </div>
 
-                {/* 2. VVS VOTER BALLOT (Vertical 9:16 Spotify Wrapped style card) */}
+                {/* 2. VVS VOTER BALLOT (Vertical 9:16 Custom Ballot Style card) */}
                 <div className="flex flex-col items-center gap-4">
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#c5a059] font-bold">02 / SPOTIFY WRAPPED BALLOT</span>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#c5a059] font-bold">02 / MY VVS TOP PICKS</span>
                   <div
                     ref={voterCardRef}
                     className="relative w-[320px] h-[568px] bg-black border border-[#c5a059]/30 rounded-2xl p-6 flex flex-col justify-between overflow-hidden shadow-[0_25px_50px_-12px_rgba(197,160,89,0.18)]"
                   >
-                    {/* Spotify Wrapped abstract color backgrounds */}
+                    {/* Ballot color backgrounds */}
                     <div className="absolute inset-0 bg-gradient-to-b from-[#c5a059]/[0.08] via-transparent to-transparent pointer-events-none" />
                     <div className="absolute -bottom-1/4 -left-1/4 w-[280px] h-[280px] bg-[#c5a059]/[0.05] rounded-full filter blur-3xl pointer-events-none" />
 
@@ -742,7 +781,7 @@ export default function VvsPassAndVotingFlow() {
                     <div className="flex flex-col items-center text-center z-10 border-b border-white/10 pb-4">
                       <img src="/assets/VVSWhiteMAsk.png" alt="VVS Logo" className="w-10 h-10 object-contain mb-2" />
                       <span className="text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-[#c5a059]">VVS LAGOS 2026</span>
-                      <h3 className="text-lg font-black uppercase tracking-tighter mt-1">OFFICIAL BALLOT</h3>
+                      <h3 className="text-lg font-black uppercase tracking-tighter mt-1">MY VVS TOP PICKS</h3>
                     </div>
 
                     {/* User profile row */}

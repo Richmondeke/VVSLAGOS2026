@@ -1370,19 +1370,21 @@ export default function TypeBLandingPage() {
                                         <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-2">Target Events (Select all that apply)</label>
                                         <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1 scrollbar-none">
                                             {[
-                                                { value: "JULY 6", label: "July 6 - VVS Founders Reception" },
-                                                { value: "JULY 7-11", label: "July 7-11 - Pop-Up Trunk Show" },
-                                                { value: "JULY 8-12", label: "July 8-12 - Art Exhibition" },
-                                                { value: "JULY 9", label: "July 9 - Future Labs & Album Release" },
-                                                { value: "JULY 10", label: "July 10 - Future Labs Fashion Exhibition" },
-                                                { value: "JULY 11", label: "July 11 - Film Experience & FOMO Night" },
-                                                { value: "JULY 12", label: "July 12 - VVS Runway Show" },
+                                                { value: "JULY 5", label: "July 5 — Opening Gala" },
+                                                { value: "JULY 6", label: "July 6 — Panel Sessions" },
+                                                { value: "JULY 6_FOUNDERS", label: "July 6 — VVS Founders Reception (Invite Only — contact admin for invite)", disabled: true },
+                                                { value: "JULY 7", label: "July 7 — Collectors Day" },
+                                                { value: "JULY 8-11", label: "July 8-11 — Pop Up Exhibition" },
+                                                { value: "JULY 11", label: "July 11 — Film Experience" },
+                                                { value: "JULY 12", label: "July 12 — Runway & Afterparty" },
                                             ].map((opt) => {
                                                 const isSelected = rsvpData.events.includes(opt.value);
+                                                const isDisabled = 'disabled' in opt && opt.disabled;
                                                 return (
                                                     <div
                                                         key={opt.value}
                                                         onClick={() => {
+                                                            if (isDisabled) return;
                                                             triggerHaptic("light");
                                                             setRsvpData(prev => {
                                                                 const alreadySelected = prev.events.includes(opt.value);
@@ -1392,25 +1394,29 @@ export default function TypeBLandingPage() {
                                                                 return { ...prev, events: nextEvents };
                                                             });
                                                         }}
-                                                        className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${
-                                                            isSelected
-                                                                ? "border-[#c5a059] bg-[#c5a059]/10 shadow-[0_0_12px_rgba(197,160,89,0.15)]"
+                                                        className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
+                                                            isDisabled
+                                                                ? "border-white/5 bg-white/[0.005] opacity-40 cursor-not-allowed"
+                                                                : isSelected
+                                                                ? "border-[#c5a059] bg-[#c5a059]/10 shadow-[0_0_12px_rgba(197,160,89,0.15)] cursor-pointer"
                                                                 : theme === "dark"
-                                                                ? "border-white/10 hover:border-white/30 hover:bg-white/5 bg-white/[0.02]"
-                                                                : "border-black/10 hover:border-black/30 hover:bg-black/5 bg-black/[0.02]"
+                                                                ? "border-white/10 hover:border-white/30 hover:bg-white/5 bg-white/[0.02] cursor-pointer"
+                                                                : "border-black/10 hover:border-black/30 hover:bg-black/5 bg-black/[0.02] cursor-pointer"
                                                         }`}
                                                     >
-                                                        <span className="text-xs font-medium uppercase tracking-wide">
+                                                        <span className={`text-xs font-medium uppercase tracking-wide ${isDisabled ? "text-white/40" : ""}`}>
                                                             {opt.label}
                                                         </span>
                                                         <div className={`w-4 h-4 rounded flex items-center justify-center border transition-all ${
-                                                            isSelected
+                                                            isDisabled
+                                                                ? "border-white/10"
+                                                                : isSelected
                                                                 ? "bg-[#c5a059] border-[#c5a059] text-black"
                                                                 : theme === "dark"
                                                                 ? "border-white/30"
                                                                 : "border-black/30"
                                                         }`}>
-                                                            {isSelected && <Check size={10} strokeWidth={4} />}
+                                                            {isSelected && !isDisabled && <Check size={10} strokeWidth={4} />}
                                                         </div>
                                                     </div>
                                                 );

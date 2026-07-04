@@ -78,7 +78,7 @@ const AWARDS_TEASER_DATA = [
     categoryName: "Excellence in Film & Screen Storytelling",
     folder: "EXCELLENCE IN FILM & SCREEN STORYTELLING",
     nominees: [
-      "Dammy Twitch — Call of My Heart .jpg",
+      "Dammy Twitch — Call of My Life .jpg",
       "Kemi Adetiba — To Kill a Monkey.jpg",
       "Wale & Akinola Davies and Funmbi Ogunbanwo — My Father’s Shadow .jpg"
     ]

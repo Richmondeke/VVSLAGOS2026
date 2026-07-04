@@ -58,6 +58,16 @@ const AWARDS_DATA = [
     ]
   },
   {
+    id: "film_storytelling",
+    categoryName: "Excellence in Film & Screen Storytelling",
+    folder: "EXCELLENCE IN FILM & SCREEN STORYTELLING",
+    nominees: [
+      { name: "Dammy Twitch (Call of My Life)", file: "Dammy Twitch \u2014 Call of My Life .jpg" },
+      { name: "Kemi Adetiba (To Kill a Monkey)", file: "Kemi Adetiba \u2014 To Kill a Monkey.jpg" },
+      { name: "Wale & Akinola Davies (My Father’s Shadow)", file: "Wale & Akinola Davies and Funmbi Ogunbanwo — My Father’s Shadow .jpg" }
+    ]
+  },
+  {
     id: "tech",
     categoryName: "Innovation & Technology Excellence",
     folder: "INNOVATION & TECHNOLOGY EXCELLENCE AWARD",
@@ -78,16 +88,6 @@ const AWARDS_DATA = [
       { name: "Chioma Ude", file: "Chioma Ude  .jpg" },
       { name: "Juliet Olanipekun", file: "Juliet Olanipekun  .jpg" },
       { name: "Ugoma Chinelo Ebilah", file: "Ugoma Chinelo Ebilah .jpg" }
-    ]
-  },
-  {
-    id: "film_storytelling",
-    categoryName: "Excellence in Film & Screen Storytelling",
-    folder: "EXCELLENCE IN FILM & SCREEN STORYTELLING",
-    nominees: [
-      { name: "Dammy Twitch (Call of My Heart)", file: "Dammy Twitch \u2014 Call of My Heart .jpg" },
-      { name: "Kemi Adetiba (To Kill a Monkey)", file: "Kemi Adetiba \u2014 To Kill a Monkey.jpg" },
-      { name: "Wale & Akinola Davies (My Father\u2019s Shadow)", file: "Wale & Akinola Davies and Funmbi Ogunbanwo \u2014 My Father\u2019s Shadow .jpg" }
     ]
   }
 ];
@@ -391,7 +391,7 @@ export default function VvsPassAndVotingFlow() {
                               }}
                               className={`group border rounded-xl overflow-hidden transition-all duration-500 relative ${
                                 isJury
-                                  ? "border-white/5 bg-white/[0.005] opacity-40 cursor-not-allowed"
+                                  ? "border-[#c5a059]/25 bg-[#c5a059]/5 cursor-not-allowed"
                                   : isSelected
                                     ? "border-[#c5a059] border-2 bg-[#c5a059]/10 shadow-[0_0_25px_rgba(197,160,89,0.2)] scale-[1.02] cursor-pointer"
                                     : "border-white/10 bg-white/[0.01] hover:border-white/20 hover:bg-white/[0.02] cursor-pointer"
@@ -403,7 +403,7 @@ export default function VvsPassAndVotingFlow() {
                                   alt={nominee.name}
                                   className={`w-full h-full object-cover transition-all duration-700 ease-out ${
                                     isJury
-                                      ? "grayscale scale-95"
+                                      ? "grayscale-0 scale-100 opacity-100"
                                       : isSelected 
                                         ? "grayscale-0 scale-105" 
                                         : "grayscale opacity-60 group-hover:opacity-85"

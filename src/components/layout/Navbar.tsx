@@ -99,6 +99,13 @@ export default function Navbar() {
                             {link.name}
                         </a>
                     ))}
+                    <a
+                        href="/community"
+                        onClick={(e) => { e.preventDefault(); triggerHaptic("light"); window.location.href = "/community"; }}
+                        className="px-6 py-2 border border-vvs-gold text-vvs-gold text-xs uppercase tracking-widest font-bold rounded-full hover:bg-vvs-gold hover:text-vvs-black transition-all transform hover:scale-105"
+                    >
+                        Join Community
+                    </a>
                     <button
                         onClick={() => scrollToSection("#events")}
                         className="px-6 py-2 bg-vvs-gold text-vvs-black text-xs uppercase tracking-widest font-bold rounded-full hover:bg-white transition-all transform hover:scale-105"
@@ -139,6 +146,13 @@ export default function Navbar() {
                                 {link.name}
                             </a>
                         ))}
+                        <a
+                            href="/community"
+                            onClick={(e) => { e.preventDefault(); setIsOpen(false); triggerHaptic("light"); window.location.href = "/community"; }}
+                            className="w-full py-4 border-2 border-vvs-gold text-vvs-gold text-sm uppercase tracking-widest font-bold rounded-full text-center block hover:bg-vvs-gold hover:text-vvs-black transition-all"
+                        >
+                            Join Community
+                        </a>
                         <button
                             onClick={() => { setIsOpen(false); scrollToSection("#events"); }}
                             className="w-full py-4 bg-vvs-gold text-vvs-black text-sm uppercase tracking-widest font-bold rounded-full"

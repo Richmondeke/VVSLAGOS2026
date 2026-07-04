@@ -1,0 +1,24 @@
+{
+  "name": "VVS Lagos 2026",
+  "short_name": "VVS Lagos",
+  "description": "Experience the 5th edition of VVS Lagos - Art, Fashion, and Cultural Extravaganza.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#c5a059",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

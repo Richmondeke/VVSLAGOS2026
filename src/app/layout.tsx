@@ -24,6 +24,12 @@ export default function RootLayout({
     >
       <head>
         <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" rel="stylesheet" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#c5a059" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="VVS Lagos" />
+        <link rel="apple-touch-icon" href="/icon.png" />
       </head>
       <body className="min-h-full flex flex-col bg-vvs-black text-vvs-white font-sans">
         {children}

@@ -2,9 +2,82 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon, ChevronLeft, ChevronRight, Calendar, Clock, MapPin, Check, Send } from "lucide-react";
+import { Menu, X, Sun, Moon, ChevronLeft, ChevronRight, Calendar, Clock, MapPin, Check, Send, Play } from "lucide-react";
 import { triggerHaptic } from "@/utils/haptic";
 import { supabase } from "@/lib/supabase";
+
+const AWARDS_TEASER_DATA = [
+  {
+    id: "fashion",
+    categoryName: "Fashion Designer Excellence",
+    folder: "FASHION DESIGNER EXCLLENCE AWARD",
+    nominees: [
+      "Adebayo Oke-Lawal (Orange Culture) .jpg",
+      "Bubu Ogisi (IAMISIGO) .jpg",
+      "Floryntina Agu (Hertunba).jpg"
+    ]
+  },
+  {
+    id: "visual_arts",
+    categoryName: "Contemporary Visual Artist",
+    folder: "CONTEMPORARY VISUAL ARTIST OF THE YEAR AWARD",
+    nominees: [
+      "Anthony Azekwoh.jpg",
+      "Ken Nwadiogbu.webp",
+      "Modupe Fadugba  .jpg"
+    ]
+  },
+  {
+    id: "leadership",
+    categoryName: "Visionary Leadership",
+    folder: "VISIONARY LEADERSHIP AWARD",
+    nominees: [
+      "Akarachi Amadi .webp",
+      "Chioma Ude  .jpg",
+      "Juliet Olanipekun  .jpg"
+    ]
+  },
+  {
+    id: "tech",
+    categoryName: "Innovation & Technology Excellence",
+    folder: "INNOVATION & TECHNOLOGY EXCELLENCE AWARD",
+    nominees: [
+      "Big Cabal (Tomiwa Aladekomo) .jpg",
+      "Bumpa (Kelvin Umechukwu)  .jpg",
+      "Moniepoint (Tosin Eniolorunda) .jpg"
+    ]
+  },
+  {
+    id: "music",
+    categoryName: "Emerging Music Artist of the Year",
+    folder: "EMERGING MUSIC ARTIST OF THE YEAR",
+    nominees: [
+      "Amaeya.jpg",
+      "Egertton.jpg",
+      "Esoterica.jpg"
+    ]
+  },
+  {
+    id: "creator",
+    categoryName: "Digital Creator of the Year",
+    folder: "DIGITAL CREATOR OF THE YEAR",
+    nominees: [
+      "Creatorium (Salem & Ada).png",
+      "Dele’s Life.jpg",
+      "Dezny.jpg"
+    ]
+  },
+  {
+    id: "film_storytelling",
+    categoryName: "Excellence in Film & Screen Storytelling",
+    folder: "EXCELLENCE IN FILM & SCREEN STORYTELLING",
+    nominees: [
+      "Dammy Twitch — Call of My Heart .jpg",
+      "Kemi Adetiba — To Kill a Monkey.jpg",
+      "Wale & Akinola Davies and Funmbi Ogunbanwo — My Father’s Shadow .jpg"
+    ]
+  }
+];
 
 interface TimeLeft {
     days: number;
@@ -49,13 +122,21 @@ export default function TypeBLandingPage() {
         email: string;
         attendance: string;
         events: string[];
-    }>({ name: "", email: "", attendance: "yes", events: ["JULY 5"] });
+    }>({ name: "", email: "", attendance: "yes", events: ["JULY 6"] });
     const [newsletterEmail, setNewsletterEmail] = useState("");
     const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
     const [activeMask, setActiveMask] = useState<"white" | "black">("white");
+    const [rotationOffset, setRotationOffset] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setRotationOffset(prev => prev + 1);
+        }, 3500);
+        return () => clearInterval(interval);
+    }, []);
 
     // Countdown target date (VVS Lagos 2026 Kickoff - July 5th, 2026)
-    const targetDate = "2026-07-05T19:00:00";
+    const targetDate = "2026-07-06T18:00:00";
     const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calcTimeLeft(targetDate));
 
     // Scroll listener for navbar background blur
@@ -104,74 +185,95 @@ export default function TypeBLandingPage() {
     // Optimized event dates for VVS Lagos 2026 - featuring the Innovators
     const optimizedEvents = useMemo(() => [
         {
-            date: "July 5, 2026",
-            shortDate: "JULY 5",
-            time: "7:00 PM WAT",
-            title: "VVS Opening Gala & 5th Anniversary Celebration",
-            venue: "British or Canadian Residence, Ikoyi",
-            category: "Gala & Awards",
-            description: "An exclusive celebration commemorating 5 years of VVS creative boundary-pushing, honoring our 11 selected VVS Innovators. Features the honorary VVS awards, anniversary recap films, curated dinner, live comedy, and dress-coded theme party for 100 guests.",
+            date: "July 6, 2026",
+            shortDate: "JULY 6",
+            time: "6:00 PM WAT",
+            title: "VVS Founders Reception",
+            venue: "Alliance Française, Ikoyi, Lagos",
+            category: "Networking & Reception",
+            description: "An exclusive gathering of founders, creators, and leaders to kick off VVS Lagos 2026. Network with fellow innovators and enjoy curated hospitality in a premium setting.",
             image: "/assets/ONALAJA.webp"
         },
         {
-            date: "July 6, 2026",
-            shortDate: "JULY 6",
+            date: "July 7 - 11, 2026",
+            shortDate: "JULY 7-11",
             time: "10:00 AM WAT",
-            title: "VVS Conversations & Panel Sessions",
-            venue: "Alliance Française, Lagos",
-            category: "Conversations & Panels",
-            description: "Five panel sessions on design, creative industry strategies, and technology integrations. Featuring fireside sessions with Korede Roberts, Tega Mavin, Aisha Augie. Panel insights on sustainability with Zara Odu, Kelvin Bumpa, Reni Folawiyo, Florentyna, Tolu Coye, Bola PSD, Wale Davies, Sade Okoya, and Mutesi Jolly. 120 guests.",
+            title: "VVS Lagos 2026 Pop-Up: Trunk Show",
+            venue: "Mikano, 65 Adeola Odeku, VI, Lagos",
+            category: "Pop-Up & Retail",
+            description: "A premium trunk show featuring retail collections from luxury Nigerian fashion brands and our VVS Innovators.",
             image: "/assets/FRUCHE.webp"
         },
         {
-            date: "July 7, 2026",
-            shortDate: "JULY 7",
-            time: "2:00 PM WAT",
-            title: "VVS Collectors Day Preview",
-            venue: "Windsor Gallery, Lagos",
-            category: "Private Viewing",
-            description: "A private curated viewing for VIP art collectors and international buyers, showcasing exclusive work from our VVS Innovator collective. Features detailed artist explanations of their work, a curatorial introduction speech, and drinks. 150 HNIs.",
+            date: "July 8 - 12, 2026",
+            shortDate: "JULY 8-12",
+            time: "11:00 AM WAT",
+            title: "VVS Lagos 2026 Art Exhibition",
+            venue: "Blank Space, Grace Arena Plaza, VI, Lagos",
+            category: "Art Exhibition",
+            description: "A contemporary art exhibition showcasing boundary-pushing visual works from local and international modern artists.",
             image: "/assets/PIECE ET PATCH.webp"
         },
         {
-            date: "July 8 - 11, 2026",
-            shortDate: "JULY 8-11",
-            time: "12:00 PM WAT",
-            title: "VVS Pop Up & Art Exhibition Public Opening",
-            venue: "A White Space Ikoyi & Windsor Gallery",
-            category: "Public Showcase",
-            description: "The official public trunk show pop-up at A White Space Ikoyi presenting retail collections of the 11 VVS Innovator brands (including Hertunba, Onalaja, Fruché, I.N Official, TJ-Who), alongside the contemporary art exhibition extending at Windsor. 150 daily visitors.",
+            date: "July 9, 2026",
+            shortDate: "JULY 9",
+            time: "2:00 PM WAT",
+            title: "Future Labs Art Exhibition",
+            venue: "Yenwa Gallery, Lagos",
+            category: "Art Exhibition",
+            description: "A specialized exhibition presenting experimental artworks and installations developed under the Future Labs incubator program.",
             image: "/assets/TJ WHO.webp"
+        },
+        {
+            date: "July 9, 2026",
+            shortDate: "JULY 9",
+            time: "8:00 PM WAT",
+            title: "VVS Album Release Party",
+            venue: "Octo Lagos, Musa Yar'Adua, VI, Lagos",
+            category: "Album Release & Party",
+            description: "An exclusive celebration for the release of the official VVS Lagos album, featuring guest DJ sets and live performances.",
+            image: "/assets/TZAR STUDIOS.webp"
+        },
+        {
+            date: "July 10, 2026",
+            shortDate: "JULY 10",
+            time: "4:00 PM WAT",
+            title: "Future Labs Fashion Exhibition",
+            venue: "British Council, Lagos",
+            category: "Fashion Exhibition",
+            description: "A showcase of new collections created by rising fashion designers in the Future Labs incubator program, highlighting British Council support.",
+            image: "/assets/HERTUNBA.avif"
         },
         {
             date: "July 11, 2026",
             shortDate: "JULY 11",
-            time: "2:00 PM WAT",
-            title: "VVS Film Experience & Panel Discussions",
-            venue: "Alliance Française, Lagos",
-            category: "Cinema & Storytelling",
-            description: "Co-hosted in partnership with AFRIFF. Cinematic panel sessions discussing digital storytelling and film archives. Screening the brand narrative 'Descendants' short film, live plays, and cultural documentaries celebrating VVS Innovators.",
+            time: "3:00 PM WAT",
+            title: "VVS Film Experience with AFRIFF",
+            venue: "TBD, Lagos",
+            category: "Film & Cinema",
+            description: "A curated series of screenings, short films, and panel discussions on new-age African cinema, presented in partnership with AFRIFF.",
             image: "/assets/LFJ OFFICIAL.webp"
         },
         {
-            date: "July 12, 2026",
-            shortDate: "JULY 12",
-            time: "5:00 PM WAT",
-            title: "VVS Runway Presentation",
-            venue: "Falomo Under the Bridge",
-            category: "Haute Couture",
-            description: "The main fashion runway showcase of VVS Lagos 2026. Afromodernist haute couture collections designed by our selected Innovators, presented under the iconic Falomo bridge structure in a raw, concrete architectural setting.",
+            date: "July 11, 2026",
+            shortDate: "JULY 11",
+            time: "9:00 PM WAT",
+            title: "VVS Fashion Night Out",
+            venue: "FOMO Lagos, VI, Lagos",
+            category: "Nightlife & Party",
+            description: "An electric night of music, style, and celebration, co-hosted at FOMO Lagos for fashion creatives and enthusiasts.",
             image: "/assets/IN OFFICIAL.png"
         },
         {
             date: "July 12, 2026",
             shortDate: "JULY 12",
-            time: "10:00 PM WAT",
-            title: "VVS Closing Party",
-            venue: "Rooftop at Club 245, Ikoyi",
-            category: "Afterparty",
-            description: "The final celebratory gathering. Bringing together VVS Innovators, partners, model cohorts, sponsors, and guests for a rooftop celebration. Curated DJ sets, drinks, and networking for 150 people.",
-            image: "/assets/TZAR STUDIOS.webp"
+            time: "6:00 PM WAT",
+            title: "VVS Runway Show (Main Event)",
+            venue: "TBD, Lagos",
+            category: "Haute Couture Runway",
+            description: "The official runway show and main fashion event of VVS Lagos 2026. Presentation of collections by the VVS Innovators.",
+            image: "/assets/IN OFFICIAL.png",
+            ticketUrl: "https://www.pv.rsvp/vvs-fashion-show"
         }
     ], []);
 
@@ -261,40 +363,62 @@ export default function TypeBLandingPage() {
         e.preventDefault();
         triggerHaptic("success");
 
-        // If Supabase keys are configured, save to database
-        if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-            try {
-                const { error } = await supabase
-                    .from("rsvps")
-                    .insert([
-                        {
-                            name: rsvpData.name,
-                            email: rsvpData.email,
-                            attendance: rsvpData.attendance,
-                            events: rsvpData.events,
-                            created_at: new Date().toISOString()
-                        }
-                    ]);
-                if (error) {
-                    console.error("Supabase RSVP Error:", error);
-                }
-            } catch (err) {
-                console.error("Failed to submit RSVP to Supabase:", err);
+        try {
+            const res = await fetch("/api/rsvp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: rsvpData.name,
+                    email: rsvpData.email,
+                    phone: rsvpData.phone,
+                    gender: rsvpData.gender,
+                    occupation: rsvpData.occupation,
+                    company: rsvpData.companyRole,
+                    role: rsvpData.companyRole,
+                    heard_about: rsvpData.referral,
+                    attendance: rsvpData.attendance,
+                    events: rsvpData.events,
+                    event_type: "type_b_rsvp",
+                }),
+            });
+            if (!res.ok) {
+                console.error("Failed to submit RSVP");
             }
+        } catch (err) {
+            console.error("Failed to submit RSVP:", err);
         }
 
         setRsvpSubmitted(true);
         setTimeout(() => {
             setIsRSVPOpen(false);
             setRsvpSubmitted(false);
-            setRsvpData({ name: "", email: "", attendance: "yes", events: [] });
+            setRsvpData({ 
+                name: "", 
+                email: "", 
+                phone: "",
+                gender: "",
+                occupation: "",
+                companyRole: "",
+                referral: "",
+                attendance: "yes", 
+                events: [] 
+            });
         }, 2500);
     };
 
-    const handleNewsletterSubmit = (e: React.FormEvent) => {
+    const handleNewsletterSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (newsletterEmail.trim()) {
             triggerHaptic("success");
+            try {
+                await fetch("/api/newsletter", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: newsletterEmail.trim() }),
+                });
+            } catch (err) {
+                console.error(err);
+            }
             setNewsletterSubmitted(true);
             setNewsletterEmail("");
             setTimeout(() => {
@@ -396,7 +520,9 @@ export default function TypeBLandingPage() {
                     {/* Right Navigation Links & Controls */}
                     <div className="flex items-center gap-4 ml-auto lg:ml-0">
                         <div className="hidden lg:flex items-center gap-6 mr-4">
-                            <a href="/style-quiz" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">Style Quiz</a>
+                            <a href="/panels" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">VVS Panels</a>
+                            <a href="/descendants" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">VVS Album</a>
+                            <a href="/awards" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">VVS Awards</a>
                         </div>
 
                         {/* Theme Toggle */}
@@ -412,10 +538,23 @@ export default function TypeBLandingPage() {
                             {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
                         </button>
 
+                        {/* Join Community Button */}
+                        <a
+                            href="/community"
+                            onClick={() => triggerHaptic("medium")}
+                            className={`hidden lg:block px-5 py-2.5 rounded-full text-[10px] uppercase tracking-[0.18em] font-extrabold transition-all border shadow-md active:scale-95 ${
+                                theme === "dark" 
+                                    ? "border-white/20 text-white hover:bg-white hover:text-black hover:border-white" 
+                                    : "border-black/20 text-black hover:bg-black hover:text-white hover:border-black"
+                            }`}
+                        >
+                            Join Community
+                        </a>
+
                         {/* RSVP Action Button */}
                         <button
                             onClick={() => { triggerHaptic("medium"); setIsRSVPOpen(true); }}
-                            className={`px-5 py-2.5 rounded-full text-[10px] uppercase tracking-[0.18em] font-extrabold transition-all shadow-md active:scale-95 ${
+                            className={`hidden lg:block px-5 py-2.5 rounded-full text-[10px] uppercase tracking-[0.18em] font-extrabold transition-all shadow-md active:scale-95 ${
                                 theme === "dark" 
                                     ? "bg-white text-black hover:bg-[#c5a059] hover:text-white" 
                                     : "bg-black text-white hover:bg-[#c5a059]"
@@ -452,7 +591,11 @@ export default function TypeBLandingPage() {
                         <button onClick={() => scrollSection("schedule")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Schedule</button>
                         <button onClick={() => scrollSection("countdown")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Kickoff Countdown</button>
                         <button onClick={() => scrollSection("calendar")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Upcoming Events</button>
-                        <a href="/style-quiz" className="text-[12px] uppercase tracking-widest font-bold py-2">Style Quiz</a>
+                        <a href="/panels" className="text-[12px] uppercase tracking-widest font-bold py-2">VVS Panels</a>
+                        <a href="/descendants" className="text-[12px] uppercase tracking-widest font-bold py-2">VVS Album</a>
+                        <a href="/awards" className="text-[12px] uppercase tracking-widest font-bold py-2">VVS Awards</a>
+                        <a href="/community" onClick={() => setIsMenuOpen(false)} className="text-[12px] uppercase tracking-widest font-bold py-2 text-[#c5a059]">Join Community</a>
+                        <button onClick={() => { setIsMenuOpen(false); setIsRSVPOpen(true); }} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">RSVP NOW</button>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -670,18 +813,49 @@ export default function TypeBLandingPage() {
                             </div>
 
                             {/* CTA Action button */}
-                            <div className="shrink-0 flex items-center">
-                                <button
-                                    onClick={() => {
-                                        triggerHaptic("medium");
-                                        setRsvpData(prev => ({ ...prev, events: [event.shortDate] }));
-                                        setIsRSVPOpen(true);
-                                    }}
-                                    className={`w-full lg:w-auto px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black`}
-                                >
-                                    Get Invitation
-                                </button>
-                            </div>
+                            {event.ticketUrl ? (
+                                <div className="shrink-0 flex items-center">
+                                    <a
+                                        href={event.ticketUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
+                                    >
+                                        Buy Tickets
+                                    </a>
+                                </div>
+                            ) : event.shortDate === "JULY 11" && event.category === "Film & Cinema" ? (
+                                <div className="shrink-0 flex items-center">
+                                    <a
+                                        href="/panels"
+                                        className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
+                                    >
+                                        View Panels
+                                    </a>
+                                </div>
+                            ) : event.shortDate === "JULY 9" && event.category === "Album Release & Party" ? (
+                                <div className="shrink-0 flex items-center">
+                                    <a
+                                        href="/descendants"
+                                        className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
+                                    >
+                                        Album Details
+                                    </a>
+                                </div>
+                            ) : (
+                                <div className="shrink-0 flex items-center">
+                                    <button
+                                        onClick={() => {
+                                            triggerHaptic("medium");
+                                            setRsvpData(prev => ({ ...prev, events: [event.shortDate] }));
+                                            setIsRSVPOpen(true);
+                                        }}
+                                        className={`w-full lg:w-auto px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black`}
+                                    >
+                                        Get Invitation
+                                    </button>
+                                </div>
+                            )}
                         </motion.div>
                     ))}
                 </div>
@@ -782,6 +956,177 @@ export default function TypeBLandingPage() {
                             </div>
                         ))}
                     </div>
+                </motion.div>
+            </section>
+
+            {/* VVS Descendants Album Section */}
+            <section id="album-teaser" className={`py-24 border-t relative overflow-hidden ${
+                theme === "dark" ? "border-white/10 bg-black" : "border-black/10 bg-white"
+            }`}>
+                <div className="absolute inset-0 z-0 opacity-[0.02] pointer-events-none bg-[radial-gradient(#c5a059_1px,transparent_1px)] [background-size:16px_16px]" />
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                        <motion.div 
+                            initial={{ opacity: 0, x: -30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                            className="lg:col-span-7 space-y-6 text-center lg:text-left"
+                        >
+                            <span className="text-[#c5a059] text-xs font-mono font-bold tracking-[0.4em] uppercase block">
+                                OFFICIAL SOUNDTRACK
+                            </span>
+                            <h2 className="text-4xl sm:text-6xl font-serif font-black uppercase tracking-tight leading-none">
+                                VVS DESCENDANTS
+                            </h2>
+                            <p className={`text-base font-light leading-relaxed max-w-xl ${
+                                theme === "dark" ? "text-white/60" : "text-black/60"
+                            }`}>
+                                The sound of Afromodernism. VVS Lagos 2026 presents its official audio compilation featuring JERIQ, TRINIDAD JAMES, MINZ, PRETTYBOY DO, WTC, WIZARD CHAN &amp; IJAYA.
+                            </p>
+                            <div className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4">
+                                <a
+                                    href="/descendants"
+                                    onClick={() => triggerHaptic("medium")}
+                                    className={`px-8 py-4 font-extrabold uppercase tracking-widest text-xs rounded-full transition-all ${
+                                        theme === "dark"
+                                            ? "bg-white text-black hover:bg-[#c5a059] hover:text-white"
+                                            : "bg-black text-white hover:bg-[#c5a059] hover:text-black"
+                                    }`}
+                                >
+                                    Explore Album
+                                </a>
+                                <a
+                                    href="https://open.spotify.com/album/60Gx4JgOIF7rpjK1Lz7rn3?si=2cb57f59fe4148de"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={() => triggerHaptic("medium")}
+                                    className="px-8 py-4 bg-[#1DB954] hover:bg-[#1ed760] text-black font-extrabold uppercase tracking-widest text-xs rounded-full flex items-center justify-center gap-2 transition-all"
+                                >
+                                    Spotify Pre-Save
+                                </a>
+                            </div>
+                        </motion.div>
+
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                            className="lg:col-span-5 flex justify-center"
+                        >
+                            <a 
+                                href="/descendants"
+                                onClick={() => triggerHaptic("medium")}
+                                className="relative w-72 h-72 sm:w-80 sm:h-80 rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.4)] border border-white/10 group cursor-pointer bg-black block"
+                            >
+                                <img
+                                    src="/assets/VVS_ALBUM_ART.jpg"
+                                    alt="VVS Descendants Album Cover"
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <div className="w-14 h-14 rounded-full bg-[#c5a059] flex items-center justify-center text-black">
+                                        <Play size={20} className="ml-1 fill-black" />
+                                    </div>
+                                </div>
+                            </a>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Awards Teaser Section */}
+            <section id="awards" className={`py-24 border-t ${theme === "dark" ? "border-white/10 bg-black" : "border-black/10 bg-white"}`}>
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.6 }}
+                    className="max-w-7xl mx-auto px-6 text-center"
+                >
+                    <span className="text-[#c5a059] text-xs font-mono font-bold tracking-[0.4em] uppercase block mb-2">VVS Awards 2026</span>
+                    <h2 className="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight mb-4">HONORING EXCELLENCE</h2>
+                    <p className={`text-sm max-w-lg mx-auto mb-12 ${theme === "dark" ? "text-white/50" : "text-black/50"}`}>
+                        Vote for the leading lights of African fashion, art, and technology. Select your choices and generate your dynamic Voter Pass.
+                    </p>
+                    
+                    {/* Category list with cascading stacked nominee cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-12 max-w-6xl mx-auto justify-center items-stretch text-left">
+                        {AWARDS_TEASER_DATA.map((cat, idx) => {
+                            const idx0 = (rotationOffset) % cat.nominees.length;
+                            const idx1 = (rotationOffset + 1) % cat.nominees.length;
+                            const idx2 = (rotationOffset + 2) % cat.nominees.length;
+
+                            return (
+                                <div 
+                                    key={cat.id} 
+                                    className="group flex flex-col justify-between items-center cursor-pointer p-4 rounded-2xl border transition-all duration-500 hover:scale-[1.02] bg-white/[0.01] border-white/5 hover:border-[#c5a059]/40 hover:bg-[#c5a059]/[0.02]"
+                                    onClick={() => {
+                                        triggerHaptic("light");
+                                        window.location.href = "/awards";
+                                    }}
+                                >
+                                    <div className="w-full">
+                                        {/* Cascading Image Stack Container */}
+                                        <div className="w-full aspect-[4/5] rounded-xl relative overflow-hidden flex items-center justify-center mb-4 border border-white/10 group-hover:border-[#c5a059]/20 bg-black/40">
+                                            
+                                            {/* Abstract background grid */}
+                                            <div className="absolute inset-0 z-0 opacity-10 pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent" />
+                                            
+                                            {/* Overlapping stack images */}
+                                            <div className="relative w-36 h-44 flex items-center justify-center overflow-visible select-none pointer-events-none">
+                                                
+                                                {/* Back Image (Left skewed) */}
+                                                <div className="absolute w-[90px] h-[120px] rounded-lg overflow-hidden border border-white/20 bg-black/40 shadow-2xl transition-all duration-500 transform -translate-x-8 -rotate-12 scale-90 z-10 opacity-30 group-hover:-translate-x-12 group-hover:-rotate-18 group-hover:scale-95 group-hover:opacity-75">
+                                                    <img
+                                                        src={`/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(cat.nominees[idx2])}`}
+                                                        alt=""
+                                                        className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0"
+                                                    />
+                                                </div>
+
+                                                {/* Middle Image (Right skewed) */}
+                                                <div className="absolute w-[90px] h-[120px] rounded-lg overflow-hidden border border-white/20 bg-black/40 shadow-2xl transition-all duration-500 transform translate-x-8 rotate-12 scale-90 z-20 opacity-40 group-hover:translate-x-12 group-hover:rotate-18 group-hover:scale-95 group-hover:opacity-85">
+                                                    <img
+                                                        src={`/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(cat.nominees[idx1])}`}
+                                                        alt=""
+                                                        className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0"
+                                                    />
+                                                </div>
+
+                                                {/* Front Image (Centered) */}
+                                                <div className="absolute w-[105px] h-[135px] rounded-lg overflow-hidden border-2 border-white/30 bg-black shadow-2xl transition-all duration-500 transform rotate-0 scale-100 z-30 opacity-90 group-hover:scale-105 group-hover:opacity-100 group-hover:border-[#c5a059]">
+                                                    <img
+                                                        src={`/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(cat.nominees[idx0])}`}
+                                                        alt=""
+                                                        className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-102"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="text-center w-full mt-2">
+                                        <span className="text-[9px] font-mono text-[#c5a059] uppercase tracking-widest block mb-1">
+                                            CATEGORY 0{idx + 1}
+                                        </span>
+                                        <h3 className="text-xs font-black uppercase tracking-tight leading-snug text-white/95 group-hover:text-[#c5a059] transition-colors min-h-[32px] flex items-center justify-center">
+                                            {cat.categoryName}
+                                        </h3>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <a
+                        href="/awards"
+                        className="inline-flex items-center gap-2 px-10 py-4 bg-[#c5a059] text-black font-extrabold uppercase tracking-[0.2em] text-xs rounded-full hover:bg-white hover:text-black transition-all shadow-lg active:scale-95"
+                    >
+                        Cast Your Vote Now
+                    </a>
                 </motion.div>
             </section>
 
@@ -947,15 +1292,91 @@ export default function TypeBLandingPage() {
                                     </div>
 
                                     <div>
+                                        <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">Phone Number</label>
+                                        <input
+                                            type="tel"
+                                            value={rsvpData.phone}
+                                            onChange={(e) => setRsvpData(prev => ({ ...prev, phone: e.target.value }))}
+                                            className={`w-full px-4 py-3 rounded-xl border text-xs focus:outline-none focus:border-[#c5a059] ${
+                                                theme === "dark" ? "bg-white/5 border-white/15 text-white" : "bg-black/5 border-black/15 text-black"
+                                            }`}
+                                            placeholder="+234..."
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">Gender</label>
+                                            <select
+                                                value={rsvpData.gender}
+                                                onChange={(e) => setRsvpData(prev => ({ ...prev, gender: e.target.value }))}
+                                                className={`w-full px-4 py-3 rounded-xl border text-xs focus:outline-none focus:border-[#c5a059] ${
+                                                    theme === "dark" ? "bg-black border-white/15 text-white" : "bg-white border-black/15 text-black"
+                                                }`}
+                                            >
+                                                <option value="" disabled>Select gender</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Non-binary">Non-binary</option>
+                                                <option value="Prefer not to say">Prefer not to say</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">Occupation</label>
+                                            <input
+                                                type="text"
+                                                value={rsvpData.occupation}
+                                                onChange={(e) => setRsvpData(prev => ({ ...prev, occupation: e.target.value }))}
+                                                className={`w-full px-4 py-3 rounded-xl border text-xs focus:outline-none focus:border-[#c5a059] ${
+                                                    theme === "dark" ? "bg-white/5 border-white/15 text-white" : "bg-black/5 border-black/15 text-black"
+                                                }`}
+                                                placeholder="e.g. Designer"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">Company & Role</label>
+                                        <input
+                                            type="text"
+                                            value={rsvpData.companyRole}
+                                            onChange={(e) => setRsvpData(prev => ({ ...prev, companyRole: e.target.value }))}
+                                            className={`w-full px-4 py-3 rounded-xl border text-xs focus:outline-none focus:border-[#c5a059] ${
+                                                theme === "dark" ? "bg-white/5 border-white/15 text-white" : "bg-black/5 border-black/15 text-black"
+                                            }`}
+                                            placeholder="e.g. Founder at BrandX"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-1">How did you hear about us?</label>
+                                        <select
+                                            value={rsvpData.referral}
+                                            onChange={(e) => setRsvpData(prev => ({ ...prev, referral: e.target.value }))}
+                                            className={`w-full px-4 py-3 rounded-xl border text-xs focus:outline-none focus:border-[#c5a059] ${
+                                                theme === "dark" ? "bg-black border-white/15 text-white" : "bg-white border-black/15 text-black"
+                                            }`}
+                                        >
+                                            <option value="" disabled>Select an option</option>
+                                            <option value="Social Media">Social Media</option>
+                                            <option value="Friend">Friend</option>
+                                            <option value="Press">Press</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
                                         <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-2">Target Events (Select all that apply)</label>
                                         <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1 scrollbar-none">
                                             {[
-                                                { value: "JULY 5", label: "July 5 - VVS Opening Gala" },
-                                                { value: "JULY 6", label: "July 6 - VVS Panel Sessions" },
-                                                { value: "JULY 7", label: "July 7 - Collectors Day Preview" },
-                                                { value: "JULY 8-11", label: "July 8-11 - Pop Up Exhibition" },
-                                                { value: "JULY 11", label: "July 11 - Film Experience" },
-                                                { value: "JULY 12", label: "July 12 - Runway Show & Afterparty" },
+                                                { value: "JULY 6", label: "July 6 - VVS Founders Reception" },
+                                                { value: "JULY 7-11", label: "July 7-11 - Pop-Up Trunk Show" },
+                                                { value: "JULY 8-12", label: "July 8-12 - Art Exhibition" },
+                                                { value: "JULY 9", label: "July 9 - Future Labs & Album Release" },
+                                                { value: "JULY 10", label: "July 10 - Future Labs Fashion Exhibition" },
+                                                { value: "JULY 11", label: "July 11 - Film Experience & FOMO Night" },
+                                                { value: "JULY 12", label: "July 12 - VVS Runway Show" },
                                             ].map((opt) => {
                                                 const isSelected = rsvpData.events.includes(opt.value);
                                                 return (

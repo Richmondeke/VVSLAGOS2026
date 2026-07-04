@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import QuizFlow from "@/components/quiz/QuizFlow";
 
-export default function StyleQuizPage() {
+export default function AwardsPage() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     return (
@@ -96,10 +96,10 @@ export default function StyleQuizPage() {
 
                     {/* Right Navigation Links & Controls */}
                     <div className="flex items-center gap-4 ml-auto lg:ml-0">
-                        <a href="/" className="text-[11px] uppercase tracking-[0.2em] font-bold text-[#c5a059] hover:text-white transition-colors">Home</a>
+                        <a href="/" className="hidden lg:inline-block text-[11px] uppercase tracking-[0.2em] font-bold text-[#c5a059] hover:text-white transition-colors">Home</a>
                         <button
                             onClick={() => { window.location.href = "/#rsvp"; }}
-                            className="px-5 py-2.5 rounded-full text-[10px] uppercase tracking-[0.18em] font-extrabold bg-white text-black hover:bg-[#c5a059] hover:text-white transition-all shadow-md active:scale-95"
+                            className="hidden lg:block px-5 py-2.5 rounded-full text-[10px] uppercase tracking-[0.18em] font-extrabold bg-white text-black hover:bg-[#c5a059] hover:text-white transition-all shadow-md active:scale-95"
                         >
                             RSVP NOW
                         </button>
@@ -117,6 +117,7 @@ export default function StyleQuizPage() {
             {/* Mobile Top Menu Drawer */}
             {isMobileMenuOpen && (
                 <div className="fixed inset-0 z-[99] bg-black/95 flex flex-col justify-center items-center gap-8 text-center pt-20">
+                    <a href="/" onClick={() => setIsMobileMenuOpen(false)} className="text-sm uppercase tracking-[0.25em] font-bold text-white hover:text-[#c5a059] transition-colors">Home</a>
                     <a href="/#about" onClick={() => setIsMobileMenuOpen(false)} className="text-sm uppercase tracking-[0.25em] font-bold text-white hover:text-[#c5a059] transition-colors">About</a>
                     <a href="/#schedule" onClick={() => setIsMobileMenuOpen(false)} className="text-sm uppercase tracking-[0.25em] font-bold text-white hover:text-[#c5a059] transition-colors">Schedule</a>
                     <a href="/#countdown" onClick={() => setIsMobileMenuOpen(false)} className="text-sm uppercase tracking-[0.25em] font-bold text-white hover:text-[#c5a059] transition-colors">Kickoff</a>

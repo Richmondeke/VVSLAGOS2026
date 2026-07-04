@@ -2,16 +2,38 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { triggerHaptic } from "@/utils/haptic";
 
 export default function Newsletter() {
     const [email, setEmail] = useState("");
     const [submitted, setSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (email.trim()) {
-            setSubmitted(true);
-            setEmail("");
+            setIsSubmitting(true);
+            setError(null);
+            try {
+                const res = await fetch("/api/newsletter", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email: email.trim() }),
+                });
+                const result = await res.json();
+                if (!res.ok) {
+                    throw new Error(result.error || "Failed to subscribe");
+                }
+                triggerHaptic("success");
+                setSubmitted(true);
+                setEmail("");
+            } catch (err) {
+                console.error(err);
+                setError(err instanceof Error ? err.message : "Failed to subscribe");
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 
@@ -38,6 +60,12 @@ export default function Newsletter() {
                         Be the first to know about designer reveals, event updates, and exclusive access.
                     </p>
 
+                    {error && (
+                        <div className="mb-4 text-xs text-red-500 font-mono">
+                            {error}
+                        </div>
+                    )}
+
                     {submitted ? (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
@@ -53,6 +81,7 @@ export default function Newsletter() {
                             <input
                                 type="email"
                                 required
+                                disabled={isSubmitting}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Enter your email"
@@ -60,9 +89,10 @@ export default function Newsletter() {
                             />
                             <button
                                 type="submit"
+                                disabled={isSubmitting}
                                 className="px-8 py-4 bg-vvs-gold text-vvs-black text-xs uppercase tracking-[0.2em] font-bold sm:rounded-r-full sm:rounded-l-none rounded-full hover:bg-white transition-all transform hover:scale-[1.02] shadow-[0_0_20px_rgba(197,160,89,0.2)]"
                             >
-                                Subscribe
+                                {isSubmitting ? "Subscribed..." : "Subscribe"}
                             </button>
                         </form>
                     )}

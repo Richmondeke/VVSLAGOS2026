@@ -40,3 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+
+# large assets
+public/assets/THE_ALBUM.mp4
+.turbo/

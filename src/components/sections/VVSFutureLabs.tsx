@@ -51,9 +51,10 @@ const focus2026 = [
 
 interface Props {
     theme?: "dark" | "light";
+    isSummary?: boolean;
 }
 
-export default function VVSFutureLabs({ theme = "dark" }: Props) {
+export default function VVSFutureLabs({ theme = "dark", isSummary = false }: Props) {
     const [hoveredGap, setHoveredGap] = useState<number | null>(null);
     const isDark = theme === "dark";
 
@@ -76,30 +77,102 @@ export default function VVSFutureLabs({ theme = "dark" }: Props) {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="mb-16 md:mb-24"
+                    className={`grid grid-cols-1 lg:grid-cols-12 gap-10 items-center ${isSummary ? "mb-10" : "mb-16 md:mb-24"}`}
                 >
-                    <span className="text-[#c5a059] text-xs uppercase tracking-[0.5em] mb-4 block font-mono font-bold">
-                        DEVELOPMENTAL ARM
-                    </span>
-                    <h2 className={`text-4xl sm:text-5xl md:text-7xl font-serif font-extrabold uppercase tracking-tighter leading-none mb-6 ${
-                        isDark ? "text-white" : "text-black"
-                    }`}>
-                        VVS<br />
-                        <span className="text-[#c5a059]">FUTURE</span><br />
-                        LABS
-                    </h2>
-                    <div className={`w-24 h-[1px] mb-8 ${isDark ? "bg-white/20" : "bg-black/20"}`} />
-                    <p className={`text-base sm:text-lg md:text-xl font-light leading-relaxed max-w-3xl ${
-                        isDark ? "text-white/70" : "text-black/70"
-                    }`}>
-                        VVS Future Labs is the developmental arm of VVS Lagos — designed to identify, mentor, showcase, and support the next generation of African creative talent across fashion, art, design, film, technology, and cultural entrepreneurship.
-                    </p>
-                    <p className={`text-sm sm:text-base font-light leading-relaxed max-w-2xl mt-4 ${
-                        isDark ? "text-white/50" : "text-black/50"
-                    }`}>
-                        Established to move beyond celebration and visibility into actual talent development, infrastructure building, and economic empowerment.
-                    </p>
+                    <style>{`
+                        @keyframes labs-glitch {
+                            0% { transform: translate(0); clip-path: inset(0 0 0 0); }
+                            5% { transform: translate(-2px, -1px) skewX(2deg); clip-path: inset(8% 0 15% 0); }
+                            10% { transform: translate(1px, 2px) skewX(-2deg); clip-path: inset(25% 0 8% 0); }
+                            15% { transform: translate(-1px, 0); clip-path: inset(3% 0 50% 0); }
+                            20% { transform: translate(2px, -1px) skewX(1deg); clip-path: inset(40% 0 5% 0); }
+                            25% { transform: translate(0); clip-path: inset(0 0 0 0); }
+                            100% { transform: translate(0); clip-path: inset(0 0 0 0); }
+                        }
+                        @keyframes labs-split-left {
+                            0%, 100% { transform: translate(0); opacity: 0; }
+                            8% { transform: translate(-3px, 1px); opacity: 0.6; }
+                            12% { transform: translate(2px, -1px); opacity: 0.4; }
+                            18% { transform: translate(-1px, 2px); opacity: 0.7; }
+                            22% { transform: translate(0); opacity: 0; }
+                        }
+                        @keyframes labs-split-right {
+                            0%, 100% { transform: translate(0); opacity: 0; }
+                            5% { transform: translate(3px, -2px); opacity: 0.5; }
+                            14% { transform: translate(-2px, 1px); opacity: 0.7; }
+                            20% { transform: translate(1px, -1px); opacity: 0.4; }
+                            24% { transform: translate(0); opacity: 0; }
+                        }
+                        .labs-glitch-img {
+                            animation: labs-glitch 4s infinite steps(2, start) alternate;
+                        }
+                        .labs-split-cyan {
+                            animation: labs-split-left 4s infinite steps(2, start) alternate;
+                            filter: hue-rotate(180deg) saturate(3);
+                        }
+                        .labs-split-magenta {
+                            animation: labs-split-right 4s infinite steps(2, start) alternate;
+                            filter: hue-rotate(300deg) saturate(3);
+                        }
+                    `}</style>
+
+                    <div className="lg:col-span-8">
+                        <span className="text-[#c5a059] text-xs uppercase tracking-[0.5em] mb-4 block font-mono font-bold">
+                            DEVELOPMENTAL ARM
+                        </span>
+                        <h2 className={`text-4xl sm:text-5xl md:text-7xl font-serif font-extrabold uppercase tracking-tighter leading-none mb-6 ${
+                            isDark ? "text-white" : "text-black"
+                        }`}>
+                            VVS<br />
+                            <span className="text-[#c5a059]">FUTURE</span><br />
+                            LABS
+                        </h2>
+                        <div className={`w-24 h-[1px] mb-8 ${isDark ? "bg-white/20" : "bg-black/20"}`} />
+                        <p className={`text-base sm:text-lg md:text-xl font-light leading-relaxed max-w-3xl ${
+                            isDark ? "text-white/70" : "text-black/70"
+                        }`}>
+                            VVS Future Labs is the developmental arm of VVS Lagos — designed to identify, mentor, showcase, and support the next generation of African creative talent across fashion, art, design, film, technology, and cultural entrepreneurship.
+                        </p>
+                        <p className={`text-sm sm:text-base font-light leading-relaxed max-w-2xl mt-4 ${
+                            isDark ? "text-white/50" : "text-black/50"
+                        }`}>
+                            Established to move beyond celebration and visibility into actual talent development, infrastructure building, and economic empowerment.
+                        </p>
+                        {isSummary && (
+                            <div className="mt-8">
+                                <a
+                                    href="/future-labs"
+                                    className="inline-flex items-center gap-2 text-xs uppercase font-bold tracking-widest text-[#c5a059] hover:text-white transition-colors"
+                                >
+                                    Learn More <span>→</span>
+                                </a>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="lg:col-span-4 flex items-center justify-center pt-6 lg:pt-0">
+                        <div className="relative w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 select-none pointer-events-none flex items-center justify-center">
+                            <img
+                                src={isDark ? "/assets/VVSWhiteMAsk.png" : "/assets/VVSMASKBLACK.png"}
+                                alt=""
+                                className="absolute w-4/5 h-4/5 object-contain labs-split-cyan opacity-40"
+                            />
+                            <img
+                                src={isDark ? "/assets/VVSWhiteMAsk.png" : "/assets/VVSMASKBLACK.png"}
+                                alt=""
+                                className="absolute w-4/5 h-4/5 object-contain labs-split-magenta opacity-40"
+                            />
+                            <img
+                                src={isDark ? "/assets/VVSWhiteMAsk.png" : "/assets/VVSMASKBLACK.png"}
+                                alt="VVS Mascot Head"
+                                className="w-4/5 h-4/5 object-contain labs-glitch-img"
+                            />
+                        </div>
+                    </div>
                 </motion.div>
+
+                {!isSummary && (
+                    <>
 
                 {/* ── Vision Statement ── */}
                 <motion.div
@@ -354,12 +427,14 @@ export default function VVSFutureLabs({ theme = "dark" }: Props) {
                         Applications open — VVS Lagos 2026
                     </p>
                     <a
-                        href="mailto:futurelabs@vvslagos.com"
+                        href="/future-labs/apply"
                         className="inline-flex items-center gap-3 px-10 py-4 bg-[#c5a059] text-black text-xs uppercase tracking-[0.3em] font-extrabold rounded-full hover:bg-white hover:text-black transition-all shadow-[0_0_30px_rgba(197,160,89,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] active:scale-[0.98] relative z-10"
                     >
                         Apply for VVS Future Labs
                     </a>
-                </motion.div>
+                    </motion.div>
+                </>
+                )}
             </div>
         </section>
     );

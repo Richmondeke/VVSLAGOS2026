@@ -199,13 +199,50 @@ export default function GuestsPage() {
     const isRSVPSplitting = rsvpPhase === "splitting";
     const effectiveIsMerged = isMerged || isRSVPActive;
 
-    const handleRSVPSubmit = (e: React.FormEvent) => {
+    const [rsvpData, setRsvpData] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        gender: "",
+        occupation: "",
+        company: "",
+        role: "",
+        heard_about: "",
+        attendance: "yes",
+        events: ["JULY 12"],
+    });
+
+    const handleRSVPSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         triggerHaptic("success");
+        try {
+            await fetch("/api/rsvp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    ...rsvpData,
+                    event_type: "type_cc_rsvp",
+                }),
+            });
+        } catch (err) {
+            console.error(err);
+        }
         setIsRSVPSubmitted(true);
         setTimeout(() => {
             setRsvpPhase("idle");
             setIsRSVPSubmitted(false);
+            setRsvpData({
+                name: "",
+                email: "",
+                phone: "",
+                gender: "",
+                occupation: "",
+                company: "",
+                role: "",
+                heard_about: "",
+                attendance: "yes",
+                events: ["JULY 12"],
+            });
         }, 3000);
     };
 
@@ -913,7 +950,7 @@ export default function GuestsPage() {
                                         </p>
                                     </motion.div>
                                 ) : (
-                                    <form onSubmit={handleRSVPSubmit} className="space-y-4 text-left">
+                                    <form onSubmit={handleRSVPSubmit} className="space-y-4 text-left max-h-[60vh] overflow-y-auto pr-2 scrollbar-none">
                                         <div>
                                             <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2">
                                                 Full Name
@@ -921,20 +958,137 @@ export default function GuestsPage() {
                                             <input
                                                 type="text"
                                                 required
-                                                className="w-full bg-transparent border-b border-vvs-white/20 px-0 py-3 text-vvs-white placeholder:text-vvs-white/30 focus:outline-none focus:border-vvs-gold transition-all"
+                                                value={rsvpData.name}
+                                                onChange={(e) => setRsvpData(prev => ({ ...prev, name: e.target.value }))}
+                                                className="w-full bg-transparent border-b border-vvs-white/20 px-0 py-2 text-vvs-white placeholder:text-vvs-white/30 focus:outline-none focus:border-vvs-gold transition-all"
                                                 placeholder="Enter your name"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2 mt-6">
+                                            <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2">
                                                 Email Address
                                             </label>
                                             <input
                                                 type="email"
                                                 required
-                                                className="w-full bg-transparent border-b border-vvs-white/20 px-0 py-3 text-vvs-white placeholder:text-vvs-white/30 focus:outline-none focus:border-vvs-gold transition-all"
+                                                value={rsvpData.email}
+                                                onChange={(e) => setRsvpData(prev => ({ ...prev, email: e.target.value }))}
+                                                className="w-full bg-transparent border-b border-vvs-white/20 px-0 py-2 text-vvs-white placeholder:text-vvs-white/30 focus:outline-none focus:border-vvs-gold transition-all"
                                                 placeholder="Enter your email"
                                             />
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2">
+                                                Phone Number
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                value={rsvpData.phone}
+                                                onChange={(e) => setRsvpData(prev => ({ ...prev, phone: e.target.value }))}
+                                                className="w-full bg-transparent border-b border-vvs-white/20 px-0 py-2 text-vvs-white placeholder:text-vvs-white/30 focus:outline-none focus:border-vvs-gold transition-all"
+                                                placeholder="+234..."
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2">
+                                                    Gender
+                                                </label>
+                                                <select
+                                                    value={rsvpData.gender}
+                                                    onChange={(e) => setRsvpData(prev => ({ ...prev, gender: e.target.value }))}
+                                                    className="w-full bg-black border-b border-vvs-white/20 px-0 py-2 text-vvs-white focus:outline-none focus:border-vvs-gold transition-all"
+                                                >
+                                                    <option value="" disabled>Select gender</option>
+                                                    <option value="Female">Female</option>
+                                                    <option value="Male">Male</option>
+                                                    <option value="Non-binary">Non-binary</option>
+                                                    <option value="Prefer not to say">Prefer not to say</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2">
+                                                    Occupation
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={rsvpData.occupation}
+                                                    onChange={(e) => setRsvpData(prev => ({ ...prev, occupation: e.target.value }))}
+                                                    className="w-full bg-transparent border-b border-vvs-white/20 px-0 py-2 text-vvs-white placeholder:text-vvs-white/30 focus:outline-none focus:border-vvs-gold transition-all"
+                                                    placeholder="e.g. Designer"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2">
+                                                    Company
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={rsvpData.company}
+                                                    onChange={(e) => setRsvpData(prev => ({ ...prev, company: e.target.value }))}
+                                                    className="w-full bg-transparent border-b border-vvs-white/20 px-0 py-2 text-vvs-white placeholder:text-vvs-white/30 focus:outline-none focus:border-vvs-gold transition-all"
+                                                    placeholder="Company"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2">
+                                                    Role
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={rsvpData.role}
+                                                    onChange={(e) => setRsvpData(prev => ({ ...prev, role: e.target.value }))}
+                                                    className="w-full bg-transparent border-b border-vvs-white/20 px-0 py-2 text-vvs-white placeholder:text-vvs-white/30 focus:outline-none focus:border-vvs-gold transition-all"
+                                                    placeholder="Role"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2">
+                                                How did you hear about us?
+                                            </label>
+                                            <select
+                                                value={rsvpData.heard_about}
+                                                onChange={(e) => setRsvpData(prev => ({ ...prev, heard_about: e.target.value }))}
+                                                className="w-full bg-black border-b border-vvs-white/20 px-0 py-2 text-vvs-white focus:outline-none focus:border-vvs-gold transition-all"
+                                            >
+                                                <option value="" disabled>Select an option</option>
+                                                <option value="Social Media">Social Media</option>
+                                                <option value="Friend">Friend</option>
+                                                <option value="Press">Press</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] sm:text-xs font-mono uppercase tracking-widest text-vvs-white/60 mb-2">
+                                                Can you attend?
+                                            </label>
+                                            <div className="flex gap-4 mt-1">
+                                                <label className="flex items-center gap-2 text-xs cursor-pointer">
+                                                    <input
+                                                        type="radio"
+                                                        name="attendance"
+                                                        value="yes"
+                                                        checked={rsvpData.attendance === "yes"}
+                                                        onChange={(e) => setRsvpData(prev => ({ ...prev, attendance: e.target.value }))}
+                                                        className="accent-vvs-gold"
+                                                    />
+                                                    Yes
+                                                </label>
+                                                <label className="flex items-center gap-2 text-xs cursor-pointer">
+                                                    <input
+                                                        type="radio"
+                                                        name="attendance"
+                                                        value="no"
+                                                        checked={rsvpData.attendance === "no"}
+                                                        onChange={(e) => setRsvpData(prev => ({ ...prev, attendance: e.target.value }))}
+                                                        className="accent-vvs-gold"
+                                                    />
+                                                    Maybe / Remote
+                                                </label>
+                                            </div>
                                         </div>
                                         <div className="pt-8">
                                             <button

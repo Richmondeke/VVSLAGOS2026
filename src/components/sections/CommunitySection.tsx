@@ -127,13 +127,16 @@ export default function CommunitySection({ theme = "dark" }: CommunitySectionPro
                         <div className={`mt-12 pt-8 border-t ${
                             isDark ? "border-white/10" : "border-black/10"
                         }`}>
-                            <button className={`w-full py-4 font-bold uppercase tracking-widest text-sm rounded-full transition-colors duration-300 ${
-                                isDark 
-                                    ? "bg-white text-black hover:bg-[#c5a059]" 
-                                    : "bg-black text-white hover:bg-[#c5a059]"
-                            }`}>
+                            <a 
+                                href="/community"
+                                className={`w-full py-4 font-bold uppercase tracking-widest text-sm rounded-full transition-colors duration-300 inline-flex items-center justify-center ${
+                                    isDark 
+                                        ? "bg-white text-black hover:bg-[#c5a059]" 
+                                        : "bg-black text-white hover:bg-[#c5a059]"
+                                }`}
+                            >
                                 Apply to Join
-                            </button>
+                            </a>
                         </div>
                     </motion.div>
 

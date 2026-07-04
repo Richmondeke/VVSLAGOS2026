@@ -50,6 +50,7 @@ export default function CommunityPage() {
     const [submitting, setSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [customCity, setCustomCity] = useState("");
     const [dragOver, setDragOver] = useState(false);
 
     const handleInterestToggle = (interest: string) => {
@@ -96,12 +97,18 @@ export default function CommunityPage() {
             return;
         }
 
+        if (form.city === "Other" && !customCity.trim()) {
+            setError("Please specify your city.");
+            return;
+        }
+
         setSubmitting(true);
         setError(null);
 
+        const finalCity = form.city === "Other" ? customCity.trim() : form.city;
+
         try {
             // 1. Register/Sign up the user in Supabase Auth
-            // Using the generic password: 'VVSmember2026'
             const { error: signUpError } = await supabase.auth.signUp({
                 email: form.email.trim(),
                 password: "VVSmember2026",
@@ -110,14 +117,13 @@ export default function CommunityPage() {
                         name: form.name.trim(),
                         age: parseInt(form.age),
                         occupation: form.occupation.trim(),
-                        city: form.city,
+                        city: finalCity,
                         gender: form.gender,
                     }
                 }
             });
 
             if (signUpError) {
-                // If user already exists, we skip throwing so they can still register/update community table
                 console.warn("Auth signup error or user already exists:", signUpError.message);
             }
 
@@ -127,8 +133,8 @@ export default function CommunityPage() {
             const filePath = `community/${fileName}`;
 
             const { error: uploadError } = await supabase.storage
-                .from("selfies")
-                .upload(filePath, form.selfieFile, { contentType: form.selfieFile.type, upsert: false });
+                 .from("selfies")
+                 .upload(filePath, form.selfieFile, { contentType: form.selfieFile.type, upsert: false });
 
             let selfieUrl = null;
             if (!uploadError) {
@@ -138,23 +144,25 @@ export default function CommunityPage() {
                 console.warn("Selfie upload warning:", uploadError.message);
             }
 
-            // 3. Insert community member record
-            const { error: insertError } = await supabase
-                .from("community_members")
-                .insert([{
+            // 3. Insert community member via server-side API route (bypasses RLS)
+            const res = await fetch("/api/community-signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
                     name: form.name,
                     age: parseInt(form.age),
                     email: form.email,
                     occupation: form.occupation,
-                    city: form.city,
+                    city: finalCity,
                     gender: form.gender,
                     interests: form.interests,
                     selfie_url: selfieUrl,
-                    created_at: new Date().toISOString(),
-                }]);
+                }),
+            });
 
-            if (insertError) {
-                throw new Error(insertError.message);
+            const result = await res.json();
+            if (!res.ok) {
+                throw new Error(result.error || "Failed to join community");
             }
 
             setShowSuccessModal(true);
@@ -328,6 +336,18 @@ export default function CommunityPage() {
                                                 <option value="" disabled>Select your city</option>
                                                 {CITIES.map(c => <option key={c} value={c}>{c}</option>)}
                                             </select>
+                                            {form.city === "Other" && (
+                                                <div className="mt-3">
+                                                    <input
+                                                        type="text"
+                                                        required
+                                                        className={inputClass}
+                                                        placeholder="Specify your city"
+                                                        value={customCity}
+                                                        onChange={e => setCustomCity(e.target.value)}
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
@@ -510,11 +530,10 @@ export default function CommunityPage() {
                             </p>
 
                             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 text-left">
-                                <p className="text-[10px] font-mono uppercase text-white/40 mb-1">Temporary Login Details</p>
+                                <p className="text-[10px] font-mono uppercase text-white/40 mb-1">Registration Successful</p>
                                 <p className="text-xs text-white mb-1"><span className="text-[#c5a059] font-mono">Email:</span> {form.email}</p>
-                                <p className="text-xs text-white"><span className="text-[#c5a059] font-mono">Password:</span> VVSmember2026</p>
                                 <p className="text-[9px] text-[#c5a059] font-mono mt-3 opacity-80">
-                                    ★ An email invitation has been triggered. You can log in using the credentials above and update your password at any time.
+                                    ★ Welcome to the community! An invitation link has been triggered. Please check your email to set up your password and access the platform.
                                 </p>
                             </div>
 

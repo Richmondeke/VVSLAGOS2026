@@ -26,11 +26,17 @@ export default function PastPartners({ theme = "dark" }: PastPartnersProps) {
         <section className={`py-24 overflow-hidden border-t ${
             isDark ? "bg-black border-white/5" : "bg-[#FAF7F2] border-black/5"
         }`}>
-            <div className="max-w-7xl mx-auto px-6 mb-12 text-center">
+            <motion.div 
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="max-w-7xl mx-auto px-6 mb-12 text-center"
+            >
                 <p className="text-[#c5a059] font-mono text-xs uppercase tracking-[0.3em]">
                     Past Partners
                 </p>
-            </div>
+            </motion.div>
             
             {/* Infinite Marquee */}
             <div className="relative w-full flex overflow-x-hidden">

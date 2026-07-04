@@ -5,6 +5,7 @@ import { createAdminRepo } from "../repositories/admin.js";
 const ROLE_HIERARCHY: Record<string, number> = {
     support: 1,
     moderator: 2,
+    admin: 3,
     super_admin: 3,
 };
 

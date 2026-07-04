@@ -22,6 +22,19 @@ type MembersResponse = {
     pageSize: number;
 };
 
+type CommunityMember = {
+    id: string;
+    name: string;
+    age: number;
+    email: string;
+    occupation: string;
+    city: string;
+    gender: string;
+    interests: string[];
+    selfie_url: string | null;
+    created_at: string;
+};
+
 function StatusBadge({ status }: { status: string }) {
     const colors: Record<string, string> = {
         active: "bg-green-100 text-green-700",
@@ -49,17 +62,41 @@ export default function DashboardPage() {
     const [myReferralsCount, setMyReferralsCount] = useState<number>(0);
 
     // Unified Table State
-    const [activeTab, setActiveTab] = useState<"rsvps" | "signups" | "admins">("rsvps");
+    const [activeTab, setActiveTab] = useState<"rsvps" | "signups" | "community" | "futurelabs" | "votes" | "questions" | "admins">("rsvps");
     const [searchQuery, setSearchQuery] = useState("");
     const [panelData, setPanelData] = useState<PanelData | null>(null);
+
+    // Votes Data
+    const [votes, setVotes] = useState<any[]>([]);
+    const [votesLoading, setVotesLoading] = useState(false);
+
+    // Panel Questions Data
+    const [panelQuestions, setPanelQuestions] = useState<any[]>([]);
+    const [panelQuestionsLoading, setPanelQuestionsLoading] = useState(false);
 
     // RSVPs Data
     const [rsvps, setRsvps] = useState<any[]>([]);
     
+    // Future Labs Data
+    const [futureLabsApps, setFutureLabsApps] = useState<any[]>([]);
+    const [futureLabsLoading, setFutureLabsLoading] = useState(false);
+
     // Members Data
     const [membersData, setMembersData] = useState<MembersResponse | null>(null);
     const [membersPage, setMembersPage] = useState(1);
     const [membersLoading, setMembersLoading] = useState(false);
+
+    // Community Members Data
+    const [communityMembers, setCommunityMembers] = useState<CommunityMember[]>([]);
+    const [communityLoading, setCommunityLoading] = useState(false);
+    const [communityTotal, setCommunityTotal] = useState(0);
+    const [communityPage, setCommunityPage] = useState(1);
+    const [communityCityFilter, setCommunityCityFilter] = useState("");
+    const [communityGenderFilter, setCommunityGenderFilter] = useState("");
+    const [selectedCommunityMember, setSelectedCommunityMember] = useState<CommunityMember | null>(null);
+
+    const cities = ["Lagos", "Abuja", "Port Harcourt", "Accra", "Nairobi", "Johannesburg", "London", "New York", "Paris", "Dubai", "Toronto", "Amsterdam", "Other"];
+    const formatDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 
     // Admins Data
     const [admins, setAdmins] = useState<any[]>([]);
@@ -69,18 +106,63 @@ export default function DashboardPage() {
 
     // Removed hardcoded supabase keys as they are now handled by API Client
 
+    async function loadFutureLabs() {
+        setFutureLabsLoading(true);
+        try {
+            const res = await fetch("/api/future-labs");
+            if (res.ok) {
+                const result = await res.json();
+                setFutureLabsApps(result);
+            }
+        } catch (err) {
+            console.error("Failed to load Future Labs applications", err);
+        } finally {
+            setFutureLabsLoading(false);
+        }
+    }
+    async function loadVotes() {
+        setVotesLoading(true);
+        try {
+            const res = await fetch("/api/votes");
+            if (res.ok) {
+                const data = await res.json();
+                setVotes(data);
+            }
+        } catch (err) {
+            console.error("Failed to load votes", err);
+        } finally {
+            setVotesLoading(false);
+        }
+    }
+
+    async function loadPanelQuestions() {
+        setPanelQuestionsLoading(true);
+        try {
+            const res = await fetch("/api/panel-questions");
+            if (res.ok) {
+                const data = await res.json();
+                setPanelQuestions(data);
+            }
+        } catch (err) {
+            console.error("Failed to load panel questions", err);
+        } finally {
+            setPanelQuestionsLoading(false);
+        }
+    }
+
     async function loadStatsAndRsvps() {
         setLoading(true);
         try {
-            const rsvpsList = await apiClient<any[]>("/admin/api/rsvps");
-            setRsvps(rsvpsList);
-            setRsvpsCount(rsvpsList.length);
+            const res = await fetch("/api/rsvps");
+            if (res.ok) {
+                const rsvpsList = await res.json();
+                setRsvps(rsvpsList);
+                setRsvpsCount(rsvpsList.length);
 
-            if (user?.email) {
-                // Adjust if referral logic changes. Assuming referred_by_admin exists in your API or just count organic for now.
-                // If it doesn't exist on rsvps, this will just be 0.
-                const myRefs = rsvpsList.filter((r: any) => r.referred_by_admin === user.email);
-                setMyReferralsCount(myRefs.length);
+                if (user?.email) {
+                    const myRefs = rsvpsList.filter((r: any) => r.referred_by_admin === user.email);
+                    setMyReferralsCount(myRefs.length);
+                }
             }
         } catch (err) {
             console.error("Failed to load RSVPs", err);
@@ -95,9 +177,12 @@ export default function DashboardPage() {
             const params = new URLSearchParams();
             if (searchQuery && activeTab === "signups") params.set("search", searchQuery);
             params.set("page", String(membersPage));
-            const result = await apiClient<MembersResponse>(`/admin/api/members?${params}`);
-            setMembersData(result);
-            setMembersCount(result.total);
+            const res = await fetch(`/api/members?${params.toString()}`);
+            if (res.ok) {
+                const result = await res.json();
+                setMembersData(result);
+                setMembersCount(result.total);
+            }
         } catch (err) {
             console.error("Failed to load members", err);
         } finally {
@@ -108,8 +193,11 @@ export default function DashboardPage() {
     async function loadAdmins() {
         setAdminsLoading(true);
         try {
-            const result = await apiClient<any[]>(`/admin/api/admins`);
-            setAdmins(result);
+            const res = await fetch("/api/admins");
+            if (res.ok) {
+                const result = await res.json();
+                setAdmins(result);
+            }
         } catch (err) {
             console.error("Failed to load admins", err);
         } finally {
@@ -120,12 +208,18 @@ export default function DashboardPage() {
     async function handleAddAdmin() {
         if (!newAdminEmail) return;
         try {
-            await apiClient(`/admin/api/admins`, {
+            const res = await fetch("/api/admins", {
                 method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userId: newAdminEmail, role: newAdminRole })
             });
-            setNewAdminEmail("");
-            loadAdmins();
+            if (res.ok) {
+                setNewAdminEmail("");
+                loadAdmins();
+            } else {
+                const data = await res.json();
+                alert(data.error || "Failed to add admin");
+            }
         } catch (err) {
             console.error("Failed to add admin", err);
             alert("Failed to add admin");
@@ -135,11 +229,37 @@ export default function DashboardPage() {
     async function handleRemoveAdmin(userId: string) {
         if (!confirm("Are you sure you want to remove this admin?")) return;
         try {
-            await apiClient(`/admin/api/admins/${userId}`, { method: "DELETE" });
-            loadAdmins();
+            const res = await fetch(`/api/admins/${userId}`, { method: "DELETE" });
+            if (res.ok) {
+                loadAdmins();
+            } else {
+                alert("Failed to remove admin");
+            }
         } catch (err) {
             console.error("Failed to remove admin", err);
             alert("Failed to remove admin");
+        }
+    }
+
+    async function loadCommunityMembers() {
+        setCommunityLoading(true);
+        try {
+            const params = new URLSearchParams();
+            params.set("page", String(communityPage));
+            if (searchQuery && activeTab === "community") params.set("search", searchQuery);
+            if (communityCityFilter) params.set("city", communityCityFilter);
+            if (communityGenderFilter) params.set("gender", communityGenderFilter);
+
+            const res = await fetch(`/api/community-members?${params.toString()}`);
+            if (res.ok) {
+                const result = await res.json();
+                setCommunityMembers(result.items);
+                setCommunityTotal(result.total);
+            }
+        } catch (err) {
+            console.error("Failed to load community members", err);
+        } finally {
+            setCommunityLoading(false);
         }
     }
 
@@ -156,7 +276,19 @@ export default function DashboardPage() {
         if (user && activeTab === "admins") {
             loadAdmins();
         }
-    }, [user, activeTab, membersPage, searchQuery]);
+        if (user && activeTab === "community") {
+            loadCommunityMembers();
+        }
+        if (user && activeTab === "futurelabs") {
+            loadFutureLabs();
+        }
+        if (user && activeTab === "votes") {
+            loadVotes();
+        }
+        if (user && activeTab === "questions") {
+            loadPanelQuestions();
+        }
+    }, [user, activeTab, membersPage, communityPage, searchQuery, communityCityFilter, communityGenderFilter]);
 
     const referralLink = user?.email ? `https://vvslagos.com/rsvp?ref=${encodeURIComponent(user.email)}` : "";
 
@@ -172,6 +304,28 @@ export default function DashboardPage() {
     const filteredRsvps = rsvps.filter(r => 
         (r.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
         (r.email?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+    );
+
+    // Filter Future Labs locally
+    const filteredFutureLabs = futureLabsApps.filter(app => 
+        (app.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
+        (app.email?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+        (app.category?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+    );
+
+    // Filter Votes locally
+    const filteredVotes = votes.filter(v => 
+        (v.email?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
+        (v.category?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
+        (v.nominee?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+    );
+
+    // Filter Panel Questions locally
+    const filteredQuestions = panelQuestions.filter(q => 
+        (q.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
+        (q.email?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+        (q.session_id?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+        (q.question?.toLowerCase() || "").includes(searchQuery.toLowerCase())
     );
 
     return (
@@ -196,6 +350,10 @@ export default function DashboardPage() {
                             loadStatsAndRsvps();
                             if (activeTab === "signups") loadMembers();
                             if (activeTab === "admins") loadAdmins();
+                            if (activeTab === "community") loadCommunityMembers();
+                            if (activeTab === "futurelabs") loadFutureLabs();
+                            if (activeTab === "votes") loadVotes();
+                            if (activeTab === "questions") loadPanelQuestions();
                         }}
                         className="rounded-lg border border-admin-border px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-admin-primary hover:bg-admin-surface shadow-sm transition-all"
                     >
@@ -254,6 +412,30 @@ export default function DashboardPage() {
                             className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === "signups" ? "bg-admin-accent text-white" : "text-admin-muted hover:bg-admin-border/20 hover:text-admin-primary"}`}
                         >
                             App Signups
+                        </button>
+                        <button 
+                            onClick={() => { setActiveTab("community"); setSearchQuery(""); setCommunityPage(1); }}
+                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === "community" ? "bg-admin-accent text-white" : "text-admin-muted hover:bg-admin-border/20 hover:text-admin-primary"}`}
+                        >
+                            Community
+                        </button>
+                        <button 
+                            onClick={() => { setActiveTab("futurelabs"); setSearchQuery(""); }}
+                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === "futurelabs" ? "bg-admin-accent text-white" : "text-admin-muted hover:bg-admin-border/20 hover:text-admin-primary"}`}
+                        >
+                            Future Labs
+                        </button>
+                        <button 
+                            onClick={() => { setActiveTab("votes"); setSearchQuery(""); }}
+                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === "votes" ? "bg-admin-accent text-white" : "text-admin-muted hover:bg-admin-border/20 hover:text-admin-primary"}`}
+                        >
+                            Votes
+                        </button>
+                        <button 
+                            onClick={() => { setActiveTab("questions"); setSearchQuery(""); }}
+                            className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === "questions" ? "bg-admin-accent text-white" : "text-admin-muted hover:bg-admin-border/20 hover:text-admin-primary"}`}
+                        >
+                            Panel Qs
                         </button>
                         <button 
                             onClick={() => { setActiveTab("admins"); setSearchQuery(""); }}
@@ -391,6 +573,235 @@ export default function DashboardPage() {
                                 </div>
                             )}
                         </div>
+                    ) : activeTab === "community" ? (
+                        <div>
+                            {/* City and Gender Filters for Community Members */}
+                            <div className="p-4 border-b border-admin-border flex flex-wrap gap-3 bg-admin-surface/30">
+                                <select
+                                    value={communityCityFilter}
+                                    onChange={(e) => { setCommunityCityFilter(e.target.value); setCommunityPage(1); }}
+                                    className="rounded-lg border border-admin-border px-3 py-1.5 text-xs bg-admin-surface text-admin-primary focus:outline-none focus:border-admin-accent"
+                                >
+                                    <option value="">All Cities</option>
+                                    {cities.map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
+                                <select
+                                    value={communityGenderFilter}
+                                    onChange={(e) => { setCommunityGenderFilter(e.target.value); setCommunityPage(1); }}
+                                    className="rounded-lg border border-admin-border px-3 py-1.5 text-xs bg-admin-surface text-admin-primary focus:outline-none focus:border-admin-accent"
+                                >
+                                    <option value="">All Genders</option>
+                                    <option value="female">Female</option>
+                                    <option value="male">Male</option>
+                                    <option value="non-binary">Non-binary</option>
+                                    <option value="prefer-not-to-say">Prefer not to say</option>
+                                </select>
+                            </div>
+
+                            <table className="w-full text-sm text-left min-w-[600px]">
+                                <thead className="bg-admin-surface text-admin-muted uppercase text-[10px] tracking-wider border-b border-admin-border">
+                                    <tr>
+                                        <th className="px-6 py-4 font-bold">Member</th>
+                                        <th className="px-6 py-4 font-bold">Contact</th>
+                                        <th className="px-6 py-4 font-bold">Details</th>
+                                        <th className="px-6 py-4 font-bold">Interests</th>
+                                        <th className="px-6 py-4 font-bold">Joined</th>
+                                        <th className="px-6 py-4 font-bold text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-admin-border">
+                                    {communityLoading ? (
+                                        <tr><td colSpan={6} className="px-6 py-8 text-center text-admin-muted">Loading...</td></tr>
+                                    ) : communityMembers.length === 0 ? (
+                                        <tr><td colSpan={6} className="px-6 py-8 text-center text-admin-muted">No community members found.</td></tr>
+                                    ) : (
+                                        communityMembers.map((m) => (
+                                            <tr key={m.id} className="hover:bg-admin-border/10 transition-colors">
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-3">
+                                                        {m.selfie_url ? (
+                                                            <img
+                                                                src={m.selfie_url}
+                                                                alt={m.name}
+                                                                className="w-9 h-9 rounded-full object-cover border border-admin-border flex-shrink-0"
+                                                                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                                                            />
+                                                        ) : (
+                                                            <div className="w-9 h-9 rounded-full bg-admin-accent/20 border border-admin-accent/30 flex items-center justify-center text-admin-accent font-bold text-xs flex-shrink-0">
+                                                                {m.name.charAt(0).toUpperCase()}
+                                                            </div>
+                                                        )}
+                                                        <div>
+                                                            <p className="font-semibold text-admin-primary">{m.name}</p>
+                                                            <p className="text-xs text-admin-muted">Age {m.age} · {m.gender}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 text-admin-muted">{m.email}</td>
+                                                <td className="px-6 py-4">
+                                                    <p className="text-admin-primary text-xs font-semibold">{m.occupation}</p>
+                                                    <p className="text-admin-muted text-xs">{m.city}</p>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <div className="flex flex-wrap gap-1 max-w-[180px]">
+                                                        {(m.interests || []).slice(0, 3).map(i => (
+                                                            <span key={i} className="px-1.5 py-0.5 rounded text-[10px] bg-admin-accent/15 text-admin-accent font-mono">{i}</span>
+                                                        ))}
+                                                        {(m.interests || []).length > 3 && (
+                                                            <span className="px-1.5 py-0.5 rounded text-[10px] bg-admin-border text-admin-muted font-mono">+{m.interests.length - 3}</span>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 text-admin-muted whitespace-nowrap">{formatDate(m.created_at)}</td>
+                                                <td className="px-6 py-4 text-right">
+                                                    <button
+                                                        onClick={() => setSelectedCommunityMember(m)}
+                                                        className="text-xs text-admin-accent hover:underline font-bold uppercase"
+                                                    >
+                                                        View
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                            {/* Pagination */}
+                            {communityTotal > 20 && (
+                                <div className="p-4 border-t border-admin-border flex items-center justify-between bg-admin-surface">
+                                    <span className="text-xs text-admin-muted">
+                                        Showing {(communityPage - 1) * 20 + 1}–{Math.min(communityPage * 20, communityTotal)} of {communityTotal}
+                                    </span>
+                                    <div className="flex gap-2">
+                                        <button
+                                            disabled={communityPage <= 1}
+                                            onClick={() => setCommunityPage(p => p - 1)}
+                                            className="rounded border border-admin-border px-3 py-1 text-xs font-bold disabled:opacity-50 hover:bg-admin-border/20 transition-colors"
+                                        >
+                                            Prev
+                                        </button>
+                                        <button
+                                            disabled={communityPage * 20 >= communityTotal}
+                                            onClick={() => setCommunityPage(p => p + 1)}
+                                            className="rounded border border-admin-border px-3 py-1 text-xs font-bold disabled:opacity-50 hover:bg-admin-border/20 transition-colors"
+                                        >
+                                            Next
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    ) : activeTab === "futurelabs" ? (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm text-left min-w-[600px]">
+                                <thead className="bg-admin-surface text-admin-muted uppercase text-[10px] tracking-wider border-b border-admin-border">
+                                    <tr>
+                                        <th className="px-6 py-4 font-bold">Name</th>
+                                        <th className="px-6 py-4 font-bold">Email</th>
+                                        <th className="px-6 py-4 font-bold">Discipline</th>
+                                        <th className="px-6 py-4 font-bold">City</th>
+                                        <th className="px-6 py-4 font-bold">Date Applied</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-admin-border">
+                                    {futureLabsLoading ? (
+                                        <tr><td colSpan={5} className="px-6 py-8 text-center text-admin-muted">Loading...</td></tr>
+                                    ) : filteredFutureLabs.length === 0 ? (
+                                        <tr><td colSpan={5} className="px-6 py-8 text-center text-admin-muted">No applications found.</td></tr>
+                                    ) : (
+                                        filteredFutureLabs.map((app: any) => (
+                                            <tr 
+                                                key={app.id} 
+                                                onClick={() => setPanelData({ type: "futurelabs", data: app })}
+                                                className="hover:bg-admin-border/10 cursor-pointer transition-colors"
+                                            >
+                                                <td className="px-6 py-4 font-medium text-admin-primary">{app.name}</td>
+                                                <td className="px-6 py-4 text-admin-muted">{app.email}</td>
+                                                <td className="px-6 py-4">
+                                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-admin-accent/10 text-admin-accent">
+                                                        {app.category}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-admin-muted">{app.city}</td>
+                                                <td className="px-6 py-4 text-admin-muted">
+                                                    {new Date(app.createdAt).toLocaleDateString()}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : activeTab === "votes" ? (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm text-left min-w-[600px]">
+                                <thead className="bg-admin-surface text-admin-muted uppercase text-[10px] tracking-wider border-b border-admin-border">
+                                    <tr>
+                                        <th className="px-6 py-4 font-bold">Voter Email</th>
+                                        <th className="px-6 py-4 font-bold">Category</th>
+                                        <th className="px-6 py-4 font-bold">Voted For</th>
+                                        <th className="px-6 py-4 font-bold">Date Cast</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-admin-border">
+                                    {votesLoading ? (
+                                        <tr><td colSpan={4} className="px-6 py-8 text-center text-admin-muted">Loading...</td></tr>
+                                    ) : filteredVotes.length === 0 ? (
+                                        <tr><td colSpan={4} className="px-6 py-8 text-center text-admin-muted">No votes found.</td></tr>
+                                    ) : (
+                                        filteredVotes.map((vote: any) => (
+                                            <tr 
+                                                key={vote.id} 
+                                                className="hover:bg-admin-border/10 transition-colors"
+                                            >
+                                                <td className="px-6 py-4 font-medium text-admin-primary">{vote.email}</td>
+                                                <td className="px-6 py-4 text-xs font-mono uppercase text-[#c5a059]">{vote.category}</td>
+                                                <td className="px-6 py-4 font-bold text-admin-primary">{vote.nominee}</td>
+                                                <td className="px-6 py-4 text-admin-muted">
+                                                    {new Date(vote.created_at).toLocaleString()}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : activeTab === "questions" ? (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm text-left min-w-[600px]">
+                                <thead className="bg-admin-surface text-admin-muted uppercase text-[10px] tracking-wider border-b border-admin-border">
+                                    <tr>
+                                        <th className="px-6 py-4 font-bold">Name</th>
+                                        <th className="px-6 py-4 font-bold">Email</th>
+                                        <th className="px-6 py-4 font-bold">Panel Session</th>
+                                        <th className="px-6 py-4 font-bold">Question</th>
+                                        <th className="px-6 py-4 font-bold">Date Submitted</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-admin-border">
+                                    {panelQuestionsLoading ? (
+                                        <tr><td colSpan={5} className="px-6 py-8 text-center text-admin-muted">Loading...</td></tr>
+                                    ) : filteredQuestions.length === 0 ? (
+                                        <tr><td colSpan={5} className="px-6 py-8 text-center text-admin-muted">No questions found.</td></tr>
+                                    ) : (
+                                        filteredQuestions.map((q: any) => (
+                                            <tr 
+                                                key={q.id} 
+                                                className="hover:bg-admin-border/10 transition-colors"
+                                            >
+                                                <td className="px-6 py-4 font-medium text-admin-primary">{q.name}</td>
+                                                <td className="px-6 py-4 text-admin-muted">{q.email}</td>
+                                                <td className="px-6 py-4 text-xs text-[#c5a059] max-w-xs truncate">{q.session_id}</td>
+                                                <td className="px-6 py-4 font-light text-admin-primary max-w-sm break-words">{q.question}</td>
+                                                <td className="px-6 py-4 text-admin-muted">
+                                                    {new Date(q.created_at).toLocaleString()}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     ) : (
                         <div className="p-4">
                             <div className="mb-4 flex items-center gap-2">
@@ -419,6 +830,7 @@ export default function DashboardPage() {
                             <table className="w-full text-sm text-left min-w-[600px]">
                                 <thead className="bg-admin-surface text-admin-muted uppercase text-[10px] tracking-wider border-b border-admin-border">
                                     <tr>
+                                        <th className="px-6 py-4 font-bold">Email</th>
                                         <th className="px-6 py-4 font-bold">User ID</th>
                                         <th className="px-6 py-4 font-bold">Role</th>
                                         <th className="px-6 py-4 font-bold text-right">Actions</th>
@@ -426,13 +838,14 @@ export default function DashboardPage() {
                                 </thead>
                                 <tbody className="divide-y divide-admin-border">
                                     {adminsLoading ? (
-                                        <tr><td colSpan={3} className="px-6 py-8 text-center text-admin-muted">Loading...</td></tr>
+                                        <tr><td colSpan={4} className="px-6 py-8 text-center text-admin-muted">Loading...</td></tr>
                                     ) : admins.length === 0 ? (
-                                        <tr><td colSpan={3} className="px-6 py-8 text-center text-admin-muted">No admins found.</td></tr>
+                                        <tr><td colSpan={4} className="px-6 py-8 text-center text-admin-muted">No admins found.</td></tr>
                                     ) : (
                                         admins.map((admin) => (
                                             <tr key={admin.userId} className="hover:bg-admin-border/10 transition-colors">
-                                                <td className="px-6 py-4 font-medium text-admin-primary">{admin.userId}</td>
+                                                <td className="px-6 py-4 font-medium text-admin-primary">{admin.email || "Unknown"}</td>
+                                                <td className="px-6 py-4 font-mono text-xs text-admin-muted">{admin.userId}</td>
                                                 <td className="px-6 py-4">
                                                     <span className="px-2 py-1 bg-admin-info/10 text-admin-info rounded text-xs font-bold uppercase">
                                                         {admin.role}
@@ -440,7 +853,7 @@ export default function DashboardPage() {
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
                                                     <button 
-                                                        onClick={() => handleRemoveAdmin(admin.userId)}
+                                                        onClick={(e) => { e.stopPropagation(); handleRemoveAdmin(admin.userId); }}
                                                         className="text-red-500 hover:text-red-600 text-xs font-bold uppercase"
                                                     >
                                                         Remove
@@ -455,6 +868,63 @@ export default function DashboardPage() {
                     )}
                 </div>
             </div>
+
+            {/* Community Member Detail Modal */}
+            {selectedCommunityMember && (
+                <div
+                    className="fixed inset-0 z-[80] bg-black/60 flex items-center justify-center p-4 backdrop-blur-xs"
+                    onClick={() => setSelectedCommunityMember(null)}
+                >
+                    <div
+                        className="bg-white dark:bg-admin-surface border border-admin-border rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-start justify-between">
+                            <h2 className="text-lg font-bold text-admin-primary">Member Profile</h2>
+                            <button onClick={() => setSelectedCommunityMember(null)} className="text-admin-muted hover:text-admin-primary text-xl leading-none">&times;</button>
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                            {selectedCommunityMember.selfie_url ? (
+                                <img src={selectedCommunityMember.selfie_url} alt={selectedCommunityMember.name} className="w-20 h-20 rounded-full object-cover border-2 border-admin-accent/40" />
+                            ) : (
+                                <div className="w-20 h-20 rounded-full bg-admin-accent/20 border-2 border-admin-accent/30 flex items-center justify-center text-admin-accent font-bold text-2xl">
+                                    {selectedCommunityMember.name.charAt(0).toUpperCase()}
+                                </div>
+                            )}
+                            <div>
+                                <p className="text-lg font-bold text-admin-primary">{selectedCommunityMember.name}</p>
+                                <p className="text-sm text-admin-muted">{selectedCommunityMember.occupation} · {selectedCommunityMember.city}</p>
+                                <p className="text-xs text-admin-muted mt-1">Age {selectedCommunityMember.age} · {selectedCommunityMember.gender}</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2 text-sm">
+                            <div className="flex justify-between py-2 border-b border-admin-border">
+                                <span className="text-admin-muted text-xs font-mono uppercase">Email</span>
+                                <span className="text-admin-primary">{selectedCommunityMember.email}</span>
+                            </div>
+                            <div className="flex justify-between py-2 border-b border-admin-border">
+                                <span className="text-admin-muted text-xs font-mono uppercase">City</span>
+                                <span className="text-admin-primary">{selectedCommunityMember.city}</span>
+                            </div>
+                            <div className="flex justify-between py-2 border-b border-admin-border">
+                                <span className="text-admin-muted text-xs font-mono uppercase">Joined</span>
+                                <span className="text-admin-primary">{formatDate(selectedCommunityMember.created_at)}</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p className="text-xs font-mono uppercase text-admin-muted mb-2">Interests</p>
+                            <div className="flex flex-wrap gap-1.5">
+                                {(selectedCommunityMember.interests || []).map(i => (
+                                    <span key={i} className="px-2 py-1 rounded-full text-[10px] bg-admin-accent/15 text-admin-accent font-mono">{i}</span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

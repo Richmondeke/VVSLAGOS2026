@@ -8,6 +8,7 @@ type RequestOptions = {
 
 let accessToken: string | null = null;
 let adminUserId: string | null = null;
+let adminEmail: string | null = null;
 
 export function setAccessToken(token: string | null) {
     accessToken = token;
@@ -15,6 +16,10 @@ export function setAccessToken(token: string | null) {
 
 export function setAdminUserId(id: string | null) {
     adminUserId = id;
+}
+
+export function setAdminEmail(email: string | null) {
+    adminEmail = email;
 }
 
 export function getAdminUserId(): string | null {
@@ -57,6 +62,10 @@ export async function apiClient<T = unknown>(
 
     if (adminUserId) {
         reqHeaders["x-admin-user-id"] = adminUserId;
+    }
+
+    if (adminEmail) {
+        reqHeaders["x-admin-email"] = adminEmail;
     }
 
     let res = await fetch(`${API_BASE}${path}`, {

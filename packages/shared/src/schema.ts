@@ -133,3 +133,30 @@ export const contentOpportunities = pgTable(
     ]
 );
 
+
+export const communityMembers = pgTable("community_members", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: text("name").notNull(),
+    age: integer("age").notNull(),
+    email: text("email").notNull(),
+    occupation: text("occupation").notNull(),
+    city: text("city").notNull(),
+    gender: text("gender").notNull(),
+    interests: text("interests").array(),
+    selfieUrl: text("selfie_url"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const futureLabsApplications = pgTable("future_labs_applications", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
+    phone: text("phone").notNull(),
+    gender: text("gender").notNull(),
+    city: text("city").notNull(),
+    category: text("category").notNull(),
+    portfolioUrl: text("portfolio_url"),
+    statement: text("statement").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+

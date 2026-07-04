@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 export type PanelData = {
-    type: "rsvp" | "member";
+    type: "rsvp" | "member" | "futurelabs";
     data: any;
 };
 
@@ -40,7 +40,7 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-admin-border px-6 py-4 bg-admin-surface/80 backdrop-blur">
                     <h2 className="text-lg font-bold text-admin-primary tracking-tight">
-                        {type === "rsvp" ? "RSVP Details" : "Member Details"}
+                        {type === "rsvp" ? "RSVP Details" : type === "futurelabs" ? "Future Labs Application" : "Member Details"}
                     </h2>
                     <button 
                         onClick={onClose}
@@ -71,6 +71,11 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                                         data.attendance === "Going" ? "bg-green-100 text-green-800" : "bg-admin-info/10 text-admin-info"
                                     }`}>
                                         {data.attendance || "Unknown"}
+                                    </span>
+                                )}
+                                {type === "futurelabs" && (
+                                    <span className="mt-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-admin-accent/10 text-admin-accent">
+                                        {data.category || "Unknown Category"}
                                     </span>
                                 )}
                                 {type === "member" && (
@@ -145,6 +150,68 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                                     </div>
                                 </div>
                             )}
+
+                            {/* Additional Info for Future Labs Application */}
+                            {type === "futurelabs" && (
+                                <div className="space-y-6">
+                                    <div className="bg-white dark:bg-white/5 border border-admin-border rounded-xl p-4 shadow-sm">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-admin-muted mb-4">Contact & Profile</h4>
+                                        <div className="space-y-3">
+                                            {data.phone && (
+                                                <div>
+                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Phone</div>
+                                                    <div className="text-sm font-medium text-admin-primary">{data.phone}</div>
+                                                </div>
+                                            )}
+                                            {data.gender && (
+                                                <div>
+                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Gender</div>
+                                                    <div className="text-sm font-medium text-admin-primary">{data.gender}</div>
+                                                </div>
+                                            )}
+                                            {data.city && (
+                                                <div>
+                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">City & Country</div>
+                                                    <div className="text-sm font-medium text-admin-primary">{data.city}</div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white dark:bg-white/5 border border-admin-border rounded-xl p-4 shadow-sm">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-admin-muted mb-4">Project & Vision</h4>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Portfolio / Website Link</div>
+                                                {data.portfolio_url ? (
+                                                    <a 
+                                                        href={data.portfolio_url} 
+                                                        target="_blank" 
+                                                        rel="noopener noreferrer" 
+                                                        className="text-sm font-medium text-admin-accent hover:underline break-all"
+                                                    >
+                                                        {data.portfolio_url}
+                                                    </a>
+                                                ) : (
+                                                    <div className="text-sm text-admin-muted italic">No portfolio link provided.</div>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Statement of Intent</div>
+                                                <div className="text-sm font-light text-admin-primary leading-relaxed whitespace-pre-wrap mt-1">
+                                                    {data.statement}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Submitted On</div>
+                                                <div className="text-xs font-mono text-admin-muted mt-0.5">
+                                                    {new Date(data.created_at).toLocaleString()}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                             {type === "rsvp" && (
                                 <div className="bg-white dark:bg-white/5 border border-admin-border rounded-xl p-4 shadow-sm">
                                     <h4 className="text-xs font-bold uppercase tracking-wider text-admin-muted mb-4">Event Details</h4>
@@ -152,19 +219,19 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                                         <div>
                                             <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">Referred By</div>
                                             <div className="text-sm font-medium text-admin-primary">
-                                                {data.referred_by_admin ? (
+                                                {data.referredByAdmin ? (
                                                     <span className="px-2 py-1 bg-admin-accent/10 text-admin-accent rounded-md text-xs font-medium">
-                                                        {data.referred_by_admin}
+                                                        {data.referredByAdmin}
                                                     </span>
                                                 ) : (
                                                     <span className="italic text-gray-400">Organic (No Referrer)</span>
                                                 )}
                                             </div>
                                         </div>
-                                        {data.heard_about && (
+                                        {data.heardAbout && (
                                             <div>
                                                 <div className="text-[10px] uppercase tracking-wider text-gray-400 mb-0.5">How They Heard About VVS</div>
-                                                <div className="text-sm font-medium text-admin-primary">{data.heard_about}</div>
+                                                <div className="text-sm font-medium text-admin-primary">{data.heardAbout}</div>
                                             </div>
                                         )}
                                         <div>

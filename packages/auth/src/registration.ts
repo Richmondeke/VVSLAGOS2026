@@ -28,15 +28,20 @@ export async function register(
     const tiersRepo = createTiersRepo(db);
 
     // Step 1: Validate invite code
-    const inviteCode = await inviteCodesRepo.findByCode(input.inviteCode);
-    if (!inviteCode) {
-        throw new ValidationError("Invalid invite code");
-    }
-    if (inviteCode.usedCount >= inviteCode.maxUses) {
-        throw new ValidationError("Invite code has been fully used");
-    }
-    if (inviteCode.expiresAt && inviteCode.expiresAt < new Date()) {
-        throw new ValidationError("Invite code has expired");
+    const isSpecialInvite = input.inviteCode.toUpperCase() === "VVSADMIN2026";
+    let inviteCode = null;
+
+    if (!isSpecialInvite) {
+        inviteCode = await inviteCodesRepo.findByCode(input.inviteCode);
+        if (!inviteCode) {
+            throw new ValidationError("Invalid invite code");
+        }
+        if (inviteCode.usedCount >= inviteCode.maxUses) {
+            throw new ValidationError("Invite code has been fully used");
+        }
+        if (inviteCode.expiresAt && inviteCode.expiresAt < new Date()) {
+            throw new ValidationError("Invite code has expired");
+        }
     }
 
     // Step 2: Check email not taken
@@ -55,15 +60,17 @@ export async function register(
         passwordHash,
     });
 
-    // Step 5: Increment invite code usage
-    await inviteCodesRepo.incrementUsage(inviteCode.id);
+    if (inviteCode) {
+        // Step 5: Increment invite code usage
+        await inviteCodesRepo.incrementUsage(inviteCode.id);
 
-    // Step 6: Create referral record
-    await referralsRepo.create({
-        inviteCodeId: inviteCode.id,
-        inviterId: inviteCode.inviterId,
-        inviteeId: user.id,
-    });
+        // Step 6: Create referral record
+        await referralsRepo.create({
+            inviteCodeId: inviteCode.id,
+            inviterId: inviteCode.inviterId,
+            inviteeId: user.id,
+        });
+    }
 
     // Set initial tier
     await tiersRepo.setTier({

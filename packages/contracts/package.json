@@ -4,15 +4,42 @@
     "private": true,
     "type": "module",
     "exports": {
-        ".": "./src/index.ts",
-        "./common": "./src/common.ts",
-        "./auth": "./src/auth.ts",
-        "./finance": "./src/finance.ts",
-        "./members": "./src/members.ts",
-        "./marketplace": "./src/marketplace.ts",
-        "./social": "./src/social.ts",
-        "./platform": "./src/platform.ts",
-        "./events": "./src/events.ts"
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        },
+        "./common": {
+            "types": "./dist/common.d.ts",
+            "default": "./dist/common.js"
+        },
+        "./auth": {
+            "types": "./dist/auth.d.ts",
+            "default": "./dist/auth.js"
+        },
+        "./finance": {
+            "types": "./dist/finance.d.ts",
+            "default": "./dist/finance.js"
+        },
+        "./members": {
+            "types": "./dist/members.d.ts",
+            "default": "./dist/members.js"
+        },
+        "./marketplace": {
+            "types": "./dist/marketplace.d.ts",
+            "default": "./dist/marketplace.js"
+        },
+        "./social": {
+            "types": "./dist/social.d.ts",
+            "default": "./dist/social.js"
+        },
+        "./platform": {
+            "types": "./dist/platform.d.ts",
+            "default": "./dist/platform.js"
+        },
+        "./events": {
+            "types": "./dist/events.d.ts",
+            "default": "./dist/events.js"
+        }
     },
     "scripts": {
         "build": "tsc",

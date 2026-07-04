@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
-import { type AppError, createScopedClient, getLogger, mapErrorToHttp, withCorrelationId } from "@vvs/shared";
+import { type AppError, createScopedClient, getLogger, mapErrorToHttp, withCorrelationId, rsvps, sql } from "@vvs/shared";
 import { authRoutes } from "@vvs/auth";
 import { membersRoutes, createMockS3Adapter } from "@vvs/members";
 import { marketplaceRoutes } from "@vvs/marketplace";
@@ -91,13 +91,84 @@ export async function buildApp() {
         reply.status(statusCode).send(body);
     });
 
+    // Domain routes
+    const DB_URL = process.env.DATABASE_URL ?? "postgres://vvs:vvs_dev_password@127.0.0.1:5433/vvs_dev";
+
     // Health check
     app.get("/health", async () => {
         return { status: "ok", timestamp: new Date().toISOString() };
     });
 
-    // Domain routes
-    const DB_URL = process.env.DATABASE_URL ?? "postgres://vvs:vvs_dev_password@127.0.0.1:5433/vvs_dev";
+    app.get("/health/db", async () => {
+        try {
+            // Safe parse DB URL
+            const url = DB_URL.replace(/[\r\n]/g, "").trim();
+            const parsed = new URL(url);
+            return {
+                status: "ok",
+                host: parsed.host,
+                username: parsed.username,
+                database: parsed.pathname,
+                protocol: parsed.protocol
+            };
+        } catch (err: any) {
+            return {
+                status: "error",
+                message: err.message,
+                dbUrlLength: DB_URL?.length ?? 0
+            };
+        }
+    });
+
+    app.get("/health/rsvps", async () => {
+        try {
+            const allRows = await publicDb.select().from(rsvps);
+            return {
+                status: "ok",
+                count: allRows.length,
+                sample: allRows.slice(0, 3)
+            };
+        } catch (err: any) {
+            return {
+                status: "error",
+                message: err.message
+            };
+        }
+    });
+
+
+    // Debug endpoint to test admin auth flow
+    app.get("/health/admin-check", async (request) => {
+        const results: Record<string, any> = {};
+        const email = (request.headers["x-admin-email"] as string) || "test@example.com";
+        const userId = request.headers["x-admin-user-id"] as string;
+
+        results.receivedHeaders = { userId, email };
+
+        // Step 1: Check if auth.users table has this email
+        try {
+            const authDb = createScopedClient("auth", DB_URL);
+            const usersRepo = (await import("@vvs/auth")).createUsersRepo(authDb);
+            const user = await usersRepo.findByEmail(email);
+            results.authUser = user ? { id: user.id, email: user.email, status: user.status } : null;
+        } catch (err: any) {
+            results.authUserError = err.message;
+        }
+
+        // Step 2: Check platform.admin_users table
+        try {
+            const platformDb = createScopedClient("platform", DB_URL);
+            const { createAdminRepo } = await import("@vvs/platform");
+            const adminRepo = createAdminRepo(platformDb);
+            const admins = await adminRepo.listAdmins();
+            results.adminUsers = admins.map((a: any) => ({ id: a.id, userId: a.userId, role: a.role, isActive: a.isActive }));
+            results.adminCount = admins.length;
+        } catch (err: any) {
+            results.adminUsersError = err.message;
+        }
+
+        return results;
+    });
 
     // Auth routes
     const authDb = createScopedClient("auth", DB_URL);
@@ -152,8 +223,10 @@ export async function buildApp() {
     const platformDb = createScopedClient("platform", DB_URL);
     await app.register(platformRoutes, { db: platformDb });
 
+    const publicDb = createScopedClient("public", DB_URL);
+
     // Admin API routes (cross-domain queries for admin dashboard)
-    await app.register(adminApiRoutes, { authDb, marketplaceDb, platformDb });
+    await app.register(adminApiRoutes, { authDb, marketplaceDb, platformDb, publicDb });
 
     // Public CMS routes
     await app.register(contentRoutes, { db: platformDb });

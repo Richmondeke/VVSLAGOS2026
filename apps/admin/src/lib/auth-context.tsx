@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
-import { apiClient, setAccessToken, setAdminUserId, ApiError } from "./api-client";
+import { apiClient, setAccessToken, setAdminUserId, setAdminEmail, ApiError } from "./api-client";
 
 type AdminUser = {
     id: string;
@@ -32,6 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 });
                 setAccessToken(data.accessToken);
                 setAdminUserId(data.user.id);
+                setAdminEmail(data.user.email);
                 setUser(data.user);
                 document.cookie = "vvs_admin_logged_in=1; path=/; max-age=2592000";
             } catch (err) {
@@ -40,6 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 if (mockSession) {
                     const parsed = JSON.parse(mockSession);
                     setAdminUserId(parsed.id);
+                    setAdminEmail(parsed.email);
                     setUser(parsed);
                     document.cookie = "vvs_admin_logged_in=1; path=/; max-age=2592000";
                 } else {
@@ -61,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             });
             setAccessToken(data.accessToken);
             setAdminUserId(data.user.id);
+            setAdminEmail(data.user.email);
             setUser(data.user);
             document.cookie = "vvs_admin_logged_in=1; path=/; max-age=2592000";
         } catch (err) {
@@ -73,6 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 role: "admin",
             };
             setAdminUserId(mockUser.id);
+            setAdminEmail(mockUser.email);
             setUser(mockUser);
             document.cookie = "vvs_admin_logged_in=1; path=/; max-age=2592000";
             localStorage.setItem("mock_admin_session", JSON.stringify(mockUser));
@@ -111,6 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         setAccessToken(null);
         setAdminUserId(null);
+        setAdminEmail(null);
         setUser(null);
         document.cookie = "vvs_admin_logged_in=; path=/; max-age=0";
         localStorage.removeItem("mock_admin_session");

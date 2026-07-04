@@ -5,25 +5,27 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Image from "next/image";
 
+import { 
+    LayoutGrid, 
+    Calendar, 
+    Users, 
+    FileText, 
+    Briefcase 
+} from "lucide-react";
+
 const NAV_ITEMS = [
     { href: "/", label: "Dashboard", icon: "grid" },
     { href: "/events", label: "Events", icon: "calendar" },
-    { href: "/community", label: "Community", icon: "users" },
     { href: "/news", label: "News", icon: "fileText" },
     { href: "/opportunities", label: "Opportunities", icon: "briefcase" },
 ];
 
-const ICONS: Record<string, string> = {
-    grid: "\u25A6",
-    inbox: "\u2709", // envelope/inbox
-    users: "\u25CF", // filled circle for users/community
-    package: "\u25A3",
-    "alert-triangle": "\u26A0",
-    wallet: "\u2B1A",
-    cog: "\u2699",
-    calendar: "\u2637", // simplified calendar icon
-    fileText: "\u2636", // document icon
-    briefcase: "\u26C2", // simplified briefcase icon
+const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+    grid: LayoutGrid,
+    calendar: Calendar,
+    users: Users,
+    fileText: FileText,
+    briefcase: Briefcase,
 };
 
 export function Sidebar({ 
@@ -70,6 +72,8 @@ export function Sidebar({
                         ? pathname === "/"
                         : pathname.startsWith(item.href);
 
+                    const IconComponent = ICONS[item.icon];
+
                     return (
                         <Link
                             key={item.href}
@@ -81,7 +85,7 @@ export function Sidebar({
                                     : "text-gray-600 hover:bg-gray-100"
                             }`}
                         >
-                            <span className="text-base">{ICONS[item.icon]}</span>
+                            {IconComponent && <IconComponent className={`w-4 h-4 flex-shrink-0 ${isActive ? "text-admin-accent" : "text-gray-500"}`} />}
                             {item.label}
                         </Link>
                     );

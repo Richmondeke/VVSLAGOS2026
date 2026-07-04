@@ -4,7 +4,7 @@
 export { createScopedClient, closeAllConnections } from "./db/client.js";
 export type { ScopedClient } from "./db/client.js";
 export { runMigrations } from "./db/migration-runner.js";
-export { outboxSchema, events, deadLetters, consumerOffsets, contentEvents, contentNews, contentOpportunities, rsvps } from "./schema.js";
+export { outboxSchema, events, deadLetters, consumerOffsets, contentEvents, contentNews, contentOpportunities, rsvps, communityMembers, futureLabsApplications } from "./schema.js";
 export { eq, desc, and, or, sql } from "drizzle-orm";
 
 // Events

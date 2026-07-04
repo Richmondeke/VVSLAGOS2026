@@ -1,0 +1,16 @@
+{
+  "projectId": "prj_Wdd7V9lVBafxFNROTIpzpkAAjvJv",
+  "orgId": "team_nmGgMXTxr4xZTWjE9yF98aYG",
+  "projectName": "vvs-admin",
+  "settings": {
+    "createdAt": 1781408628038,
+    "framework": "nextjs",
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": null,
+    "outputDirectory": null,
+    "rootDirectory": "apps/admin",
+    "directoryListing": false,
+    "nodeVersion": "24.x"
+  }
+}

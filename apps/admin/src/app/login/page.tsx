@@ -22,8 +22,50 @@ export default function LoginPage() {
 
                 {/* Container Card */}
                 <div className="relative w-full max-w-md bg-[#090A0D]/90 rounded-3xl p-8 md:p-10 border border-white/5 shadow-[0_24px_80px_rgba(0,0,0,0.8)] backdrop-blur-xl overflow-hidden z-10">
+                    <style>{`
+                        @keyframes glitch {
+                            0% { transform: translate(0); clip-path: inset(0 0 0 0); }
+                            5% { transform: translate(-3px, -2px) skewX(4deg); clip-path: inset(12% 0 25% 0); }
+                            10% { transform: translate(2px, 3px) skewX(-4deg); clip-path: inset(35% 0 15% 0); }
+                            15% { transform: translate(-2px, 1px); clip-path: inset(5% 0 75% 0); }
+                            20% { transform: translate(3px, -2px) skewX(2deg); clip-path: inset(55% 0 8% 0); }
+                            25% { transform: translate(0); clip-path: inset(0 0 0 0); }
+                            100% { transform: translate(0); clip-path: inset(0 0 0 0); }
+                        }
+                        @keyframes rgb-split-left {
+                            0%, 100% { transform: translate(0); opacity: 0; }
+                            8% { transform: translate(-4px, 2px); opacity: 0.7; }
+                            12% { transform: translate(3px, -1px); opacity: 0.5; }
+                            18% { transform: translate(-2px, 3px); opacity: 0.8; }
+                            22% { transform: translate(0); opacity: 0; }
+                        }
+                        @keyframes rgb-split-right {
+                            0%, 100% { transform: translate(0); opacity: 0; }
+                            5% { transform: translate(4px, -3px); opacity: 0.6; }
+                            14% { transform: translate(-3px, 2px); opacity: 0.8; }
+                            20% { transform: translate(2px, -2px); opacity: 0.5; }
+                            24% { transform: translate(0); opacity: 0; }
+                        }
+                        .glitch-img {
+                            animation: glitch 4s infinite steps(2, start) alternate;
+                        }
+                        .glitch-split-cyan {
+                            animation: rgb-split-left 4s infinite steps(2, start) alternate;
+                            filter: hue-rotate(180deg) saturate(3);
+                        }
+                        .glitch-split-magenta {
+                            animation: rgb-split-right 4s infinite steps(2, start) alternate;
+                            filter: hue-rotate(300deg) saturate(3);
+                        }
+                    `}</style>
+                    
                     <div className="mb-6 text-center flex flex-col items-center justify-center relative z-10">
-                        <h1 className="text-2xl font-bold tracking-widest text-admin-accent uppercase">VVS Admin</h1>
+                        <div className="relative w-16 h-16 flex items-center justify-center group cursor-pointer mb-3">
+                            <img src="https://vvslagos.com/assets/VVSWhiteMAsk.png" alt="" className="absolute w-14 h-14 object-contain glitch-split-cyan opacity-40 group-hover:opacity-75 transition-opacity" />
+                            <img src="https://vvslagos.com/assets/VVSWhiteMAsk.png" alt="" className="absolute w-14 h-14 object-contain glitch-split-magenta opacity-40 group-hover:opacity-75 transition-opacity" />
+                            <img src="https://vvslagos.com/assets/VVSWhiteMAsk.png" alt="VVS Mask Logo" className="w-14 h-14 object-contain glitch-img group-hover:scale-110 transition-transform duration-300" />
+                        </div>
+                        <h1 className="text-xl font-bold tracking-[0.2em] text-[#c5a059] uppercase">VVS Admin</h1>
                     </div>
 
                     <div className="relative z-10">

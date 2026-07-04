@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { apiClient, ApiError } from "@/lib/api-client";
@@ -69,6 +69,7 @@ export default function DashboardPage() {
     // Votes Data
     const [votes, setVotes] = useState<any[]>([]);
     const [votesLoading, setVotesLoading] = useState(false);
+    const [votesSubTab, setVotesSubTab] = useState<"ballots" | "leaderboard">("ballots");
 
     // Panel Questions Data
     const [panelQuestions, setPanelQuestions] = useState<any[]>([]);
@@ -313,12 +314,64 @@ export default function DashboardPage() {
         (app.category?.toLowerCase() || "").includes(searchQuery.toLowerCase())
     );
 
-    // Filter Votes locally
-    const filteredVotes = votes.filter(v => 
-        (v.email?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
-        (v.category?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
-        (v.nominee?.toLowerCase() || "").includes(searchQuery.toLowerCase())
-    );
+    // Group all votes by email first
+    const groupedVotes = useMemo(() => {
+        const groups: Record<string, { email: string; votesList: { category: string; nominee: string; created_at: string }[]; lastVoteDate: string }> = {};
+        votes.forEach(v => {
+            if (!v.email) return;
+            if (!groups[v.email]) {
+                groups[v.email] = {
+                    email: v.email,
+                    votesList: [],
+                    lastVoteDate: v.created_at || new Date().toISOString()
+                };
+            }
+            groups[v.email].votesList.push({
+                category: v.category || "General",
+                nominee: v.nominee || "Unknown",
+                created_at: v.created_at || new Date().toISOString()
+            });
+            if (v.created_at && new Date(v.created_at) > new Date(groups[v.email].lastVoteDate)) {
+                groups[v.email].lastVoteDate = v.created_at;
+            }
+        });
+        return Object.values(groups);
+    }, [votes]);
+
+    // Filter grouped votes locally
+    const filteredGroupedVotes = useMemo(() => {
+        return groupedVotes.filter(g => 
+            (g.email?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+            g.votesList.some(v => 
+                (v.category?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
+                (v.nominee?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+            )
+        );
+    }, [groupedVotes, searchQuery]);
+
+    // Compute Leaderboard
+    const leaderboardData = useMemo(() => {
+        const categories: Record<string, Record<string, number>> = {};
+        votes.forEach(v => {
+            const cat = v.category || "General";
+            if (!categories[cat]) {
+                categories[cat] = {};
+            }
+            if (v.nominee) {
+                categories[cat][v.nominee] = (categories[cat][v.nominee] || 0) + 1;
+            }
+        });
+
+        const sortedLeaderboard: Record<string, { nominee: string; count: number }[]> = {};
+        Object.keys(categories).forEach(cat => {
+            sortedLeaderboard[cat] = Object.keys(categories[cat]).map(nominee => ({
+                nominee,
+                count: categories[cat][nominee]
+            })).sort((a, b) => b.count - a.count);
+        });
+
+        return sortedLeaderboard;
+    }, [votes]);
 
     // Filter Panel Questions locally
     const filteredQuestions = panelQuestions.filter(q => 
@@ -733,38 +786,108 @@ export default function DashboardPage() {
                             </table>
                         </div>
                     ) : activeTab === "votes" ? (
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left min-w-[600px]">
-                                <thead className="bg-admin-surface text-admin-muted uppercase text-[10px] tracking-wider border-b border-admin-border">
-                                    <tr>
-                                        <th className="px-6 py-4 font-bold">Voter Email</th>
-                                        <th className="px-6 py-4 font-bold">Category</th>
-                                        <th className="px-6 py-4 font-bold">Voted For</th>
-                                        <th className="px-6 py-4 font-bold">Date Cast</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-admin-border">
-                                    {votesLoading ? (
-                                        <tr><td colSpan={4} className="px-6 py-8 text-center text-admin-muted">Loading...</td></tr>
-                                    ) : filteredVotes.length === 0 ? (
-                                        <tr><td colSpan={4} className="px-6 py-8 text-center text-admin-muted">No votes found.</td></tr>
-                                    ) : (
-                                        filteredVotes.map((vote: any) => (
-                                            <tr 
-                                                key={vote.id} 
-                                                className="hover:bg-admin-border/10 transition-colors"
-                                            >
-                                                <td className="px-6 py-4 font-medium text-admin-primary">{vote.email}</td>
-                                                <td className="px-6 py-4 text-xs font-mono uppercase text-[#c5a059]">{vote.category}</td>
-                                                <td className="px-6 py-4 font-bold text-admin-primary">{vote.nominee}</td>
-                                                <td className="px-6 py-4 text-admin-muted">
-                                                    {new Date(vote.created_at).toLocaleString()}
-                                                </td>
+                        <div>
+                            {/* Votes Sub-Tabs */}
+                            <div className="px-6 py-4 border-b border-admin-border bg-admin-surface/30 flex gap-4">
+                                <button
+                                    onClick={() => setVotesSubTab("ballots")}
+                                    className={`text-xs font-bold uppercase tracking-wider pb-1 border-b-2 transition-all ${
+                                        votesSubTab === "ballots"
+                                            ? "border-admin-accent text-admin-primary"
+                                            : "border-transparent text-admin-muted hover:text-admin-primary"
+                                    }`}
+                                >
+                                    Ballots ({filteredGroupedVotes.length} Voters)
+                                </button>
+                                <button
+                                    onClick={() => setVotesSubTab("leaderboard")}
+                                    className={`text-xs font-bold uppercase tracking-wider pb-1 border-b-2 transition-all ${
+                                        votesSubTab === "leaderboard"
+                                            ? "border-admin-accent text-admin-primary"
+                                            : "border-transparent text-admin-muted hover:text-admin-primary"
+                                    }`}
+                                >
+                                    Leaderboard / Tally
+                                </button>
+                            </div>
+
+                            {votesSubTab === "ballots" ? (
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm text-left min-w-[600px]">
+                                        <thead className="bg-admin-surface text-admin-muted uppercase text-[10px] tracking-wider border-b border-admin-border">
+                                            <tr>
+                                                <th className="px-6 py-4 font-bold">Voter Email</th>
+                                                <th className="px-6 py-4 font-bold">Categories Voted</th>
+                                                <th className="px-6 py-4 font-bold">Votes Summary</th>
+                                                <th className="px-6 py-4 font-bold">Last Vote Date</th>
                                             </tr>
-                                        ))
+                                        </thead>
+                                        <tbody className="divide-y divide-admin-border">
+                                            {votesLoading ? (
+                                                <tr><td colSpan={4} className="px-6 py-8 text-center text-admin-muted">Loading...</td></tr>
+                                            ) : filteredGroupedVotes.length === 0 ? (
+                                                <tr><td colSpan={4} className="px-6 py-8 text-center text-admin-muted">No votes found.</td></tr>
+                                            ) : (
+                                                filteredGroupedVotes.map((voter: any, idx: number) => (
+                                                    <tr 
+                                                        key={idx} 
+                                                        onClick={() => setPanelData({ type: "votes", data: voter })}
+                                                        className="hover:bg-admin-border/10 cursor-pointer transition-colors"
+                                                    >
+                                                        <td className="px-6 py-4 font-medium text-admin-primary">{voter.email}</td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex flex-wrap gap-1">
+                                                                {voter.votesList.map((v: any, i: number) => (
+                                                                    <span key={i} className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-admin-accent/10 text-admin-accent border border-admin-accent/20">
+                                                                        {v.category}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-xs font-semibold text-admin-muted max-w-xs truncate">
+                                                            {voter.votesList.map((v: any) => v.nominee).join(", ")}
+                                                        </td>
+                                                        <td className="px-6 py-4 text-admin-muted">
+                                                            {new Date(voter.lastVoteDate).toLocaleString()}
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <div className="p-6">
+                                    {Object.keys(leaderboardData).length === 0 ? (
+                                        <div className="text-center py-8 text-admin-muted">No vote tally data available yet.</div>
+                                    ) : (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            {Object.keys(leaderboardData).map((catName) => (
+                                                <div key={catName} className="bg-admin-surface/40 border border-admin-border rounded-xl p-5 shadow-sm">
+                                                    <span className="text-[#c5a059] text-[10px] font-mono tracking-widest font-bold uppercase block mb-3">
+                                                        {catName}
+                                                    </span>
+                                                    <div className="space-y-3">
+                                                        {leaderboardData[catName].map((item, idx) => (
+                                                            <div key={idx} className="flex justify-between items-center pb-2 border-b border-admin-border/50 last:border-b-0 last:pb-0">
+                                                                <div className="flex items-center gap-3">
+                                                                    <span className="w-5.5 h-5.5 rounded-full bg-admin-border/40 text-admin-primary flex items-center justify-center text-[10px] font-mono font-bold">
+                                                                        {idx + 1}
+                                                                    </span>
+                                                                    <span className="text-sm text-admin-primary font-medium">{item.nominee}</span>
+                                                                </div>
+                                                                <span className="px-2.5 py-1 bg-admin-accent/10 text-admin-accent font-mono text-xs font-bold rounded-full">
+                                                                    {item.count} {item.count === 1 ? "vote" : "votes"}
+                                                                </span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
                                     )}
-                                </tbody>
-                            </table>
+                                </div>
+                            )}
                         </div>
                     ) : activeTab === "questions" ? (
                         <div className="overflow-x-auto">

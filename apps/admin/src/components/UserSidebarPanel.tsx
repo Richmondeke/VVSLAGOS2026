@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 export type PanelData = {
-    type: "rsvp" | "member" | "futurelabs";
+    type: "rsvp" | "member" | "futurelabs" | "votes";
     data: any;
 };
 
@@ -40,7 +40,7 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-admin-border px-6 py-4 bg-admin-surface/80 backdrop-blur">
                     <h2 className="text-lg font-bold text-admin-primary tracking-tight">
-                        {type === "rsvp" ? "RSVP Details" : type === "futurelabs" ? "Future Labs Application" : "Member Details"}
+                        {type === "rsvp" ? "RSVP Details" : type === "futurelabs" ? "Future Labs Application" : type === "votes" ? "Voter Ballot Details" : "Member Details"}
                     </h2>
                     <button 
                         onClick={onClose}
@@ -273,6 +273,21 @@ export function UserSidebarPanel({ isOpen, onClose, panelData }: UserSidebarPane
                                                 (Order history integration pending)
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                            )}
+                            {/* Additional Info for Votes */}
+                            {type === "votes" && (
+                                <div className="bg-white dark:bg-white/5 border border-admin-border rounded-xl p-4 shadow-sm">
+                                    <h4 className="text-xs font-bold uppercase tracking-wider text-admin-muted mb-4">Cast Ballots</h4>
+                                    <div className="space-y-4">
+                                        {Array.isArray(data.votesList) && data.votesList.map((v: any, idx: number) => (
+                                            <div key={idx} className="pb-3 border-b border-admin-border last:border-b-0 last:pb-0">
+                                                <div className="text-[10px] font-mono uppercase tracking-wider text-[#c5a059] mb-0.5">{v.category}</div>
+                                                <div className="text-sm font-extrabold text-admin-primary">{v.nominee}</div>
+                                                <div className="text-[10px] text-admin-muted mt-0.5">Cast: {new Date(v.created_at).toLocaleString()}</div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             )}

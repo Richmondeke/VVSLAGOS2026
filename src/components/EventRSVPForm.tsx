@@ -21,13 +21,15 @@ interface EventRSVPFormProps {
 type FormPhase = "rsvp" | "submitting" | "success" | "community" | "community_submitting" | "community_done";
 
 const EVENT_OPTIONS = [
-    { value: "JULY 5", label: "July 5 — Opening Gala" },
-    { value: "JULY 6", label: "July 6 — Panel Sessions" },
     { value: "JULY 6_FOUNDERS", label: "July 6 — VVS Founders Reception (Invite Only — contact admin for invite)", disabled: true },
-    { value: "JULY 7", label: "July 7 — Collectors Day" },
-    { value: "JULY 8-11", label: "July 8-11 — Pop Up Exhibition" },
-    { value: "JULY 11", label: "July 11 — Film Experience" },
-    { value: "JULY 12", label: "July 12 — Runway & Afterparty" },
+    { value: "JULY 7-11", label: "July 7-11 — VVS Lagos Pop Up @ Mikano VI" },
+    { value: "JULY 8-12", label: "July 8-12 — VVS Art Exhibition @ Blank Space VI" },
+    { value: "JULY 9_ART", label: "July 9 — Future Labs Art Exhibition @ Yenwa Gallery" },
+    { value: "JULY 9_ALBUM", label: "July 9 — VVS Album Release Party @ Octo Lagos" },
+    { value: "JULY 10", label: "July 10 — Future Labs Fashion Exhibition @ British Council" },
+    { value: "JULY 11_FILM", label: "July 11 — VVS Film Experience with AFRIFF" },
+    { value: "JULY 11_FASHION", label: "July 11 — VVS Fashion Night Out @ Fomo Lagos" },
+    { value: "JULY 12", label: "July 12 — VVS Runway Show @ 234 Adeola Odeku" },
 ];
 
 const COUNTRY_CODES = [

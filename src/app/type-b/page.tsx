@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sun, Moon, ChevronLeft, ChevronRight, Calendar, Clock, MapPin, Check, Send, Play } from "lucide-react";
 import { triggerHaptic } from "@/utils/haptic";
 import { supabase } from "@/lib/supabase";
+import PastPartners from "@/components/sections/PastPartners";
 
 const AWARDS_TEASER_DATA = [
   {
@@ -33,7 +34,7 @@ const AWARDS_TEASER_DATA = [
     folder: "VISIONARY LEADERSHIP AWARD",
     nominees: [
       "Akarachi Amadi .webp",
-      "Chioma Ude  .jpg",
+      "Chioma Ude.webp",
       "Juliet Olanipekun  .jpg"
     ]
   },
@@ -1047,8 +1048,8 @@ export default function TypeBLandingPage() {
                 >
                     <span className="text-[#c5a059] text-xs font-mono font-bold tracking-[0.4em] uppercase block mb-2">VVS Awards 2026</span>
                     <h2 className="text-3xl sm:text-5xl font-extrabold uppercase tracking-tight mb-4">HONORING EXCELLENCE</h2>
-                    <p className={`text-sm max-w-lg mx-auto mb-12 ${theme === "dark" ? "text-white/50" : "text-black/50"}`}>
-                        Vote for the leading lights of African fashion, art, and technology. Select your choices and generate your dynamic Voter Pass.
+                    <p className={`text-xs sm:text-sm max-w-2xl mx-auto mb-12 leading-relaxed ${theme === "dark" ? "text-white/60" : "text-black/60"}`}>
+                        As part of VVS Lagos, 2026, the VVS luminary awards celebrates outstanding Individuals and organizations of Nigerian Descent whose work is shaping the future of African culture, creativity, innovation and storytelling. The awards recognize visionary leaders and changemakers whose impact continues to elevate Africa on the global stage.
                     </p>
                     
                     {/* Category list with cascading stacked nominee cards */}
@@ -1201,6 +1202,8 @@ export default function TypeBLandingPage() {
                     </motion.div>
                 </div>
             </section>
+
+            <PastPartners theme={theme} />
 
             {/* Footer */}
             <footer className={`py-12 border-t text-center text-xs opacity-50 ${theme === "dark" ? "border-white/10 bg-black" : "border-black/10 bg-[#F5F0E8]"}`}>
@@ -1370,13 +1373,15 @@ export default function TypeBLandingPage() {
                                         <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-2">Target Events (Select all that apply)</label>
                                         <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1 scrollbar-none">
                                             {[
-                                                { value: "JULY 5", label: "July 5 — Opening Gala" },
-                                                { value: "JULY 6", label: "July 6 — Panel Sessions" },
                                                 { value: "JULY 6_FOUNDERS", label: "July 6 — VVS Founders Reception (Invite Only — contact admin for invite)", disabled: true },
-                                                { value: "JULY 7", label: "July 7 — Collectors Day" },
-                                                { value: "JULY 8-11", label: "July 8-11 — Pop Up Exhibition" },
-                                                { value: "JULY 11", label: "July 11 — Film Experience" },
-                                                { value: "JULY 12", label: "July 12 — Runway & Afterparty" },
+                                                { value: "JULY 7-11", label: "July 7-11 — VVS Lagos Pop Up @ Mikano VI" },
+                                                { value: "JULY 8-12", label: "July 8-12 — VVS Art Exhibition @ Blank Space VI" },
+                                                { value: "JULY 9_ART", label: "July 9 — Future Labs Art Exhibition @ Yenwa Gallery" },
+                                                { value: "JULY 9_ALBUM", label: "July 9 — VVS Album Release Party @ Octo Lagos" },
+                                                { value: "JULY 10", label: "July 10 — Future Labs Fashion Exhibition @ British Council" },
+                                                { value: "JULY 11_FILM", label: "July 11 — VVS Film Experience with AFRIFF" },
+                                                { value: "JULY 11_FASHION", label: "July 11 — VVS Fashion Night Out @ Fomo Lagos" },
+                                                { value: "JULY 12", label: "July 12 — VVS Runway Show @ 234 Adeola Odeku" },
                                             ].map((opt) => {
                                                 const isSelected = rsvpData.events.includes(opt.value);
                                                 const isDisabled = 'disabled' in opt && opt.disabled;

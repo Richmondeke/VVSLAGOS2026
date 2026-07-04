@@ -85,7 +85,7 @@ const AWARDS_DATA = [
     folder: "VISIONARY LEADERSHIP AWARD",
     nominees: [
       { name: "Akarachi Amadi", file: "Akarachi Amadi .webp" },
-      { name: "Chioma Ude", file: "Chioma Ude  .jpg" },
+      { name: "Chioma Ude", file: "Chioma Ude.webp" },
       { name: "Juliet Olanipekun", file: "Juliet Olanipekun  .jpg" },
       { name: "Ugoma Chinelo Ebilah", file: "Ugoma Chinelo Ebilah .jpg" }
     ]
@@ -383,8 +383,8 @@ export default function VvsPassAndVotingFlow() {
               <div className="text-center mb-12">
                 <span className="text-[#c5a059] text-xs font-mono font-bold tracking-[0.4em] uppercase block mb-3">VVS Awards 2026</span>
                 <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-tighter leading-tight">Cast Your Votes</h1>
-                <p className="text-white/50 text-xs mt-3 max-w-md mx-auto leading-relaxed">
-                  Select your choices for each category. Click the button below to submit and claim your premium passes.
+                <p className="text-white/60 text-xs mt-3 max-w-2xl mx-auto leading-relaxed">
+                  As part of VVS Lagos, 2026, the VVS luminary awards celebrates outstanding Individuals and organizations of Nigerian Descent whose work is shaping the future of African culture, creativity, innovation and storytelling. The awards recognize visionary leaders and changemakers whose impact continues to elevate Africa on the global stage. Select your choices for each category, click the button below to submit, and claim your premium passes.
                 </p>
               </div>
 

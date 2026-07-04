@@ -8,67 +8,94 @@ const TICKET_URL = "https://www.pv.rsvp/vvs-fashion-show";
 
 const events = [
     {
-        fullDate: "2026-07-05T19:00:00",
-        date: "July 5",
-        title: "Opening Event",
-        time: "7:00 PM",
-        category: "Gala & Awards",
-        note: "Honorary Awards • Recap Videos • Performances • Dinner & Comedy • 5th Anniversary Celebration • Dress Coded Party",
-        ticketUrl: null,
-    },
-    {
-        fullDate: "2026-07-06T10:00:00",
+        fullDate: "2026-07-06T16:00:00",
         date: "July 6",
-        title: "VVS Panel Sessions",
-        time: "10:00 AM",
-        category: "Conversations & Panels",
-        note: "Fireside with Korede Roberts, Tega Mavin, Aisha Augie • Sustainability with Zara Odu, Kelvin Bumpa, Reni Folawiyo, Florentyna, Tolu Coye, Bola PSD, Wale Davies • Brand Building with Sade Okoya & Mutesi Jolly",
+        venue: "Alliance Francais, Ikoyi Lagos",
+        title: "VVS Founders Reception",
+        time: "4:00 PM",
+        category: "Opening & Awards",
+        note: "Official Opening and luminary awards event • By Invitation Only. RSVP By email or filling the form attached and ensure your confirmation",
         ticketUrl: null,
     },
     {
-        fullDate: "2026-07-07T14:00:00",
-        date: "July 7",
-        title: "Collectors Day",
-        time: "2:00 PM",
-        category: "Private Viewing",
-        note: "Artists Work Explanation • Curatorial Introduction Speech • Exclusive VIP Drinks & Networking",
+        fullDate: "2026-07-07T12:00:00",
+        date: "July 7 – 11",
+        venue: "Mikano 65 Adeola Odeku, Victoria Island",
+        title: "VVS Lagos 2026 Pop Up",
+        time: "12:00 PM",
+        category: "Public Showcase",
+        note: "Pop Up Trunk Show Showcase",
         ticketUrl: null,
     },
     {
         fullDate: "2026-07-08T12:00:00",
-        date: "July 8 – 11",
-        title: "Pop Up & Art Exhibition",
+        date: "July 8 – 12",
+        venue: "Blank Space, Grace Arena Plaza VI",
+        title: "VVS Lagos 2026 Art Exhibition",
         time: "12:00 PM",
         category: "Public Showcase",
-        note: "Trunk Show Pop Up @ A White Space Ikoyi • Art Exhibition @ Windsor Gallery (Extending till end of month)",
+        note: "Curated Art Exhibition Showcase",
+        ticketUrl: null,
+    },
+    {
+        fullDate: "2026-07-09T12:00:00",
+        date: "July 9",
+        venue: "Yenwa Gallery",
+        title: "Future Labs (Art Exhibition)",
+        time: "12:00 PM",
+        category: "Art Exhibition",
+        note: "Future Labs Art Showcase",
+        ticketUrl: null,
+    },
+    {
+        fullDate: "2026-07-09T21:00:00",
+        date: "July 9",
+        venue: "Octo Lagos, Musa Yaradua VI Lagos",
+        title: "VVS Album Release Party",
+        time: "9:00 PM",
+        category: "Music & Celebration",
+        note: "Official VVS Album Release Event",
+        ticketUrl: null,
+    },
+    {
+        fullDate: "2026-07-10T12:00:00",
+        date: "July 10",
+        venue: "British Council",
+        title: "Future Labs (Fashion Exhibition)",
+        time: "12:00 PM",
+        category: "Fashion Exhibition",
+        note: "Future Labs Creative Runway & Tech-Fashion Showcase",
         ticketUrl: null,
     },
     {
         fullDate: "2026-07-11T14:00:00",
         date: "July 11",
-        title: "VVS Film Experience",
+        venue: "Alliance Francais, Lagos",
+        title: "VVS Film Experience with AFRIFF",
         time: "2:00 PM",
         category: "Cinema & Storytelling",
         note: "Partnership with AFRIFF • High-Level Film & Storytelling Panel Conversations • 'Descendants' Short Film Screening & Live Play",
         ticketUrl: null,
     },
     {
+        fullDate: "2026-07-11T21:00:00",
+        date: "July 11",
+        venue: "Fomo Lagos",
+        title: "VVS Fashion Night Out",
+        time: "9:00 PM",
+        category: "Celebration",
+        note: "Fashion Night Out Celebration",
+        ticketUrl: null,
+    },
+    {
         fullDate: "2026-07-12T17:00:00",
         date: "July 12",
+        venue: "234 Adeola Odeku VI",
         title: "VVS Runway Show",
         time: "5:00 PM",
         category: "Haute Couture",
         note: "Model Runway Presentation • Featured Designer Brand Showcases",
         ticketUrl: TICKET_URL,
-    },
-    {
-        fullDate: "2026-07-12T22:00:00",
-        date: "July 12",
-        title: "VVS Afterparty",
-        time: "10:00 PM",
-        category: "Celebration",
-        note: "Closing Afterparty Celebration • Curated DJs & Mixes",
-        ticketUrl: null,
     },
 ];
 
@@ -107,6 +134,12 @@ function EventCard({ event, index, mounted }: { event: typeof events[0]; index: 
                             </span>
                             <span className="h-1 w-1 bg-vvs-gold/40 rounded-full" />
                             <span className="text-vvs-white/50 text-xs font-sans">{event.date}</span>
+                            {'venue' in event && event.venue && (
+                                <>
+                                    <span className="h-1 w-1 bg-vvs-gold/40 rounded-full" />
+                                    <span className="text-vvs-white/70 text-xs font-sans italic">{event.venue}</span>
+                                </>
+                            )}
                             <span className="h-1 w-1 bg-vvs-gold/40 rounded-full" />
                             <span className="text-vvs-gold/70 text-[10px] uppercase tracking-widest font-mono font-bold">
                                 {event.category}

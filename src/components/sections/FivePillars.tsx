@@ -66,20 +66,20 @@ export default function FivePillars({ theme = "dark" }: FivePillarsProps) {
                                     idx === 4 ? "sm:w-[calc(50%-12px)] lg:w-auto" : ""
                                 }`}
                             >
-                                <div className={`h-[200px] md:h-[240px] w-full rounded-2xl overflow-hidden border relative p-6 md:p-8 flex flex-col justify-end transition-all duration-300 hover:-translate-y-2 ${
+                                <div className={`h-[150px] md:h-[180px] w-full rounded-2xl overflow-hidden border relative p-5 md:p-6 flex flex-col justify-end transition-all duration-300 hover:-translate-y-2 ${
                                     isDark 
                                         ? "bg-black border-white/10 hover:border-[#c5a059]/50" 
                                         : "bg-white border-black/10 hover:border-[#c5a059]/50 hover:shadow-xl"
                                 }`}>
-                                    <p className="text-[#c5a059] font-mono text-[10px] uppercase tracking-[0.3em] mb-4">
+                                    <p className="text-[#c5a059] font-mono text-[9px] uppercase tracking-[0.3em] mb-2">
                                         0{idx + 1}
                                     </p>
-                                    <h3 className={`text-2xl md:text-3xl lg:text-4xl font-extrabold uppercase mb-3 ${
+                                    <h3 className={`text-xl md:text-2xl lg:text-3xl font-extrabold uppercase mb-1.5 ${
                                         isDark ? "text-white" : "text-black"
                                     }`}>
                                         {pillar.title}
                                     </h3>
-                                    <p className={`text-sm font-medium ${
+                                    <p className={`text-xs md:text-sm font-medium ${
                                         isDark ? "text-white/70" : "text-black/70"
                                     }`}>
                                         {pillar.desc}

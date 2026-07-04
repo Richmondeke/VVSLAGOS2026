@@ -55,6 +55,7 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
     const [copied, setCopied] = useState(false);
+    const [copiedEmails, setCopiedEmails] = useState(false);
 
     // Dashboard Stats
     const [rsvpsCount, setRsvpsCount] = useState<number>(0);
@@ -174,6 +175,13 @@ export default function DashboardPage() {
                     const myRefs = rsvpsList.filter((r: any) => r.referred_by_admin === user.email);
                     setMyReferralsCount(myRefs.length);
                 }
+            }
+
+            // Fetch community signups count for metric cards
+            const commRes = await fetch("/api/community-members?page=1");
+            if (commRes.ok) {
+                const commResult = await commRes.json();
+                setCommunityTotal(commResult.total);
             }
         } catch (err) {
             console.error("Failed to load RSVPs", err);
@@ -308,6 +316,33 @@ export default function DashboardPage() {
             navigator.clipboard.writeText(referralLink);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
+        }
+    };
+
+    const handleCopyEmails = () => {
+        let emailsList: string[] = [];
+        if (activeTab === "rsvps") {
+            emailsList = filteredRsvps.map(r => r.email);
+        } else if (activeTab === "signups") {
+            emailsList = membersData?.items.map(m => m.email) || [];
+        } else if (activeTab === "community") {
+            emailsList = communityMembers.map(m => m.email);
+        } else if (activeTab === "futurelabs") {
+            emailsList = filteredFutureLabs.map(a => a.email);
+        } else if (activeTab === "votes") {
+            emailsList = filteredGroupedVotes.map(v => v.email);
+        } else if (activeTab === "questions") {
+            emailsList = filteredQuestions.map(q => q.email);
+        }
+
+        const uniqueEmails = Array.from(new Set(emailsList.filter(Boolean)));
+        
+        if (uniqueEmails.length > 0) {
+            navigator.clipboard.writeText(uniqueEmails.join(", "));
+            setCopiedEmails(true);
+            setTimeout(() => setCopiedEmails(false), 2500);
+        } else {
+            alert("No emails to copy.");
         }
     };
 
@@ -494,7 +529,7 @@ export default function DashboardPage() {
 
             {/* Metric Cards */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <MetricCard label="Total Waiting List" value={membersCount || "-"} loading={loading && activeTab !== "signups"} />
+                <MetricCard label="Total Community Signups" value={communityTotal || "-"} loading={loading && activeTab !== "community"} />
                 <MetricCard label="Total RSVPs" value={rsvpsCount} loading={loading} />
                 <MetricCard 
                     label="Your Referrals" 
@@ -686,6 +721,17 @@ export default function DashboardPage() {
                             Clear Filters
                         </button>
                     )}
+
+                    {/* Copy Emails Button */}
+                    <button
+                        onClick={handleCopyEmails}
+                        className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-admin-border text-xs font-bold uppercase tracking-wider text-admin-primary hover:bg-[#c5a059]/10 hover:text-admin-accent shadow-sm transition-all"
+                    >
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                        {copiedEmails ? "Emails Copied!" : "Copy Emails"}
+                    </button>
                 </div>
 
                 <div className="overflow-x-auto">

@@ -96,6 +96,16 @@ export default function DashboardPage() {
     const [communityGenderFilter, setCommunityGenderFilter] = useState("");
     const [selectedCommunityMember, setSelectedCommunityMember] = useState<CommunityMember | null>(null);
 
+    // RSVP Filters
+    const [rsvpEventFilter, setRsvpEventFilter] = useState("");
+    const [rsvpReferralFilter, setRsvpReferralFilter] = useState("");
+
+    // Votes Category Filter
+    const [votesCategoryFilter, setVotesCategoryFilter] = useState("");
+
+    // Panel Questions Session Filter
+    const [questionsSessionFilter, setQuestionsSessionFilter] = useState("");
+
     const cities = ["Lagos", "Abuja", "Port Harcourt", "Accra", "Nairobi", "Johannesburg", "London", "New York", "Paris", "Dubai", "Toronto", "Amsterdam", "Other"];
     const formatDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 
@@ -302,10 +312,33 @@ export default function DashboardPage() {
     };
 
     // Filter RSVPs locally
-    const filteredRsvps = rsvps.filter(r => 
-        (r.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
-        (r.email?.toLowerCase() || "").includes(searchQuery.toLowerCase())
-    );
+    // Extract unique referrers from RSVPs list
+    const uniqueReferrers = useMemo(() => {
+        const referrers = new Set<string>();
+        rsvps.forEach(r => {
+            if (r.referred_by_admin) referrers.add(r.referred_by_admin);
+        });
+        return Array.from(referrers);
+    }, [rsvps]);
+
+    // Filter RSVPs locally with search, event, and referral filter criteria
+    const filteredRsvps = useMemo(() => {
+        return rsvps.filter(r => {
+            const matchesSearch = (r.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
+                                 (r.email?.toLowerCase() || "").includes(searchQuery.toLowerCase());
+            
+            const matchesEvent = !rsvpEventFilter || 
+                                 (Array.isArray(r.events) && r.events.includes(rsvpEventFilter)) ||
+                                 (typeof r.events === "string" && r.events === rsvpEventFilter);
+            
+            const matchesReferral = !rsvpReferralFilter || 
+                                    (rsvpReferralFilter === "referred" && r.referred_by_admin) ||
+                                    (rsvpReferralFilter === "organic" && !r.referred_by_admin) ||
+                                    (r.referred_by_admin === rsvpReferralFilter);
+            
+            return matchesSearch && matchesEvent && matchesReferral;
+        });
+    }, [rsvps, searchQuery, rsvpEventFilter, rsvpReferralFilter]);
 
     // Filter Future Labs locally
     const filteredFutureLabs = futureLabsApps.filter(app => 
@@ -340,14 +373,19 @@ export default function DashboardPage() {
 
     // Filter grouped votes locally
     const filteredGroupedVotes = useMemo(() => {
-        return groupedVotes.filter(g => 
-            (g.email?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-            g.votesList.some(v => 
-                (v.category?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
-                (v.nominee?.toLowerCase() || "").includes(searchQuery.toLowerCase())
-            )
-        );
-    }, [groupedVotes, searchQuery]);
+        return groupedVotes.filter(g => {
+            const matchesSearch = (g.email?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+                                 g.votesList.some(v => 
+                                     (v.category?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
+                                     (v.nominee?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+                                 );
+            
+            const matchesCategory = !votesCategoryFilter || 
+                                    g.votesList.some(v => v.category === votesCategoryFilter);
+            
+            return matchesSearch && matchesCategory;
+        });
+    }, [groupedVotes, searchQuery, votesCategoryFilter]);
 
     // Compute Leaderboard
     const leaderboardData = useMemo(() => {
@@ -373,13 +411,29 @@ export default function DashboardPage() {
         return sortedLeaderboard;
     }, [votes]);
 
+    // Filter leaderboard category selection
+    const filteredLeaderboardData = useMemo(() => {
+        if (!votesCategoryFilter) return leaderboardData;
+        const filtered: Record<string, any> = {};
+        if (leaderboardData[votesCategoryFilter]) {
+            filtered[votesCategoryFilter] = leaderboardData[votesCategoryFilter];
+        }
+        return filtered;
+    }, [leaderboardData, votesCategoryFilter]);
+
     // Filter Panel Questions locally
-    const filteredQuestions = panelQuestions.filter(q => 
-        (q.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
-        (q.email?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-        (q.session_id?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-        (q.question?.toLowerCase() || "").includes(searchQuery.toLowerCase())
-    );
+    const filteredQuestions = useMemo(() => {
+        return panelQuestions.filter(q => {
+            const matchesSearch = (q.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) || 
+                                 (q.email?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+                                 (q.session_id?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+                                 (q.question?.toLowerCase() || "").includes(searchQuery.toLowerCase());
+            
+            const matchesSession = !questionsSessionFilter || q.session_id === questionsSessionFilter;
+            
+            return matchesSearch && matchesSession;
+        });
+    }, [panelQuestions, searchQuery, questionsSessionFilter]);
 
     return (
         <div className="space-y-8 pb-10">
@@ -440,7 +494,7 @@ export default function DashboardPage() {
 
             {/* Metric Cards */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <MetricCard label="Total App Signups" value={membersCount || "-"} loading={loading && activeTab !== "signups"} />
+                <MetricCard label="Total Waiting List" value={membersCount || "-"} loading={loading && activeTab !== "signups"} />
                 <MetricCard label="Total RSVPs" value={rsvpsCount} loading={loading} />
                 <MetricCard 
                     label="Your Referrals" 
@@ -464,7 +518,7 @@ export default function DashboardPage() {
                             onClick={() => { setActiveTab("signups"); setSearchQuery(""); setMembersPage(1); }}
                             className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${activeTab === "signups" ? "bg-admin-accent text-white" : "text-admin-muted hover:bg-admin-border/20 hover:text-admin-primary"}`}
                         >
-                            App Signups
+                            Waiting List
                         </button>
                         <button 
                             onClick={() => { setActiveTab("community"); setSearchQuery(""); setCommunityPage(1); }}
@@ -509,6 +563,129 @@ export default function DashboardPage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                     </div>
+                </div>
+
+                {/* Dynamic Filters Row */}
+                <div className="px-4 py-3 border-b border-admin-border bg-admin-surface/10 flex flex-wrap items-center gap-3">
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-admin-muted">Filters:</span>
+                    
+                    {/* RSVPs Filters */}
+                    {activeTab === "rsvps" && (
+                        <>
+                            <select
+                                value={rsvpEventFilter}
+                                onChange={(e) => setRsvpEventFilter(e.target.value)}
+                                className="bg-admin-surface border border-admin-border text-xs rounded-lg px-3 py-1.5 text-admin-primary outline-none focus:border-admin-accent"
+                            >
+                                <option value="">All Events</option>
+                                <option value="JULY 5">July 5 — Opening Gala</option>
+                                <option value="JULY 6">July 6 — Panel Sessions</option>
+                                <option value="JULY 7">July 7 — Collectors Day</option>
+                                <option value="JULY 8-11">July 8-11 — Pop Up Exhibition</option>
+                                <option value="JULY 11">July 11 — Film Experience</option>
+                                <option value="JULY 12">July 12 — Runway & Afterparty</option>
+                            </select>
+
+                            <select
+                                value={rsvpReferralFilter}
+                                onChange={(e) => setRsvpReferralFilter(e.target.value)}
+                                className="bg-admin-surface border border-admin-border text-xs rounded-lg px-3 py-1.5 text-admin-primary outline-none focus:border-admin-accent"
+                            >
+                                <option value="">All Referrals</option>
+                                <option value="referred">Any Referral</option>
+                                <option value="organic">Organic (No referral)</option>
+                                {uniqueReferrers.map(ref => (
+                                    <option key={ref} value={ref}>{ref}</option>
+                                ))}
+                            </select>
+                        </>
+                    )}
+
+                    {/* Community / Waiting List Filters */}
+                    {(activeTab === "signups" || activeTab === "community") && (
+                        <>
+                            <select
+                                value={communityCityFilter}
+                                onChange={(e) => {
+                                    setCommunityCityFilter(e.target.value);
+                                    if (activeTab === "community") setCommunityPage(1);
+                                    if (activeTab === "signups") setMembersPage(1);
+                                }}
+                                className="bg-admin-surface border border-admin-border text-xs rounded-lg px-3 py-1.5 text-admin-primary outline-none focus:border-admin-accent"
+                            >
+                                <option value="">All Cities</option>
+                                {cities.map(c => (
+                                    <option key={c} value={c}>{c}</option>
+                                ))}
+                            </select>
+
+                            <select
+                                value={communityGenderFilter}
+                                onChange={(e) => {
+                                    setCommunityGenderFilter(e.target.value);
+                                    if (activeTab === "community") setCommunityPage(1);
+                                    if (activeTab === "signups") setMembersPage(1);
+                                }}
+                                className="bg-admin-surface border border-admin-border text-xs rounded-lg px-3 py-1.5 text-admin-primary outline-none focus:border-admin-accent"
+                            >
+                                <option value="">All Genders</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </>
+                    )}
+
+                    {/* Votes Tab Filters */}
+                    {activeTab === "votes" && (
+                        <select
+                            value={votesCategoryFilter}
+                            onChange={(e) => setVotesCategoryFilter(e.target.value)}
+                            className="bg-admin-surface border border-admin-border text-xs rounded-lg px-3 py-1.5 text-admin-primary outline-none focus:border-admin-accent"
+                        >
+                            <option value="">All Award Categories</option>
+                            <option value="FASHION">Fashion Designer Excellence</option>
+                            <option value="VISUAL_ARTS">Contemporary Visual Artist</option>
+                            <option value="CREATOR">Digital Creator of the Year</option>
+                            <option value="MUSIC">Emerging Music Artist of the Year</option>
+                            <option value="FILM_STORYTELLING">Excellence in Film & Screen Storytelling</option>
+                            <option value="TECH">Innovation & Technology Excellence</option>
+                            <option value="LEADERSHIP">Visionary Leadership</option>
+                        </select>
+                    )}
+
+                    {/* Panel Qs Filters */}
+                    {activeTab === "questions" && (
+                        <select
+                            value={questionsSessionFilter}
+                            onChange={(e) => setQuestionsSessionFilter(e.target.value)}
+                            className="bg-admin-surface border border-admin-border text-xs rounded-lg px-3 py-1.5 text-admin-primary outline-none focus:border-admin-accent"
+                        >
+                            <option value="">All Sessions</option>
+                            <option value="session-1">Film & Sovereign Storytelling</option>
+                            <option value="session-2">Future of African Music</option>
+                            <option value="session-3">Creator Economy & AI</option>
+                        </select>
+                    )}
+
+                    {/* Reset Button */}
+                    {(rsvpEventFilter || rsvpReferralFilter || communityCityFilter || communityGenderFilter || votesCategoryFilter || questionsSessionFilter) && (
+                        <button
+                            onClick={() => {
+                                setRsvpEventFilter("");
+                                setRsvpReferralFilter("");
+                                setCommunityCityFilter("");
+                                setCommunityGenderFilter("");
+                                setVotesCategoryFilter("");
+                                setQuestionsSessionFilter("");
+                                if (activeTab === "community") setCommunityPage(1);
+                                if (activeTab === "signups") setMembersPage(1);
+                            }}
+                            className="text-xs text-admin-accent hover:underline font-bold"
+                        >
+                            Clear Filters
+                        </button>
+                    )}
                 </div>
 
                 <div className="overflow-x-auto">
@@ -858,11 +1035,11 @@ export default function DashboardPage() {
                                 </div>
                             ) : (
                                 <div className="p-6">
-                                    {Object.keys(leaderboardData).length === 0 ? (
+                                    {Object.keys(filteredLeaderboardData).length === 0 ? (
                                         <div className="text-center py-8 text-admin-muted">No vote tally data available yet.</div>
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            {Object.keys(leaderboardData).map((catName) => (
+                                            {Object.keys(filteredLeaderboardData).map((catName) => (
                                                 <div key={catName} className="bg-admin-surface/40 border border-admin-border rounded-xl p-5 shadow-sm">
                                                     <span className="text-[#c5a059] text-[10px] font-mono tracking-widest font-bold uppercase block mb-3">
                                                         {catName}

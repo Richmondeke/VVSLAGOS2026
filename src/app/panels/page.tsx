@@ -42,7 +42,7 @@ const PANEL_SESSIONS: PanelSession[] = [
             { 
                 name: "Chioma Ude", 
                 role: "Founder, AFRIFF", 
-                image: "/assets/nominees/VISIONARY LEADERSHIP AWARD/Chioma Ude  .jpg", 
+                image: "/assets/nominees/VISIONARY LEADERSHIP AWARD/Chioma Ude.webp", 
                 initials: "CU" 
             }
         ]
@@ -70,7 +70,7 @@ const PANEL_SESSIONS: PanelSession[] = [
             { 
                 name: "Chioma Ude", 
                 role: "Founder, AFRIFF", 
-                image: "/assets/nominees/VISIONARY LEADERSHIP AWARD/Chioma Ude  .jpg", 
+                image: "/assets/nominees/VISIONARY LEADERSHIP AWARD/Chioma Ude.webp", 
                 initials: "CU" 
             },
             { name: "Charles of Play", role: "CEO, Play Network Studios", initials: "CO" }
@@ -269,9 +269,11 @@ export default function PanelsPage() {
                                                     className="w-full h-full object-cover grayscale brightness-90 hover:grayscale-0 transition-all duration-300"
                                                 />
                                             ) : (
-                                                <span className="font-mono font-extrabold text-sm tracking-wider">
-                                                    {panelist.initials}
-                                                </span>
+                                                <img
+                                                    src={theme === "dark" ? "/assets/VVSWhiteMAsk.png" : "/assets/VVSMASKBLACK.png"}
+                                                    alt="VVS Mask"
+                                                    className="w-7 h-7 object-contain opacity-50 transition-opacity"
+                                                />
                                             )}
                                         </div>
                                         <div>

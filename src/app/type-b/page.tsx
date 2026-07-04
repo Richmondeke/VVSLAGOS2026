@@ -1131,78 +1131,6 @@ export default function TypeBLandingPage() {
                 </motion.div>
             </section>
 
-            {/* 7. Subscribe to Newsletter Section (New) */}
-            <section className={`py-20 md:py-28 relative overflow-hidden border-t ${
-                theme === "dark" ? "border-white/10 bg-[#0d0d0d]" : "border-black/10 bg-[#FAF7F2]"
-            }`}>
-                {/* Background glow in theme accent colors */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] bg-[#c5a059]/5 blur-[120px] rounded-full pointer-events-none" />
-
-                <div className="w-full max-w-4xl mx-auto px-6 relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        className="text-center max-w-2xl mx-auto"
-                    >
-                        <span className="text-[#c5a059] text-xs font-mono font-bold tracking-[0.4em] mb-4 block">
-                            STAY CONNECTED
-                        </span>
-                        
-                        <h2 className="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight mb-4">
-                            JOIN THE <span className="text-[#c5a059]">VVS SOCIETY</span>
-                        </h2>
-                        
-                        <p className={`text-xs sm:text-sm font-light mb-8 leading-relaxed max-w-md mx-auto ${
-                            theme === "dark" ? "text-white/50" : "text-black/50"
-                        }`}>
-                            Subscribe to receive early calendar priority codes, private designer collections drop notifications, and cultural briefs.
-                        </p>
-
-                        {newsletterSubmitted ? (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="py-4 px-6 border border-[#c5a059]/30 rounded-2xl bg-[#c5a059]/5 max-w-md mx-auto"
-                            >
-                                <span className="text-[#c5a059] font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2">
-                                    ✦ You are on the VIP registry
-                                </span>
-                            </motion.div>
-                        ) : (
-                            <form 
-                                onSubmit={handleNewsletterSubmit} 
-                                className={`flex flex-col sm:flex-row gap-2 max-w-md mx-auto rounded-xl p-1.5 border ${
-                                    theme === "dark" ? "bg-white/5 border-white/10" : "bg-black/5 border-black/10"
-                                }`}
-                            >
-                                <input
-                                    type="email"
-                                    required
-                                    value={newsletterEmail}
-                                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                                    placeholder="Enter email address"
-                                    className={`flex-1 px-4 py-3 bg-transparent rounded-lg text-xs font-mono placeholder:opacity-45 focus:outline-none ${
-                                        theme === "dark" ? "text-white placeholder:text-white/40" : "text-black placeholder:text-black/40"
-                                    }`}
-                                />
-                                <button
-                                    type="submit"
-                                    className="px-6 py-3 bg-[#c5a059] text-black text-[10px] uppercase tracking-[0.2em] font-extrabold rounded-lg hover:bg-white transition-all transform active:scale-95 shadow-md flex items-center justify-center gap-2"
-                                >
-                                    Subscribe <Send size={11} />
-                                </button>
-                            </form>
-                        )}
-                        
-                        <p className={`text-[9px] font-mono mt-4 uppercase tracking-widest opacity-45`}>
-                            NO SPAM. UNSUBSCRIBE ANYTIME.
-                        </p>
-                    </motion.div>
-                </div>
-            </section>
-
             <PastPartners theme={theme} />
 
             {/* Footer */}
@@ -1216,7 +1144,7 @@ export default function TypeBLandingPage() {
                         />
                         <span className="font-bold tracking-wider">VVS LAGOS 2026</span>
                     </div>
-                    <p>© 2026 VERY VERY SPECIAL. ALL RIGHTS RESERVED. DESIGNED WITH SATOSHI.</p>
+                    <p>© 2026 VERY VERY SPECIAL. ALL RIGHTS RESERVED.</p>
                 </div>
             </footer>
 

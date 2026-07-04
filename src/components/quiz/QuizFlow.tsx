@@ -362,13 +362,13 @@ export default function VvsPassAndVotingFlow() {
                       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
                         <div>
                           <span className="text-[#c5a059] font-mono text-[9px] uppercase tracking-widest block mb-1">
-                            {isJury ? "Jury Selection Category" : "AWARD CATEGORY"}
+                            {isJury ? "Jury Selection (Non-Voting)" : "AWARD CATEGORY"}
                           </span>
                           <h2 className="text-xl sm:text-2xl font-bold uppercase tracking-tight">{cat.categoryName}</h2>
                         </div>
                         {isJury ? (
                           <span className="text-white/40 text-xs font-mono bg-white/5 px-3 py-1 rounded-full border border-white/10">
-                            Jury Selection Only
+                            Jury Selection only (Non-Voting)
                           </span>
                         ) : votes[cat.id] ? (
                           <span className="text-[#c5a059] text-xs font-mono flex items-center gap-1.5 bg-[#c5a059]/10 px-3 py-1 rounded-full border border-[#c5a059]/20">

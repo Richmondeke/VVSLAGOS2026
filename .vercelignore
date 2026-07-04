@@ -1,0 +1,8 @@
+# Ignore local large video
+public/assets/THE_ALBUM.mp4
+
+# Next.js / Turbo caches
+.next/
+.turbo/
+node_modules/
+.git/

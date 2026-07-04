@@ -173,7 +173,7 @@ export default function OurStory({ theme = "dark" }: OurStoryProps) {
                                     <div className="absolute left-4 md:left-1/2 top-4 md:top-2 w-3 h-3 rounded-full bg-[#c5a059] -translate-x-1/2 shadow-[0_0_15px_rgba(197,160,89,0.5)] z-10" />
 
                                     {/* Content Card */}
-                                    <div className={`ml-12 md:ml-0 w-full md:w-1/2 ${isEven ? "md:pr-12 md:text-right" : "md:pl-12 text-left"}`}>
+                                    <div className={`ml-12 md:ml-0 w-auto md:w-1/2 ${isEven ? "md:pr-12 md:text-right" : "md:pl-12 text-left"}`}>
                                         <span className="text-[#c5a059] font-mono text-xl md:text-2xl font-bold tracking-widest block mb-2">
                                             {item.year}
                                         </span>
@@ -213,7 +213,11 @@ export default function OurStory({ theme = "dark" }: OurStoryProps) {
                                             )}
                                             
                                             {item.legacy && (
-                                                <div className="mt-4 p-4 rounded-xl border bg-black/5 border-white/10 dark:bg-white/5 dark:border-white/10">
+                                                <div className={`mt-4 p-4 rounded-xl border ${
+                                                    isDark 
+                                                        ? "bg-white/[0.02] border-white/10" 
+                                                        : "bg-black/[0.02] border-black/10"
+                                                }`}>
                                                     <strong className={`block mb-1 text-sm ${isDark ? "text-[#c5a059]" : "text-[#8c6d3e]"}`}>Legacy</strong>
                                                     <p className="text-sm">{item.legacy}</p>
                                                 </div>

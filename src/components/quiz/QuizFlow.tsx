@@ -355,67 +355,85 @@ export default function VvsPassAndVotingFlow() {
 
               {/* Grid of Categories */}
               <div className="w-full flex flex-col gap-14 max-w-4xl">
-                {AWARDS_DATA.map((cat) => (
-                  <div key={cat.id} className="border-t border-white/10 pt-10">
-                    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
-                      <div>
-                        <span className="text-[#c5a059] font-mono text-[9px] uppercase tracking-widest block mb-1">AWARD CATEGORY</span>
-                        <h2 className="text-xl sm:text-2xl font-bold uppercase tracking-tight">{cat.categoryName}</h2>
+                {AWARDS_DATA.map((cat) => {
+                  const isJury = cat.id === "tech" || cat.id === "leadership";
+                  return (
+                    <div key={cat.id} className="border-t border-white/10 pt-10">
+                      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+                        <div>
+                          <span className="text-[#c5a059] font-mono text-[9px] uppercase tracking-widest block mb-1">
+                            {isJury ? "Jury Selection Category" : "AWARD CATEGORY"}
+                          </span>
+                          <h2 className="text-xl sm:text-2xl font-bold uppercase tracking-tight">{cat.categoryName}</h2>
+                        </div>
+                        {isJury ? (
+                          <span className="text-white/40 text-xs font-mono bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                            Jury Selection Only
+                          </span>
+                        ) : votes[cat.id] ? (
+                          <span className="text-[#c5a059] text-xs font-mono flex items-center gap-1.5 bg-[#c5a059]/10 px-3 py-1 rounded-full border border-[#c5a059]/20">
+                            <Check size={12} /> Selection Locked
+                          </span>
+                        ) : null}
                       </div>
-                      {votes[cat.id] && (
-                        <span className="text-[#c5a059] text-xs font-mono flex items-center gap-1.5 bg-[#c5a059]/10 px-3 py-1 rounded-full border border-[#c5a059]/20">
-                          <Check size={12} /> Selection Locked
-                        </span>
-                      )}
-                    </div>
 
-                    {/* Nominee Selector Grid with Grayscale to Color updates */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {cat.nominees.map((nominee) => {
-                        const isSelected = votes[cat.id] === nominee.name;
-                        const imgSrc = `/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(nominee.file)}`;
-                        return (
-                          <div
-                            key={nominee.name}
-                            onClick={() => handleVote(cat.id, nominee.name)}
-                            className={`group border rounded-xl overflow-hidden cursor-pointer transition-all duration-500 relative ${
-                              isSelected
-                                ? "border-[#c5a059] border-2 bg-[#c5a059]/10 shadow-[0_0_25px_rgba(197,160,89,0.2)] scale-[1.02]"
-                                : "border-white/10 bg-white/[0.01] hover:border-white/20 hover:bg-white/[0.02]"
-                            }`}
-                          >
-                            <div className="aspect-square relative w-full overflow-hidden bg-white/5">
-                              <img
-                                src={imgSrc}
-                                alt={nominee.name}
-                                className={`w-full h-full object-cover transition-all duration-700 ease-out ${
-                                  isSelected ? "grayscale-0 scale-105" : "grayscale opacity-60 group-hover:opacity-85"
-                                }`}
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
-                              
-                              {isSelected && (
-                                <div className="absolute top-2.5 right-2.5 bg-[#c5a059] text-black px-2 py-1 rounded font-mono text-[8px] font-black tracking-widest uppercase flex items-center gap-1 shadow-md">
-                                  <Check size={8} strokeWidth={4} /> SELECTED
-                                </div>
-                              )}
+                      {/* Nominee Selector Grid with Grayscale to Color updates */}
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {cat.nominees.map((nominee) => {
+                          const isSelected = votes[cat.id] === nominee.name;
+                          const imgSrc = `/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(nominee.file)}`;
+                          return (
+                            <div
+                              key={nominee.name}
+                              onClick={() => {
+                                if (isJury) return;
+                                handleVote(cat.id, nominee.name);
+                              }}
+                              className={`group border rounded-xl overflow-hidden transition-all duration-500 relative ${
+                                isJury
+                                  ? "border-white/5 bg-white/[0.005] opacity-40 cursor-not-allowed"
+                                  : isSelected
+                                    ? "border-[#c5a059] border-2 bg-[#c5a059]/10 shadow-[0_0_25px_rgba(197,160,89,0.2)] scale-[1.02] cursor-pointer"
+                                    : "border-white/10 bg-white/[0.01] hover:border-white/20 hover:bg-white/[0.02] cursor-pointer"
+                              }`}
+                            >
+                              <div className="aspect-square relative w-full overflow-hidden bg-white/5">
+                                <img
+                                  src={imgSrc}
+                                  alt={nominee.name}
+                                  className={`w-full h-full object-cover transition-all duration-700 ease-out ${
+                                    isJury
+                                      ? "grayscale scale-95"
+                                      : isSelected 
+                                        ? "grayscale-0 scale-105" 
+                                        : "grayscale opacity-60 group-hover:opacity-85"
+                                  }`}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+                                
+                                {isSelected && !isJury && (
+                                  <div className="absolute top-2.5 right-2.5 bg-[#c5a059] text-black px-2 py-1 rounded font-mono text-[8px] font-black tracking-widest uppercase flex items-center gap-1 shadow-md">
+                                    <Check size={8} strokeWidth={4} /> SELECTED
+                                  </div>
+                                )}
+                              </div>
+                              <div className={`p-3 transition-colors duration-300 ${isSelected && !isJury ? "bg-[#c5a059]/5" : ""}`}>
+                                <p className={`text-xs font-extrabold leading-tight line-clamp-2 uppercase ${isSelected && !isJury ? "text-[#c5a059]" : "text-white/70 group-hover:text-white"}`}>{nominee.name}</p>
+                              </div>
                             </div>
-                            <div className={`p-3 transition-colors duration-300 ${isSelected ? "bg-[#c5a059]/5" : ""}`}>
-                              <p className={`text-xs font-extrabold leading-tight line-clamp-2 uppercase ${isSelected ? "text-[#c5a059]" : "text-white/70 group-hover:text-white"}`}>{nominee.name}</p>
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Floating Summary action bar */}
               <div className="fixed bottom-0 left-0 w-full bg-black/85 backdrop-blur-md border-t border-white/10 py-4 px-6 z-50 flex justify-center shadow-2xl">
                 <div className="w-full max-w-4xl flex items-center justify-between gap-4">
                   <span className="text-xs font-mono text-white/60">
-                    VOTED IN <span className="text-[#c5a059] font-bold">{Object.keys(votes).length}</span> OF 7 CATEGORIES
+                    VOTED IN <span className="text-[#c5a059] font-bold">{Object.keys(votes).length}</span> OF 5 PUBLIC CATEGORIES
                   </span>
                   <button
                     onClick={handleOpenVerify}

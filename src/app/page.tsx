@@ -1187,7 +1187,7 @@ export default function TypeBLandingPage() {
 
                                     <div className="text-center w-full mt-2">
                                         <span className="text-[9px] font-mono text-[#c5a059] uppercase tracking-widest block mb-1">
-                                            CATEGORY 0{idx + 1}
+                                            {cat.id === "tech" || cat.id === "leadership" ? "Jury Selection" : `Category 0${idx + 1}`}
                                         </span>
                                         <h3 className="text-xs font-black uppercase tracking-tight leading-snug text-white/95 group-hover:text-[#c5a059] transition-colors min-h-[32px] flex items-center justify-center">
                                             {cat.categoryName}

@@ -93,6 +93,7 @@ const AWARDS_DATA = [
 ];
 
 export default function VvsPassAndVotingFlow() {
+  const votingClosed = true;
   const [votes, setVotes] = useState<Record<string, string>>({});
   const [phase, setPhase] = useState<"vote" | "verify" | "signup" | "success">("vote");
   const [email, setEmail] = useState("");
@@ -122,6 +123,7 @@ export default function VvsPassAndVotingFlow() {
   }, []);
 
   const handleVote = (categoryId: string, nomineeName: string) => {
+    if (votingClosed) return;
     triggerHaptic("light");
     setVotes(prev => ({
       ...prev,
@@ -193,6 +195,10 @@ export default function VvsPassAndVotingFlow() {
         }
       } else {
         // User has NOT voted yet
+        if (votingClosed) {
+          setError("Voting has closed. Only registered voters who submitted ballots can retrieve passes.");
+          return;
+        }
         if (exists && member) {
           setName(member.name);
           setSelfieUrl(member.selfie_url);
@@ -382,9 +388,11 @@ export default function VvsPassAndVotingFlow() {
             >
               <div className="text-center mb-12">
                 <span className="text-[#c5a059] text-xs font-mono font-bold tracking-[0.4em] uppercase block mb-3">VVS Awards 2026</span>
-                <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-tighter leading-tight">Cast Your Votes</h1>
+                <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-tighter leading-tight">{votingClosed ? "Voting Closed" : "Cast Your Votes"}</h1>
                 <p className="text-white/60 text-xs mt-3 max-w-2xl mx-auto leading-relaxed">
-                  As part of VVS Lagos, 2026, the VVS luminary awards celebrates outstanding Individuals and organizations of Nigerian Descent whose work is shaping the future of African culture, creativity, innovation and storytelling. The awards recognize visionary leaders and changemakers whose impact continues to elevate Africa on the global stage. Select your choices for each category, click the button below to submit, and claim your premium passes.
+                  {votingClosed 
+                    ? "Voting is now closed. Registered voters who already submitted their ballots can retrieve and download their digital passes and top picks using the button below." 
+                    : "As part of VVS Lagos, 2026, the VVS luminary awards celebrates outstanding Individuals and organizations of Nigerian Descent whose work is shaping the future of African culture, creativity, innovation and storytelling. The awards recognize visionary leaders and changemakers whose impact continues to elevate Africa on the global stage. Select your choices for each category, click the button below to submit, and claim your premium passes."}
                 </p>
               </div>
 
@@ -421,15 +429,15 @@ export default function VvsPassAndVotingFlow() {
                             <div
                               key={nominee.name}
                               onClick={() => {
-                                if (isJury) return;
+                                if (isJury || votingClosed) return;
                                 handleVote(cat.id, nominee.name);
                               }}
                               className={`group border rounded-xl overflow-hidden transition-all duration-500 relative ${
                                 isJury
                                   ? "border-[#c5a059]/25 bg-[#c5a059]/5 cursor-not-allowed"
                                   : isSelected
-                                    ? "border-[#c5a059] border-2 bg-[#c5a059]/10 shadow-[0_0_25px_rgba(197,160,89,0.2)] scale-[1.02] cursor-pointer"
-                                    : "border-white/10 bg-white/[0.01] hover:border-white/20 hover:bg-white/[0.02] cursor-pointer"
+                                    ? `border-[#c5a059] border-2 bg-[#c5a059]/10 shadow-[0_0_25px_rgba(197,160,89,0.2)] ${votingClosed ? 'cursor-default' : 'scale-[1.02] cursor-pointer'}`
+                                    : `border-white/10 bg-white/[0.01] ${votingClosed ? 'cursor-default' : 'hover:border-white/20 hover:bg-white/[0.02] cursor-pointer'}`
                               }`}
                             >
                               <div className="aspect-square relative w-full overflow-hidden bg-white/5">
@@ -441,7 +449,7 @@ export default function VvsPassAndVotingFlow() {
                                       ? "grayscale-0 scale-100 opacity-100"
                                       : isSelected 
                                         ? "grayscale-0 scale-105" 
-                                        : "grayscale opacity-60 group-hover:opacity-85"
+                                        : `grayscale opacity-60 ${votingClosed ? '' : 'group-hover:opacity-85'}`
                                   }`}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
@@ -465,20 +473,39 @@ export default function VvsPassAndVotingFlow() {
               </div>
 
               {/* Floating Summary action bar */}
-              <div className="fixed bottom-0 left-0 w-full bg-black/85 backdrop-blur-md border-t border-white/10 py-4 px-6 z-50 flex justify-center shadow-2xl">
-                <div className="w-full max-w-4xl flex items-center justify-between gap-4">
-                  <span className="text-xs font-mono text-white/60">
-                    VOTED IN <span className="text-[#c5a059] font-bold">{Object.keys(votes).length}</span> OF 5 PUBLIC CATEGORIES
-                  </span>
-                  <button
-                    onClick={handleOpenVerify}
-                    disabled={Object.keys(votes).length === 0}
-                    className="px-8 py-3 bg-[#c5a059] text-black font-extrabold uppercase tracking-[0.2em] text-[10px] rounded-full hover:bg-white transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#c5a059] disabled:hover:text-black"
-                  >
-                    Submit Votes
-                  </button>
+              {votingClosed ? (
+                <div className="fixed bottom-0 left-0 w-full bg-black/85 backdrop-blur-md border-t border-white/10 py-5 px-6 z-50 flex justify-center shadow-2xl">
+                  <div className="w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <span className="text-sm font-mono font-extrabold uppercase tracking-widest text-[#c5a059] animate-pulse">
+                      VOTING NOW CLOSED... Winners to be announced.
+                    </span>
+                    <button
+                      onClick={() => {
+                        setError(null);
+                        setPhase("verify");
+                      }}
+                      className="px-8 py-3 bg-[#c5a059] text-black font-extrabold uppercase tracking-[0.2em] text-[10px] rounded-full hover:bg-white transition-all shadow-lg active:scale-95"
+                    >
+                      Retrieve My Pass
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="fixed bottom-0 left-0 w-full bg-black/85 backdrop-blur-md border-t border-white/10 py-4 px-6 z-50 flex justify-center shadow-2xl">
+                  <div className="w-full max-w-4xl flex items-center justify-between gap-4">
+                    <span className="text-xs font-mono text-white/60">
+                      VOTED IN <span className="text-[#c5a059] font-bold">{Object.keys(votes).length}</span> OF 5 PUBLIC CATEGORIES
+                    </span>
+                    <button
+                      onClick={handleOpenVerify}
+                      disabled={Object.keys(votes).length === 0}
+                      className="px-8 py-3 bg-[#c5a059] text-black font-extrabold uppercase tracking-[0.2em] text-[10px] rounded-full hover:bg-white transition-all shadow-lg disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#c5a059] disabled:hover:text-black"
+                    >
+                      Submit Votes
+                    </button>
+                  </div>
+                </div>
+              )}
             </motion.div>
           )}
 

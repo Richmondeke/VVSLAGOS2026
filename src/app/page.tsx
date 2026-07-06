@@ -520,7 +520,7 @@ export default function TypeBLandingPage() {
                 <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
                     
                     {/* Left Navigation Links */}
-                    <div className="hidden lg:flex items-center gap-6">
+                    <div className="hidden lg:flex lg:flex-1 justify-start items-center gap-6">
                         <button onClick={() => scrollSection("about")} className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">About</button>
                         <button onClick={() => scrollSection("schedule")} className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">Schedule</button>
                         <button onClick={() => scrollSection("countdown")} className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">Kickoff</button>
@@ -528,7 +528,7 @@ export default function TypeBLandingPage() {
                     </div>
 
                     {/* Center Logo */}
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:relative lg:left-0 lg:top-0 lg:translate-x-0 lg:translate-y-0 lg:flex lg:flex-shrink-0 lg:justify-center lg:items-center lg:w-24">
                         <button 
                             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                             className="flex items-center justify-center w-14 h-14 relative"
@@ -542,7 +542,7 @@ export default function TypeBLandingPage() {
                     </div>
 
                     {/* Right Navigation Links & Controls */}
-                    <div className="flex items-center gap-4 ml-auto lg:ml-0">
+                    <div className="flex items-center gap-4 ml-auto lg:ml-0 lg:flex-1 lg:justify-end">
                         <div className="hidden lg:flex items-center gap-6 mr-4">
                             <a href="/panels" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">VVS Panels</a>
                             <a href="/descendants" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">VVS Album</a>

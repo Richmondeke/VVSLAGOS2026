@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/tickets",
     "/vvs-2026",
     "/afterparty",
+    "/artexhibition",
     "/collectors-day",
     "/film-experience",
     "/foundersevent",

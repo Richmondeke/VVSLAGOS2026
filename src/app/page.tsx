@@ -150,6 +150,9 @@ export default function TypeBLandingPage() {
     const [rotationOffset, setRotationOffset] = useState(0);
     const [scheduleView, setScheduleView] = useState<"calendar" | "list">("calendar");
     const [activeDropdown, setActiveDropdown] = useState<"explore" | "program" | null>(null);
+    const [concludedEvents, setConcludedEvents] = useState<Record<string, boolean>>({});
+
+
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -221,6 +224,7 @@ export default function TypeBLandingPage() {
             gridSpan: 1,
             gridRow: 1,
             dateLabel: "July 6",
+            endsAt: "2026-07-06T23:59:59+01:00",
             disabled: true
         },
         {
@@ -236,6 +240,7 @@ export default function TypeBLandingPage() {
             gridSpan: 3,
             gridRow: 1,
             dateLabel: "July 7 - 9",
+            endsAt: "2026-07-09T23:59:59+01:00",
             path: "/popup"
         },
         {
@@ -251,6 +256,7 @@ export default function TypeBLandingPage() {
             gridSpan: 1,
             gridRow: 3,
             dateLabel: "July 9",
+            endsAt: "2026-07-09T23:59:59+01:00",
             path: "/collectors-day"
         },
         {
@@ -266,6 +272,7 @@ export default function TypeBLandingPage() {
             gridSpan: 4,
             gridRow: 2,
             dateLabel: "July 9 - 12",
+            endsAt: "2026-07-12T23:59:59+01:00",
             path: "/artexhibition"
         },
         {
@@ -280,7 +287,8 @@ export default function TypeBLandingPage() {
             gridCol: 4,
             gridSpan: 1,
             gridRow: 4,
-            dateLabel: "July 9"
+            dateLabel: "July 9",
+            endsAt: "2026-07-09T23:59:59+01:00"
         },
         {
             date: "July 9, 2026",
@@ -294,7 +302,8 @@ export default function TypeBLandingPage() {
             gridCol: 4,
             gridSpan: 1,
             gridRow: 5,
-            dateLabel: "July 9"
+            dateLabel: "July 9",
+            endsAt: "2026-07-10T04:00:00+01:00"
         },
         {
             date: "July 10, 2026",
@@ -308,7 +317,8 @@ export default function TypeBLandingPage() {
             gridCol: 5,
             gridSpan: 1,
             gridRow: 1,
-            dateLabel: "July 10"
+            dateLabel: "July 10",
+            endsAt: "2026-07-10T23:59:59+01:00"
         },
         {
             date: "July 11, 2026",
@@ -323,6 +333,7 @@ export default function TypeBLandingPage() {
             gridSpan: 1,
             gridRow: 1,
             dateLabel: "July 11",
+            endsAt: "2026-07-11T23:59:59+01:00",
             path: "/film-experience"
         },
         {
@@ -337,7 +348,8 @@ export default function TypeBLandingPage() {
             gridCol: 6,
             gridSpan: 1,
             gridRow: 3,
-            dateLabel: "July 11"
+            dateLabel: "July 11",
+            endsAt: "2026-07-12T04:00:00+01:00"
         },
         {
             date: "July 12, 2026",
@@ -352,9 +364,21 @@ export default function TypeBLandingPage() {
             gridSpan: 1,
             gridRow: 1,
             dateLabel: "July 12",
+            endsAt: "2026-07-12T23:59:59+01:00",
             ticketUrl: "https://www.pv.rsvp/vvs-fashion-show"
         }
     ], []);
+
+    useEffect(() => {
+        const now = new Date();
+        const concluded: Record<string, boolean> = {};
+        optimizedEvents.forEach(event => {
+            if (event.endsAt) {
+                concluded[event.shortDate] = new Date(event.endsAt) < now;
+            }
+        });
+        setConcludedEvents(concluded);
+    }, [optimizedEvents]);
 
     const TICKET_URL = "https://www.pv.rsvp/vvs-fashion-show";
 
@@ -1011,7 +1035,7 @@ export default function TypeBLandingPage() {
                                         : "text-black/60 hover:text-black"
                             }`}
                         >
-                            Calendar Grid
+                            Calendar View
                         </button>
                         <button
                             onClick={() => {
@@ -1078,6 +1102,7 @@ export default function TypeBLandingPage() {
 
                                 {optimizedEvents.map((event, idx) => {
                                     const isMultiDay = event.gridSpan > 1;
+                                    const isConcluded = concludedEvents[event.shortDate];
                                     return (
                                         <div
                                             key={idx}
@@ -1086,25 +1111,35 @@ export default function TypeBLandingPage() {
                                                 gridRow: `${event.gridRow}`,
                                             }}
                                             className={`p-4 sm:p-5 rounded-2xl border transition-all duration-300 flex flex-col justify-between group hover:-translate-y-0.5 ${
-                                                isMultiDay
+                                                isConcluded
                                                     ? theme === "dark"
-                                                        ? "bg-[#c5a059]/5 border-[#c5a059]/35 text-white hover:bg-[#c5a059]/10 hover:shadow-[0_0_20px_rgba(197,160,89,0.15)]"
-                                                        : "bg-[#c5a059]/10 border-[#c5a059]/45 text-black hover:bg-[#c5a059]/15 hover:shadow-[0_0_20px_rgba(197,160,89,0.1)]"
-                                                    : theme === "dark"
-                                                        ? "bg-white/[0.01] border-white/10 text-white hover:bg-white/[0.03] hover:border-[#c5a059]/40 hover:shadow-[0_0_20px_rgba(197,160,89,0.1)]"
-                                                        : "bg-black/[0.005] border-black/10 text-black hover:bg-black/[0.015] hover:border-[#c5a059]/40 hover:shadow-[0_0_20px_rgba(197,160,89,0.05)]"
+                                                        ? "bg-white/[0.002] border-white/5 opacity-30 grayscale hover:opacity-55"
+                                                        : "bg-black/[0.002] border-black/5 opacity-35 grayscale hover:opacity-55"
+                                                    : isMultiDay
+                                                        ? theme === "dark"
+                                                            ? "bg-[#c5a059]/5 border-[#c5a059]/35 text-white hover:bg-[#c5a059]/10 hover:shadow-[0_0_20px_rgba(197,160,89,0.15)]"
+                                                            : "bg-[#c5a059]/10 border-[#c5a059]/45 text-black hover:bg-[#c5a059]/15 hover:shadow-[0_0_20px_rgba(197,160,89,0.1)]"
+                                                        : theme === "dark"
+                                                            ? "bg-white/[0.01] border-white/10 text-white hover:bg-white/[0.03] hover:border-[#c5a059]/40 hover:shadow-[0_0_20px_rgba(197,160,89,0.1)]"
+                                                            : "bg-black/[0.005] border-black/10 text-black hover:bg-black/[0.015] hover:border-[#c5a059]/40 hover:shadow-[0_0_20px_rgba(197,160,89,0.05)]"
                                             }`}
                                         >
                                             <div>
                                                 <div className="flex items-center justify-between gap-2 mb-2">
                                                     <span className={`text-[8px] uppercase font-mono tracking-wider font-extrabold px-2 py-0.5 rounded-full inline-block ${
-                                                        isMultiDay 
-                                                            ? theme === "dark" ? "bg-[#c5a059]/20 text-[#c5a059]" : "bg-[#c5a059]/30 text-[#826122]"
-                                                            : theme === "dark" ? "bg-white/10 text-white/70" : "bg-black/10 text-black/70"
+                                                        isConcluded
+                                                            ? theme === "dark" ? "bg-white/5 text-white/40" : "bg-black/5 text-black/40"
+                                                            : isMultiDay 
+                                                                ? theme === "dark" ? "bg-[#c5a059]/20 text-[#c5a059]" : "bg-[#c5a059]/30 text-[#826122]"
+                                                                : theme === "dark" ? "bg-white/10 text-white/70" : "bg-black/10 text-black/70"
                                                     }`}>
                                                         {event.category}
                                                     </span>
-                                                    {isMultiDay && (
+                                                    {isConcluded ? (
+                                                        <span className="text-[8px] font-mono tracking-widest uppercase font-black opacity-45">
+                                                            ✓ PASSED
+                                                        </span>
+                                                    ) : isMultiDay && (
                                                         <span className={`text-[8px] font-mono tracking-widest uppercase font-black ${
                                                             theme === "dark" ? "text-[#c5a059]" : "text-[#826122]"
                                                         }`}>
@@ -1112,7 +1147,9 @@ export default function TypeBLandingPage() {
                                                         </span>
                                                     )}
                                                 </div>
-                                                <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-tight leading-snug line-clamp-2">
+                                                <h4 className={`text-[11px] sm:text-xs font-bold uppercase tracking-tight leading-snug line-clamp-2 ${
+                                                    isConcluded ? "opacity-50" : ""
+                                                }`}>
                                                     {event.title}
                                                 </h4>
                                                 <span className="block text-[9px] font-mono opacity-50 mt-1.5">{event.time}</span>
@@ -1120,7 +1157,13 @@ export default function TypeBLandingPage() {
                                             </div>
 
                                             <div className="mt-4 flex items-center justify-between gap-2">
-                                                {event.ticketUrl ? (
+                                                {isConcluded ? (
+                                                    <span className={`text-[8px] font-mono tracking-wider font-extrabold uppercase border px-2 py-1 rounded ${
+                                                        theme === "dark" ? "text-white/30 border-white/5 bg-white/[0.02]" : "text-black/30 border-black/5 bg-black/[0.02]"
+                                                    }`}>
+                                                        Concluded
+                                                    </span>
+                                                ) : event.ticketUrl ? (
                                                     <a
                                                         href={event.ticketUrl}
                                                         target="_blank"
@@ -1168,86 +1211,105 @@ export default function TypeBLandingPage() {
                     </div>
                 ) : (
                     <div className="flex flex-col gap-4">
-                        {optimizedEvents.map((event, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{ duration: 0.5, delay: idx * 0.05 }}
-                                className={`p-5 sm:p-7 rounded-2xl border transition-all duration-300 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-xl hover:-translate-y-1 ${
-                                    theme === "dark" 
-                                        ? "bg-white/[0.02] border-white/10 hover:border-[#c5a059]/40 hover:bg-white/[0.04]" 
-                                        : "bg-white border-black/10 hover:border-[#c5a059]/40 hover:bg-[#FDFBF7]"
-                                }`}
-                            >
-                                {/* Date Column */}
-                                <div className="flex flex-col min-w-[120px]">
-                                    <span className="font-mono text-xs font-black tracking-widest text-[#c5a059] uppercase">{event.dateLabel || event.shortDate}</span>
-                                    <span className="text-[11px] opacity-50 mt-1">{event.time}</span>
-                                </div>
+                        {optimizedEvents.map((event, idx) => {
+                            const isConcluded = concludedEvents[event.shortDate];
+                            return (
+                                <motion.div
+                                    key={idx}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, margin: "-50px" }}
+                                    transition={{ duration: 0.5, delay: idx * 0.05 }}
+                                    className={`p-5 sm:p-7 rounded-2xl border transition-all duration-300 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-xl hover:-translate-y-1 ${
+                                        isConcluded
+                                            ? theme === "dark"
+                                                ? "bg-white/[0.002] border-white/5 opacity-40 grayscale hover:opacity-60"
+                                                : "bg-black/[0.002] border-black/5 opacity-45 grayscale hover:opacity-60"
+                                            : theme === "dark" 
+                                                ? "bg-white/[0.02] border-white/10 hover:border-[#c5a059]/40 hover:bg-white/[0.04]" 
+                                                : "bg-white border-black/10 hover:border-[#c5a059]/40 hover:bg-[#FDFBF7]"
+                                    }`}
+                                >
+                                    {/* Date Column */}
+                                    <div className="flex flex-col min-w-[120px]">
+                                        <span className="font-mono text-xs font-black tracking-widest text-[#c5a059] uppercase">{event.dateLabel || event.shortDate}</span>
+                                        <span className="text-[11px] opacity-50 mt-1">{event.time}</span>
+                                    </div>
 
-                                {/* Title & Venue info */}
-                                <div className="flex-1 min-w-0">
-                                    <span className={`text-[10px] uppercase font-mono tracking-widest font-extrabold px-2.5 py-0.5 rounded-full inline-block mb-2 ${
-                                        theme === "dark" ? "bg-white/10 text-white" : "bg-black/5 text-black"
-                                    }`}>
-                                        {event.category}
-                                    </span>
-                                    <h3 className="text-lg sm:text-xl font-bold tracking-tight uppercase leading-snug break-words">{event.title}</h3>
-                                </div>
+                                    {/* Title & Venue info */}
+                                    <div className="flex-1 min-w-0">
+                                        <span className={`text-[10px] uppercase font-mono tracking-widest font-extrabold px-2.5 py-0.5 rounded-full inline-block mb-2 ${
+                                            isConcluded
+                                                ? theme === "dark" ? "bg-white/5 text-white/40" : "bg-black/5 text-black/40"
+                                                : theme === "dark" ? "bg-white/10 text-white" : "bg-black/5 text-black"
+                                        }`}>
+                                            {event.category}
+                                        </span>
+                                        <h3 className={`text-lg sm:text-xl font-bold tracking-tight uppercase leading-snug break-words ${
+                                            isConcluded ? "opacity-50 line-through decoration-[#c5a059]/40 text-white/40" : ""
+                                        }`}>{event.title}</h3>
+                                    </div>
 
-                                {/* Description block */}
-                                <div className="lg:max-w-md">
-                                    <p className="text-xs opacity-60 leading-relaxed font-light">{event.description}</p>
-                                </div>
+                                    {/* Description block */}
+                                    <div className="lg:max-w-md">
+                                        <p className="text-xs opacity-60 leading-relaxed font-light">{event.description}</p>
+                                    </div>
 
-                                {/* CTA Action button */}
-                                {event.ticketUrl ? (
-                                    <div className="shrink-0 flex items-center">
-                                        <a
-                                            href={event.ticketUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
-                                        >
-                                            Buy Tickets
-                                        </a>
-                                    </div>
-                                ) : event.shortDate === "JULY 11" && event.category === "Film & Cinema" ? (
-                                    <div className="shrink-0 flex items-center">
-                                        <a
-                                            href="/panels"
-                                            className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
-                                        >
-                                            View Panels
-                                        </a>
-                                    </div>
-                                ) : event.shortDate === "JULY 9" && event.category === "Album Release & Party" ? (
-                                    <div className="shrink-0 flex items-center">
-                                        <a
-                                            href="/descendants"
-                                            className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
-                                        >
-                                            Album Details
-                                        </a>
-                                    </div>
-                                ) : (
-                                    <div className="shrink-0 flex items-center">
-                                        <button
-                                            onClick={() => {
-                                                triggerHaptic("medium");
-                                                setRsvpData(prev => ({ ...prev, events: [event.shortDate] }));
-                                                setIsRSVPOpen(true);
-                                            }}
-                                            className={`w-full lg:w-auto px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black`}
-                                        >
-                                            Get Invitation
-                                        </button>
-                                    </div>
-                                )}
-                            </motion.div>
-                        ))}
+                                    {/* CTA Action button */}
+                                    {isConcluded ? (
+                                        <div className="shrink-0 flex items-center">
+                                            <span className={`text-[9px] font-mono tracking-wider font-extrabold uppercase border px-4 py-2 rounded-xl ${
+                                                theme === "dark" ? "text-white/30 border-white/5 bg-white/[0.02]" : "text-black/30 border-black/5 bg-black/[0.02]"
+                                            }`}>
+                                                Concluded
+                                            </span>
+                                        </div>
+                                    ) : event.ticketUrl ? (
+                                        <div className="shrink-0 flex items-center">
+                                            <a
+                                                href={event.ticketUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
+                                            >
+                                                Buy Tickets
+                                            </a>
+                                        </div>
+                                    ) : event.shortDate === "JULY 11" && event.category === "Film & Cinema" ? (
+                                        <div className="shrink-0 flex items-center">
+                                            <a
+                                                href="/panels"
+                                                className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
+                                            >
+                                                View Panels
+                                            </a>
+                                        </div>
+                                    ) : event.shortDate === "JULY 9" && event.category === "Album Release & Party" ? (
+                                        <div className="shrink-0 flex items-center">
+                                            <a
+                                                href="/descendants"
+                                                className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
+                                            >
+                                                Album Details
+                                            </a>
+                                        </div>
+                                    ) : (
+                                        <div className="shrink-0 flex items-center">
+                                            <button
+                                                onClick={() => {
+                                                    triggerHaptic("medium");
+                                                    setRsvpData(prev => ({ ...prev, events: [event.shortDate] }));
+                                                    setIsRSVPOpen(true);
+                                                }}
+                                                className={`w-full lg:w-auto px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black`}
+                                            >
+                                                Get Invitation
+                                            </button>
+                                        </div>
+                                    )}
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 )}
             </section>

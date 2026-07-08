@@ -12,6 +12,8 @@ const AWARDS_TEASER_DATA = [
     id: "fashion",
     categoryName: "Fashion Designer Excellence",
     folder: "FASHION DESIGNER EXCLLENCE AWARD",
+    winnerName: "Floryntina Agu (Hertunba)",
+    winnerImage: "Floryntina Agu (Hertunba).jpg",
     nominees: [
       "Adebayo Oke-Lawal (Orange Culture) .jpg",
       "Bubu Ogisi (IAMISIGO) .jpg",
@@ -22,6 +24,8 @@ const AWARDS_TEASER_DATA = [
     id: "visual_arts",
     categoryName: "Contemporary Visual Artist",
     folder: "CONTEMPORARY VISUAL ARTIST OF THE YEAR AWARD",
+    winnerName: "Anthony Azekwoh",
+    winnerImage: "Anthony Azekwoh.jpg",
     nominees: [
       "Anthony Azekwoh.jpg",
       "Ken Nwadiogbu.webp",
@@ -52,6 +56,8 @@ const AWARDS_TEASER_DATA = [
     id: "music",
     categoryName: "Emerging Music Artist of the Year",
     folder: "EMERGING MUSIC ARTIST OF THE YEAR",
+    winnerName: "Fimi",
+    winnerImage: "Fimi.jpg",
     nominees: [
       "Amaeya.jpg",
       "Egertton.jpg",
@@ -62,6 +68,8 @@ const AWARDS_TEASER_DATA = [
     id: "creator",
     categoryName: "Digital Creator of the Year",
     folder: "DIGITAL CREATOR OF THE YEAR",
+    winnerName: "Dezny",
+    winnerImage: "Dezny.jpg",
     nominees: [
       "Creatorium (Salem & Ada).png",
       "Dele’s Life.jpg",
@@ -72,6 +80,8 @@ const AWARDS_TEASER_DATA = [
     id: "film_storytelling",
     categoryName: "Excellence in Film & Screen Storytelling",
     folder: "EXCELLENCE IN FILM & SCREEN STORYTELLING",
+    winnerName: "Kemi Adetiba (To Kill a Monkey)",
+    winnerImage: "Kemi Adetiba — To Kill a Monkey.jpg",
     nominees: [
       "Dammy Twitch — Call of My Life .jpg",
       "Kemi Adetiba — To Kill a Monkey.jpg",
@@ -141,10 +151,6 @@ export default function TypeBLandingPage() {
         return () => clearInterval(interval);
     }, []);
 
-    // Countdown target date (VVS Lagos 2026 Kickoff - July 5th, 2026)
-    const targetDate = "2026-07-06T18:00:00";
-    const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calcTimeLeft(targetDate));
-
     // Scroll listener for navbar background blur
     useEffect(() => {
         const handleScroll = () => {
@@ -171,14 +177,6 @@ export default function TypeBLandingPage() {
         }, 70);
         return () => clearInterval(interval);
     }, []);
-
-    // Countdown timer interval
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeLeft(calcTimeLeft(targetDate));
-        }, 1000);
-        return () => clearInterval(timer);
-    }, [targetDate]);
 
     // Loading screen mask interchanging interval
     useEffect(() => {
@@ -603,8 +601,7 @@ export default function TypeBLandingPage() {
                                         <div className="flex flex-col gap-1.5">
                                             {[
                                                 { title: "About VVS", desc: "The vision, story and mission of VVS Lagos 2026", target: "about" },
-                                                { title: "Schedule", desc: "View the official event timeline and interactive calendar", target: "schedule" },
-                                                { title: "Kickoff Countdown", desc: "Track the countdown to the official festival launch", target: "countdown" }
+                                                { title: "Schedule", desc: "View the official event timeline and interactive calendar", target: "schedule" }
                                             ].map((item, i) => (
                                                 <button
                                                     key={i}
@@ -758,7 +755,6 @@ export default function TypeBLandingPage() {
                     >
                         <button onClick={() => scrollSection("about")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">About</button>
                         <button onClick={() => scrollSection("schedule")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Schedule</button>
-                        <button onClick={() => scrollSection("countdown")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Kickoff Countdown</button>
                         <button onClick={() => scrollSection("calendar")} className="text-[12px] uppercase tracking-widest font-bold text-left py-2">Upcoming Events</button>
                         <a href="/panels" className="text-[12px] uppercase tracking-widest font-bold py-2">VVS Panels</a>
                         <a href="/descendants" className="text-[12px] uppercase tracking-widest font-bold py-2">VVS Album</a>
@@ -871,68 +867,7 @@ export default function TypeBLandingPage() {
                 </motion.div>
             </section>
 
-            {/* 4. Countdown Section (Strict Brand Colors: White, Black, Gold, Obsidian) */}
-            <section id="countdown" className={`py-24 border-y relative overflow-hidden ${
-                theme === "dark" ? "border-white/10 bg-[#0D0D0D]" : "border-black/10 bg-[#F5F0E8]"
-            }`}>
-                
-                {/* Checkered pattern background using gold / white / obsidian check border cells */}
-                <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none grid grid-cols-12 grid-rows-6">
-                    {Array.from({ length: 72 }).map((_, i) => (
-                        <div 
-                            key={i} 
-                            className={`border ${
-                                theme === "dark" ? "border-white/50" : "border-black/50"
-                            } ${i % 9 === 0 ? "bg-[#c5a059]/30" : ""}`} 
-                        />
-                    ))}
-                </div>
 
-                <motion.div 
-                    initial={{ opacity: 0, y: 35 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.6 }}
-                    className="max-w-7xl mx-auto px-6 relative z-10 text-center flex flex-col items-center"
-                >
-                    
-                    <span className="text-[#c5a059] text-xs font-mono font-bold tracking-[0.5em] uppercase block mb-4">Countdown Track</span>
-                    
-                    <h2 className="text-2xl sm:text-4xl font-extrabold uppercase tracking-tight mb-12">
-                        UNTIL VVS LAGOS 2026 KICKOFF
-                    </h2>
-
-                    {/* Countdown Display grid */}
-                    <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8 mb-6">
-                        {[
-                            { label: "Days", value: timeLeft.days },
-                            { label: "Hours", value: timeLeft.hours },
-                            { label: "Minutes", value: timeLeft.minutes },
-                            { label: "Seconds", value: timeLeft.seconds }
-                        ].map((timeUnit, index) => (
-                            <React.Fragment key={timeUnit.label}>
-                                <div className="flex flex-col items-center">
-                                    <div className={`w-20 sm:w-28 aspect-square rounded-xl flex items-center justify-center font-mono font-black text-3xl sm:text-5xl shadow-lg border transition-all ${
-                                        theme === "dark" 
-                                            ? "bg-[#151515] border-white/10 text-white" 
-                                            : "bg-white border-black/10 text-[#c5a059]"
-                                    }`}>
-                                        {pad(timeUnit.value)}
-                                    </div>
-                                    <span className="text-[10px] uppercase tracking-widest font-mono font-bold mt-2 opacity-60">
-                                        {timeUnit.label}
-                                    </span>
-                                </div>
-                                {index < 3 && (
-                                    <div className="text-3xl sm:text-5xl font-black text-[#c5a059] opacity-80 select-none pb-4">:</div>
-                                )}
-                            </React.Fragment>
-                        ))}
-                    </div>
-
-                    <p className="text-xs font-mono opacity-50 mt-4">OFFICIAL INVITATION SENT DATE: JUNE 10TH, 2026</p>
-                </motion.div>
-            </section>
 
             {/* 5. Match Schedule Layout */}
             <section id="schedule" className="py-24 max-w-7xl mx-auto px-6">
@@ -1433,81 +1368,104 @@ export default function TypeBLandingPage() {
                     </p>
                     
                     {/* Category list with cascading stacked nominee cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-12 max-w-6xl mx-auto justify-center items-stretch text-left">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto justify-center items-stretch text-left">
                         {AWARDS_TEASER_DATA.map((cat, idx) => {
-                            const idx0 = (rotationOffset) % cat.nominees.length;
+                            const hasWinner = !!cat.winnerName;
+                            const idx0 = hasWinner 
+                                ? cat.nominees.indexOf(cat.winnerImage!) !== -1 ? cat.nominees.indexOf(cat.winnerImage!) : 0
+                                : (rotationOffset) % cat.nominees.length;
                             const idx1 = (rotationOffset + 1) % cat.nominees.length;
                             const idx2 = (rotationOffset + 2) % cat.nominees.length;
 
                             return (
                                 <div 
                                     key={cat.id} 
-                                    className="group flex flex-col justify-between items-center cursor-pointer p-4 rounded-2xl border transition-all duration-500 hover:scale-[1.02] bg-white/[0.01] border-white/5 hover:border-[#c5a059]/40 hover:bg-[#c5a059]/[0.02]"
+                                    className={`group flex flex-col justify-between items-center cursor-pointer p-4 rounded-2xl border transition-all duration-500 hover:scale-[1.02] ${
+                                        hasWinner 
+                                            ? theme === "dark" 
+                                                ? "bg-[#c5a059]/[0.02] border-[#c5a059]/30 hover:border-[#c5a059] hover:bg-[#c5a059]/[0.04] shadow-[0_0_15px_rgba(197,160,89,0.08)]"
+                                                : "bg-[#c5a059]/[0.04] border-[#c5a059]/40 hover:border-[#c5a059] hover:bg-[#c5a059]/[0.08] shadow-[0_0_15px_rgba(197,160,89,0.08)]"
+                                            : "bg-white/[0.01] border-white/5 hover:border-white/20 hover:bg-white/[0.02]"
+                                    }`}
                                     onClick={() => {
                                         triggerHaptic("light");
                                         window.location.href = "/awards";
                                     }}
                                 >
                                     <div className="w-full">
-                                        {/* Cascading Image Stack Container */}
-                                        <div className="w-full aspect-[4/5] rounded-xl relative overflow-hidden flex items-center justify-center mb-4 border border-white/10 group-hover:border-[#c5a059]/20 bg-black/40">
+                                        {/* Image Stack Container */}
+                                        <div className={`w-full aspect-[4/5] rounded-xl relative overflow-hidden flex items-center justify-center mb-4 border ${
+                                            hasWinner ? "border-[#c5a059]/30 bg-black/60" : "border-white/10 bg-black/40"
+                                        }`}>
                                             
-                                            {/* Abstract background grid */}
                                             <div className="absolute inset-0 z-0 opacity-10 pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent" />
                                             
-                                            {/* Overlapping stack images */}
+                                            {/* Crown/Winner Badge */}
+                                            {hasWinner && (
+                                                <div className="absolute top-2.5 right-2.5 z-40 bg-[#c5a059] text-black font-mono font-black text-[7px] tracking-widest px-2.5 py-0.5 rounded-full uppercase shadow-md flex items-center gap-0.5">
+                                                    🏆 Winner
+                                                </div>
+                                            )}
+
                                             <div className="relative w-36 h-44 flex items-center justify-center overflow-visible select-none pointer-events-none">
-                                                
-                                                {/* Back Image (Left skewed) */}
-                                                <div className="absolute w-[90px] h-[120px] rounded-lg overflow-hidden border border-white/20 bg-black/40 shadow-2xl transition-all duration-500 transform -translate-x-8 -rotate-12 scale-90 z-10 opacity-30 group-hover:-translate-x-12 group-hover:-rotate-18 group-hover:scale-95 group-hover:opacity-75">
-                                                    <img
-                                                        src={`/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(cat.nominees[idx2])}`}
-                                                        alt=""
-                                                        className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0"
-                                                    />
-                                                </div>
-
-                                                {/* Middle Image (Right skewed) */}
-                                                <div className="absolute w-[90px] h-[120px] rounded-lg overflow-hidden border border-white/20 bg-black/40 shadow-2xl transition-all duration-500 transform translate-x-8 rotate-12 scale-90 z-20 opacity-40 group-hover:translate-x-12 group-hover:rotate-18 group-hover:scale-95 group-hover:opacity-85">
-                                                    <img
-                                                        src={`/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(cat.nominees[idx1])}`}
-                                                        alt=""
-                                                        className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0"
-                                                    />
-                                                </div>
-
-                                                {/* Front Image (Centered) */}
-                                                <div className="absolute w-[105px] h-[135px] rounded-lg overflow-hidden border-2 border-white/30 bg-black shadow-2xl transition-all duration-500 transform rotate-0 scale-100 z-30 opacity-90 group-hover:scale-105 group-hover:opacity-100 group-hover:border-[#c5a059]">
-                                                    <img
-                                                        src={`/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(cat.nominees[idx0])}`}
-                                                        alt=""
-                                                        className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-102"
-                                                    />
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
-                                                </div>
+                                                {hasWinner ? (
+                                                    // Single Winner Portrait
+                                                    <div className="absolute w-[110px] h-[140px] rounded-lg overflow-hidden border-2 border-[#c5a059] bg-black shadow-[0_0_20px_rgba(197,160,89,0.3)] transform scale-105">
+                                                        <img
+                                                            src={`/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(cat.winnerImage!)}`}
+                                                            alt={cat.winnerName}
+                                                            className="w-full h-full object-cover transition-all duration-700"
+                                                        />
+                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                                    </div>
+                                                ) : (
+                                                    // Rotating Stack for Jury Selection
+                                                    <>
+                                                        <div className="absolute w-[90px] h-[120px] rounded-lg overflow-hidden border border-white/20 bg-black/40 shadow-2xl transition-all duration-500 transform -translate-x-8 -rotate-12 scale-90 z-10 opacity-30">
+                                                            <img
+                                                                src={`/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(cat.nominees[idx2])}`}
+                                                                alt=""
+                                                                className="w-full h-full object-cover grayscale"
+                                                            />
+                                                        </div>
+                                                        <div className="absolute w-[90px] h-[120px] rounded-lg overflow-hidden border border-white/20 bg-black/40 shadow-2xl transition-all duration-500 transform translate-x-8 rotate-12 scale-90 z-20 opacity-40">
+                                                            <img
+                                                                src={`/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(cat.nominees[idx1])}`}
+                                                                alt=""
+                                                                className="w-full h-full object-cover grayscale"
+                                                            />
+                                                        </div>
+                                                        <div className="absolute w-[105px] h-[135px] rounded-lg overflow-hidden border-2 border-white/30 bg-black shadow-2xl transition-all duration-500 transform rotate-0 scale-100 z-30 opacity-90">
+                                                            <img
+                                                                src={`/assets/nominees/${encodeURIComponent(cat.folder)}/${encodeURIComponent(cat.nominees[idx0])}`}
+                                                                alt=""
+                                                                className="w-full h-full object-cover grayscale"
+                                                            />
+                                                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                                                        </div>
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="text-center w-full mt-2">
-                                        <span className="text-[9px] font-mono text-[#c5a059] uppercase tracking-widest block mb-1">
-                                            {cat.id === "tech" || cat.id === "leadership" ? "Jury Selection (Non-Voting)" : `Category 0${idx + 1}`}
+                                        <span className="text-[9px] font-mono text-[#c5a059] uppercase tracking-widest block mb-1 font-bold">
+                                            {cat.id === "tech" || cat.id === "leadership" ? "Jury Selection" : `Category 0${idx + 1}`}
                                         </span>
                                         <h3 className="text-xs font-black uppercase tracking-tight leading-snug text-white/95 group-hover:text-[#c5a059] transition-colors min-h-[32px] flex items-center justify-center">
                                             {cat.categoryName}
                                         </h3>
+                                        {hasWinner && (
+                                            <p className="text-[10px] text-[#c5a059] font-mono font-bold mt-1 tracking-wider uppercase">
+                                                {cat.winnerName}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                             );
                         })}
                     </div>
-
-                    <a
-                        href="/awards"
-                        className="inline-flex items-center gap-2 px-10 py-4 bg-[#c5a059] text-black font-extrabold uppercase tracking-[0.2em] text-xs rounded-full hover:bg-white hover:text-black transition-all shadow-lg active:scale-95"
-                    >
-                        Cast Your Vote Now
-                    </a>
                 </motion.div>
             </section>
 

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon, ChevronLeft, ChevronRight, Calendar, Clock, MapPin, Check, Send, Play } from "lucide-react";
+import { Menu, X, Sun, Moon, ChevronLeft, ChevronRight, ChevronDown, Calendar, Clock, MapPin, Check, Send, Play } from "lucide-react";
 import { triggerHaptic } from "@/utils/haptic";
 import { supabase } from "@/lib/supabase";
 import PastPartners from "@/components/sections/PastPartners";
@@ -129,6 +129,7 @@ export default function TypeBLandingPage() {
     const [activeMask, setActiveMask] = useState<"white" | "black">("white");
     const [rotationOffset, setRotationOffset] = useState(0);
     const [scheduleView, setScheduleView] = useState<"calendar" | "list">("calendar");
+    const [activeDropdown, setActiveDropdown] = useState<"explore" | "program" | null>(null);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -552,12 +553,56 @@ export default function TypeBLandingPage() {
             }`}>
                 <div className="max-w-7xl mx-auto px-6 flex justify-between items-center relative">
                     
-                    {/* Left Navigation Links */}
-                    <div className="hidden lg:flex lg:flex-1 justify-start items-center gap-6">
-                        <button onClick={() => scrollSection("about")} className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">About</button>
-                        <button onClick={() => scrollSection("schedule")} className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">Schedule</button>
-                        <button onClick={() => scrollSection("countdown")} className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">Kickoff</button>
-                        <button onClick={() => scrollSection("calendar")} className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">Events</button>
+                    {/* Left Navigation Links - Spaced out & Dropdown based */}
+                    <div className="hidden lg:flex lg:flex-1 justify-start items-center gap-8 z-50">
+                        <div 
+                            className="relative py-2"
+                            onMouseEnter={() => setActiveDropdown("explore")}
+                            onMouseLeave={() => setActiveDropdown(null)}
+                        >
+                            <button className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] font-extrabold hover:text-[#c5a059] transition-colors py-1">
+                                Explore VVS <ChevronDown size={10} className={`transition-transform duration-300 ${activeDropdown === "explore" ? "rotate-180 text-[#c5a059]" : "opacity-60"}`} />
+                            </button>
+                            <AnimatePresence>
+                                {activeDropdown === "explore" && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                                        transition={{ duration: 0.15 }}
+                                        className={`absolute left-0 mt-2 w-64 rounded-2xl border p-4 shadow-2xl z-50 backdrop-blur-xl ${
+                                            theme === "dark" 
+                                                ? "bg-black/90 border-white/10 text-white" 
+                                                : "bg-[#F5F0E8]/95 border-black/10 text-black"
+                                        }`}
+                                    >
+                                        <div className="flex flex-col gap-1.5">
+                                            {[
+                                                { title: "About VVS", desc: "The vision, story and mission of VVS Lagos 2026", target: "about" },
+                                                { title: "Schedule", desc: "View the official event timeline and interactive calendar", target: "schedule" },
+                                                { title: "Kickoff Countdown", desc: "Track the countdown to the official festival launch", target: "countdown" }
+                                            ].map((item, i) => (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => {
+                                                        scrollSection(item.target);
+                                                        setActiveDropdown(null);
+                                                    }}
+                                                    className={`flex flex-col text-left p-2.5 rounded-xl transition-all ${
+                                                        theme === "dark" ? "hover:bg-white/5" : "hover:bg-black/5"
+                                                    }`}
+                                                >
+                                                    <span className="text-[10px] uppercase font-bold tracking-wider text-[#c5a059]">{item.title}</span>
+                                                    <span className={`text-[9px] mt-0.5 font-light leading-normal ${
+                                                        theme === "dark" ? "text-white/50" : "text-black/50"
+                                                    }`}>{item.desc}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     </div>
 
                     {/* Center Logo */}
@@ -575,11 +620,54 @@ export default function TypeBLandingPage() {
                     </div>
 
                     {/* Right Navigation Links & Controls */}
-                    <div className="flex items-center gap-4 ml-auto lg:ml-0 lg:flex-1 lg:justify-end">
-                        <div className="hidden lg:flex items-center gap-6 mr-4">
-                            <a href="/panels" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">VVS Panels</a>
-                            <a href="/descendants" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">VVS Album</a>
-                            <a href="/awards" className="text-[11px] uppercase tracking-[0.2em] font-bold hover:text-[#c5a059] transition-colors">VVS Awards</a>
+                    <div className="flex items-center gap-4 ml-auto lg:ml-0 lg:flex-1 lg:justify-end z-50">
+                        <div className="hidden lg:flex items-center gap-8 mr-4">
+                            <div 
+                                className="relative py-2"
+                                onMouseEnter={() => setActiveDropdown("program")}
+                                onMouseLeave={() => setActiveDropdown(null)}
+                            >
+                                <button className="flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] font-extrabold hover:text-[#c5a059] transition-colors py-1">
+                                    Program <ChevronDown size={10} className={`transition-transform duration-300 ${activeDropdown === "program" ? "rotate-180 text-[#c5a059]" : "opacity-60"}`} />
+                                </button>
+                                <AnimatePresence>
+                                    {activeDropdown === "program" && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                                            transition={{ duration: 0.15 }}
+                                            className={`absolute right-0 mt-2 w-72 rounded-2xl border p-4 shadow-2xl z-50 backdrop-blur-xl ${
+                                                theme === "dark" 
+                                                    ? "bg-black/90 border-white/10 text-white" 
+                                                    : "bg-[#F5F0E8]/95 border-black/10 text-black"
+                                            }`}
+                                        >
+                                            <div className="flex flex-col gap-1.5">
+                                                {[
+                                                    { title: "VVS Awards", desc: "Digital nominees & winners of VVS Lagos 2026", href: "/awards" },
+                                                    { title: "VVS Panels", desc: "Explore panel discussions, topics and key speakers", href: "/panels" },
+                                                    { title: "VVS Album", desc: "Listen to the official Descendants compilation", href: "/descendants" },
+                                                    { title: "Join Community", desc: "Register to join our creative innovator network", href: "/community" }
+                                                ].map((item, i) => (
+                                                    <a
+                                                        key={i}
+                                                        href={item.href}
+                                                        className={`flex flex-col text-left p-2.5 rounded-xl transition-all ${
+                                                            theme === "dark" ? "hover:bg-white/5" : "hover:bg-black/5"
+                                                        }`}
+                                                    >
+                                                        <span className="text-[10px] uppercase font-bold tracking-wider text-[#c5a059]">{item.title}</span>
+                                                        <span className={`text-[9px] mt-0.5 font-light leading-normal ${
+                                                            theme === "dark" ? "text-white/50" : "text-black/50"
+                                                        }`}>{item.desc}</span>
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
                         </div>
 
                         {/* Theme Toggle */}

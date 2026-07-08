@@ -6,9 +6,9 @@ export default function Page() {
         <EventRSVPForm
             eventTitle="VVS Film Experience with AFRIFF"
             eventDate="July 11, 2026"
-            eventTime="3:00 PM WAT"
-            eventVenue="TBD, Lagos"
-            eventDescription="A curated series of screenings, short films, and panel discussions on new-age African cinema, presented in partnership with AFRIFF."
+            eventTime="4:00 PM - 8:00 PM WAT"
+            eventVenue="Film One Landmark, VI, Lagos"
+            eventDescription="A curated series of screenings, short films, and panel discussions on new-age African cinema, presented in partnership with AFRIFF at Landmark Filmhouse."
             eventType="film_experience"
             preSelectedEvents={["JULY 11"]}
         />

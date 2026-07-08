@@ -72,7 +72,7 @@ const AWARDS_DATA = [
     categoryName: "Innovation & Technology Excellence",
     folder: "INNOVATION & TECHNOLOGY EXCELLENCE AWARD",
     nominees: [
-      { name: "Big Cabal (Tomiwa Aladekomo)", file: "Big Cabal (Tomiwa Aladekomo) .jpg" },
+      { name: "Big Cabal (Tomiwa Aladekomo)", file: "Big Cabal (Tomiwa Aladekomo) .jpg", winner: true },
       { name: "Bumpa (Kelvin Umechukwu)", file: "Bumpa (Kelvin Umechukwu)  .jpg" },
       { name: "Moniepoint (Tosin Eniolorunda)", file: "Moniepoint (Tosin Eniolorunda) .jpg" },
       { name: "PiggyVest (Odunayo Eweniyi)", file: "PiggyVest (Odunayo Eweniyi)  .png" },
@@ -85,7 +85,7 @@ const AWARDS_DATA = [
     folder: "VISIONARY LEADERSHIP AWARD",
     nominees: [
       { name: "Akarachi Amadi", file: "Akarachi Amadi .webp" },
-      { name: "Chioma Ude", file: "Chioma Ude.webp" },
+      { name: "Chioma Ude", file: "Chioma Ude.webp", winner: true },
       { name: "Juliet Olanipekun", file: "Juliet Olanipekun  .jpg" },
       { name: "Ugoma Chinelo Ebilah", file: "Ugoma Chinelo Ebilah .jpg" }
     ]

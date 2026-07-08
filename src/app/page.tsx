@@ -41,6 +41,8 @@ const AWARDS_TEASER_DATA = [
     id: "leadership",
     categoryName: "Visionary Leadership",
     folder: "VISIONARY LEADERSHIP AWARD",
+    winnerName: "Chioma Ude",
+    winnerImage: "Chioma Ude.webp",
     nominees: [
       "Akarachi Amadi .webp",
       "Chioma Ude.webp",
@@ -51,6 +53,8 @@ const AWARDS_TEASER_DATA = [
     id: "tech",
     categoryName: "Innovation & Technology Excellence",
     folder: "INNOVATION & TECHNOLOGY EXCELLENCE AWARD",
+    winnerName: "Big Cabal (Tomiwa Aladekomo)",
+    winnerImage: "Big Cabal (Tomiwa Aladekomo) .jpg",
     nominees: [
       "Big Cabal (Tomiwa Aladekomo) .jpg",
       "Bumpa (Kelvin Umechukwu)  .jpg",
@@ -210,8 +214,8 @@ export default function TypeBLandingPage() {
     const optimizedEvents = useMemo(() => [
         {
             date: "July 6, 2026",
-            shortDate: "JULY 6",
-            time: "6:00 PM WAT",
+            shortDate: "JULY 6_FOUNDERS",
+            time: "5:00 PM - 8:30 PM WAT",
             title: "VVS Founders Reception",
             venue: "Alliance Française, Ikoyi, Lagos",
             category: "Networking & Reception",
@@ -225,10 +229,10 @@ export default function TypeBLandingPage() {
             disabled: true
         },
         {
-            date: "July 7 - 9, 2026",
-            shortDate: "JULY 7-9",
-            time: "10:00 AM WAT",
-            title: "VVS Lagos 2026 Pop-Up: Trunk Show",
+            date: "July 7 - 11, 2026",
+            shortDate: "JULY 7-11",
+            time: "2:00 PM - 8:00 PM WAT",
+            title: "VVS Lagos 2026 Pop-Up & Trunk Show",
             venue: "Mikano, 65 Adeola Odeku, VI, Lagos",
             category: "Pop-Up & Retail",
             description: "A premium trunk show featuring retail collections from luxury Nigerian fashion brands and our VVS Innovators.",
@@ -236,16 +240,16 @@ export default function TypeBLandingPage() {
             gridCol: 2,
             gridSpan: 3,
             gridRow: 1,
-            dateLabel: "July 7 - 9",
-            endsAt: "2026-07-09T23:59:59+01:00",
+            dateLabel: "July 7 - 11",
+            endsAt: "2026-07-11T23:59:59+01:00",
             path: "/popup"
         },
         {
             date: "July 9, 2026",
             shortDate: "JULY 9_COLLECTORS",
-            time: "12:00 PM WAT",
+            time: "7:00 PM - 10:00 PM WAT",
             title: "VVS Collectors Day Preview",
-            venue: "Mikano, 65 Adeola Odeku, VI, Lagos",
+            venue: "Private Location, Lagos",
             category: "Exclusive Preview",
             description: "An exclusive preview event for art collectors and patrons, showcasing high luxury design and select curated items.",
             image: "/assets/FRUCHE.webp",
@@ -259,11 +263,11 @@ export default function TypeBLandingPage() {
         {
             date: "July 9 - 12, 2026",
             shortDate: "JULY 9-12",
-            time: "11:00 AM WAT",
+            time: "7:00 PM WAT",
             title: "VVS Lagos 2026 Art Exhibition",
             venue: "Blank Space, Grace Arena Plaza, VI, Lagos",
             category: "Art Exhibition",
-            description: "A contemporary art exhibition showcasing boundary-pushing visual works from local and international modern artists.",
+            description: "A contemporary art exhibition showcasing boundary-pushing visual works from local and international modern artists, curated by Ifeanyi Nwune and Richard Vedelago.",
             image: "/assets/PIECE ET PATCH.webp",
             gridCol: 4,
             gridSpan: 4,
@@ -274,10 +278,10 @@ export default function TypeBLandingPage() {
         },
         {
             date: "July 9, 2026",
-            shortDate: "JULY 9",
-            time: "2:00 PM WAT",
+            shortDate: "JULY 9_ART",
+            time: "1:00 PM WAT",
             title: "Future Labs Art Exhibition",
-            venue: "Yenwa Gallery, Lagos",
+            venue: "Yenwa Gallery, VI, Lagos",
             category: "Art Exhibition",
             description: "A specialized exhibition presenting experimental artworks and installations developed under the Future Labs incubator program.",
             image: "/assets/TJ WHO.webp",
@@ -289,8 +293,8 @@ export default function TypeBLandingPage() {
         },
         {
             date: "July 9, 2026",
-            shortDate: "JULY 9",
-            time: "8:00 PM WAT",
+            shortDate: "JULY 9_ALBUM",
+            time: "10:00 PM - 3:00 AM WAT",
             title: "VVS Album Release Party",
             venue: "Octo Lagos, Musa Yar'Adua, VI, Lagos",
             category: "Album Release & Party",
@@ -300,14 +304,15 @@ export default function TypeBLandingPage() {
             gridSpan: 1,
             gridRow: 5,
             dateLabel: "July 9",
-            endsAt: "2026-07-10T04:00:00+01:00"
+            endsAt: "2026-07-10T04:00:00+01:00",
+            path: "/albumrelease"
         },
         {
             date: "July 10, 2026",
             shortDate: "JULY 10",
-            time: "4:00 PM WAT",
+            time: "3:00 PM - 7:00 PM WAT",
             title: "Future Labs Fashion Exhibition",
-            venue: "British Council, Lagos",
+            venue: "British Council, Ikoyi, Lagos",
             category: "Fashion Exhibition",
             description: "A showcase of new collections created by rising fashion designers in the Future Labs incubator program, highlighting British Council support.",
             image: "/assets/HERTUNBA.avif",
@@ -319,12 +324,12 @@ export default function TypeBLandingPage() {
         },
         {
             date: "July 11, 2026",
-            shortDate: "JULY 11",
-            time: "3:00 PM WAT",
+            shortDate: "JULY 11_FILM",
+            time: "4:00 PM - 8:00 PM WAT",
             title: "VVS Film Experience with AFRIFF",
-            venue: "TBD, Lagos",
+            venue: "Film One Landmark, VI, Lagos",
             category: "Film & Cinema",
-            description: "A curated series of screenings, short films, and panel discussions on new-age African cinema, presented in partnership with AFRIFF.",
+            description: "A curated series of screenings, short films, and panel discussions on new-age African cinema, presented in partnership with AFRIFF at Landmark Filmhouse.",
             image: "/assets/LFJ OFFICIAL.webp",
             gridCol: 6,
             gridSpan: 1,
@@ -335,8 +340,8 @@ export default function TypeBLandingPage() {
         },
         {
             date: "July 11, 2026",
-            shortDate: "JULY 11",
-            time: "9:00 PM WAT",
+            shortDate: "JULY 11_FASHION",
+            time: "10:00 PM WAT",
             title: "VVS Fashion Night Out",
             venue: "FOMO Lagos, VI, Lagos",
             category: "Nightlife & Party",
@@ -351,18 +356,19 @@ export default function TypeBLandingPage() {
         {
             date: "July 12, 2026",
             shortDate: "JULY 12",
-            time: "6:00 PM WAT",
+            time: "5:00 PM WAT",
             title: "VVS Runway Show (Main Event)",
-            venue: "TBD, Lagos",
+            venue: "Club 245, VI, Lagos",
             category: "Haute Couture Runway",
-            description: "The official runway show and main fashion event of VVS Lagos 2026. Presentation of collections by the VVS Innovators.",
+            description: "The official runway show presenting Abigail Ajobi, Oshobor (VVS New Designer), Lai Labode Couture, and I.N Official.",
             image: "/assets/IN OFFICIAL.png",
             gridCol: 7,
             gridSpan: 1,
             gridRow: 1,
             dateLabel: "July 12",
             endsAt: "2026-07-12T23:59:59+01:00",
-            ticketUrl: "https://www.pv.rsvp/vvs-fashion-show"
+            ticketUrl: "https://www.pv.rsvp/vvs-fashion-show",
+            path: "/runway"
         }
     ], []);
 
@@ -1691,16 +1697,16 @@ export default function TypeBLandingPage() {
                                         <label className="text-[10px] font-mono uppercase tracking-widest font-bold opacity-60 block mb-2">Target Events (Select all that apply)</label>
                                         <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1 scrollbar-none">
                                             {[
-                                                { value: "JULY 6_FOUNDERS", label: "July 6 — VVS Founders Reception (Invite Only — contact admin for invite)", disabled: true },
-                                                { value: "JULY 7-9", label: "July 7-9 — VVS Lagos Pop Up @ Mikano VI" },
-                                                { value: "JULY 9_COLLECTORS", label: "July 9 — VVS Collectors Day Preview @ Mikano VI" },
-                                                { value: "JULY 9-12", label: "July 9-12 — VVS Art Exhibition @ Blank Space VI" },
-                                                { value: "JULY 9_ART", label: "July 9 — Future Labs Art Exhibition @ Yenwa Gallery" },
-                                                { value: "JULY 9_ALBUM", label: "July 9 — VVS Album Release Party @ Octo Lagos" },
-                                                { value: "JULY 10", label: "July 10 — Future Labs Fashion Exhibition @ British Council" },
-                                                { value: "JULY 11_FILM", label: "July 11 — VVS Film Experience with AFRIFF" },
+                                                { value: "JULY 6_FOUNDERS", label: "July 6 — VVS Founders Reception @ Alliance Française (Invite Only)", disabled: true },
+                                                { value: "JULY 7-11", label: "July 7-11 — VVS Pop-Up & Trunk Show @ Mikano VI" },
+                                                { value: "JULY 9_COLLECTORS", label: "July 9 — VVS Collectors Day Preview (Private Location)" },
+                                                { value: "JULY 9-12", label: "July 9-12 — VVS Art Exhibition @ Blank Space, Grace Arena Plaza VI" },
+                                                { value: "JULY 9_ART", label: "July 9 — Future Labs Art Exhibition @ Yenwa Gallery VI" },
+                                                { value: "JULY 9_ALBUM", label: "July 9 — VVS Album Release Party @ Octo Lagos VI" },
+                                                { value: "JULY 10", label: "July 10 — Future Labs Fashion Exhibition @ British Council Ikoyi" },
+                                                { value: "JULY 11_FILM", label: "July 11 — VVS Film Experience with AFRIFF @ Film One Landmark VI" },
                                                 { value: "JULY 11_FASHION", label: "July 11 — VVS Fashion Night Out @ Fomo Lagos" },
-                                                { value: "JULY 12", label: "July 12 — VVS Runway Show @ 234 Adeola Odeku" },
+                                                { value: "JULY 12", label: "July 12 — VVS Runway Show @ Club 245, VI" },
                                             ].map((opt) => {
                                                 const isSelected = rsvpData.events.includes(opt.value);
                                                 const isDisabled = 'disabled' in opt && opt.disabled;

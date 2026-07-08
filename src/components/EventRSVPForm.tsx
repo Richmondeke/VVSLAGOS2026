@@ -21,16 +21,16 @@ interface EventRSVPFormProps {
 type FormPhase = "rsvp" | "submitting" | "success" | "community" | "community_submitting" | "community_done";
 
 const EVENT_OPTIONS = [
-    { value: "JULY 6_FOUNDERS", label: "July 6 — VVS Founders Reception (Invite Only — contact admin for invite)", disabled: true },
-    { value: "JULY 7-9", label: "July 7-9 — VVS Lagos Pop Up @ Mikano VI" },
-    { value: "JULY 9_COLLECTORS", label: "July 9 — VVS Collectors Day Preview @ Mikano VI" },
-    { value: "JULY 9-12", label: "July 9-12 — VVS Art Exhibition @ Blank Space VI" },
-    { value: "JULY 9_ART", label: "July 9 — Future Labs Art Exhibition @ Yenwa Gallery" },
-    { value: "JULY 9_ALBUM", label: "July 9 — VVS Album Release Party @ Octo Lagos" },
-    { value: "JULY 10", label: "July 10 — Future Labs Fashion Exhibition @ British Council" },
-    { value: "JULY 11_FILM", label: "July 11 — VVS Film Experience with AFRIFF" },
+    { value: "JULY 6_FOUNDERS", label: "July 6 — VVS Founders Reception @ Alliance Française (Invite Only)", disabled: true },
+    { value: "JULY 7-11", label: "July 7-11 — VVS Pop-Up & Trunk Show @ Mikano VI" },
+    { value: "JULY 9_COLLECTORS", label: "July 9 — VVS Collectors Day Preview (Private Location)" },
+    { value: "JULY 9-12", label: "July 9-12 — VVS Art Exhibition @ Blank Space, Grace Arena Plaza VI" },
+    { value: "JULY 9_ART", label: "July 9 — Future Labs Art Exhibition @ Yenwa Gallery VI" },
+    { value: "JULY 9_ALBUM", label: "July 9 — VVS Album Release Party @ Octo Lagos VI" },
+    { value: "JULY 10", label: "July 10 — Future Labs Fashion Exhibition @ British Council Ikoyi" },
+    { value: "JULY 11_FILM", label: "July 11 — VVS Film Experience with AFRIFF @ Film One Landmark VI" },
     { value: "JULY 11_FASHION", label: "July 11 — VVS Fashion Night Out @ Fomo Lagos" },
-    { value: "JULY 12", label: "July 12 — VVS Runway Show @ 234 Adeola Odeku" },
+    { value: "JULY 12", label: "July 12 — VVS Runway Show @ Club 245, VI" },
 ];
 
 const COUNTRY_CODES = [

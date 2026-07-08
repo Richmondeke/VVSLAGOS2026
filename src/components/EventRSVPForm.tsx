@@ -22,8 +22,9 @@ type FormPhase = "rsvp" | "submitting" | "success" | "community" | "community_su
 
 const EVENT_OPTIONS = [
     { value: "JULY 6_FOUNDERS", label: "July 6 — VVS Founders Reception (Invite Only — contact admin for invite)", disabled: true },
-    { value: "JULY 7-11", label: "July 7-11 — VVS Lagos Pop Up @ Mikano VI" },
-    { value: "JULY 8-12", label: "July 8-12 — VVS Art Exhibition @ Blank Space VI" },
+    { value: "JULY 7-9", label: "July 7-9 — VVS Lagos Pop Up @ Mikano VI" },
+    { value: "JULY 9_COLLECTORS", label: "July 9 — VVS Collectors Day Preview @ Mikano VI" },
+    { value: "JULY 9-12", label: "July 9-12 — VVS Art Exhibition @ Blank Space VI" },
     { value: "JULY 9_ART", label: "July 9 — Future Labs Art Exhibition @ Yenwa Gallery" },
     { value: "JULY 9_ALBUM", label: "July 9 — VVS Album Release Party @ Octo Lagos" },
     { value: "JULY 10", label: "July 10 — Future Labs Fashion Exhibition @ British Council" },

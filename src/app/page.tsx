@@ -217,8 +217,8 @@ export default function TypeBLandingPage() {
             image: "/assets/ONALAJA.webp"
         },
         {
-            date: "July 7 - 11, 2026",
-            shortDate: "JULY 7-11",
+            date: "July 7 - 9, 2026",
+            shortDate: "JULY 7-9",
             time: "10:00 AM WAT",
             title: "VVS Lagos 2026 Pop-Up: Trunk Show",
             venue: "Mikano, 65 Adeola Odeku, VI, Lagos",
@@ -227,8 +227,18 @@ export default function TypeBLandingPage() {
             image: "/assets/FRUCHE.webp"
         },
         {
-            date: "July 8 - 12, 2026",
-            shortDate: "JULY 8-12",
+            date: "July 9, 2026",
+            shortDate: "JULY 9_COLLECTORS",
+            time: "12:00 PM WAT",
+            title: "VVS Collectors Day Preview",
+            venue: "Mikano, 65 Adeola Odeku, VI, Lagos",
+            category: "Exclusive Preview",
+            description: "An exclusive preview event for art collectors and patrons, showcasing high luxury design and select curated items.",
+            image: "/assets/FRUCHE.webp"
+        },
+        {
+            date: "July 9 - 12, 2026",
+            shortDate: "JULY 9-12",
             time: "11:00 AM WAT",
             title: "VVS Lagos 2026 Art Exhibition",
             venue: "Blank Space, Grace Arena Plaza, VI, Lagos",
@@ -1386,8 +1396,9 @@ export default function TypeBLandingPage() {
                                         <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1 scrollbar-none">
                                             {[
                                                 { value: "JULY 6_FOUNDERS", label: "July 6 — VVS Founders Reception (Invite Only — contact admin for invite)", disabled: true },
-                                                { value: "JULY 7-11", label: "July 7-11 — VVS Lagos Pop Up @ Mikano VI" },
-                                                { value: "JULY 8-12", label: "July 8-12 — VVS Art Exhibition @ Blank Space VI" },
+                                                { value: "JULY 7-9", label: "July 7-9 — VVS Lagos Pop Up @ Mikano VI" },
+                                                { value: "JULY 9_COLLECTORS", label: "July 9 — VVS Collectors Day Preview @ Mikano VI" },
+                                                { value: "JULY 9-12", label: "July 9-12 — VVS Art Exhibition @ Blank Space VI" },
                                                 { value: "JULY 9_ART", label: "July 9 — Future Labs Art Exhibition @ Yenwa Gallery" },
                                                 { value: "JULY 9_ALBUM", label: "July 9 — VVS Album Release Party @ Octo Lagos" },
                                                 { value: "JULY 10", label: "July 10 — Future Labs Fashion Exhibition @ British Council" },

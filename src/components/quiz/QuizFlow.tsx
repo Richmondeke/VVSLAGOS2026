@@ -16,7 +16,7 @@ const AWARDS_DATA = [
     nominees: [
       { name: "Adebayo Oke-Lawal (Orange Culture)", file: "Adebayo Oke-Lawal (Orange Culture) .jpg" },
       { name: "Bubu Ogisi (IAMISIGO)", file: "Bubu Ogisi (IAMISIGO) .jpg" },
-      { name: "Floryntina Agu (Hertunba)", file: "Floryntina Agu (Hertunba).jpg" },
+      { name: "Floryntina Agu (Hertunba)", file: "Floryntina Agu (Hertunba).jpg", winner: true },
       { name: "Ifedayo Nupo (Moyé)", file: "Ifedayo Nupo (Moye\u0301) .jpg" }
     ]
   },
@@ -25,7 +25,7 @@ const AWARDS_DATA = [
     categoryName: "Contemporary Visual Artist",
     folder: "CONTEMPORARY VISUAL ARTIST OF THE YEAR AWARD",
     nominees: [
-      { name: "Anthony Azekwoh", file: "Anthony Azekwoh.jpg" },
+      { name: "Anthony Azekwoh", file: "Anthony Azekwoh.jpg", winner: true },
       { name: "Ken Nwadiogbu", file: "Ken Nwadiogbu.webp" },
       { name: "Modupe Fadugba", file: "Modupe Fadugba  .jpg" },
       { name: "Olaolu Slawn", file: "Olaolu Slawn.jpg" },
@@ -39,7 +39,7 @@ const AWARDS_DATA = [
     nominees: [
       { name: "Creatorium (Salem & Ada)", file: "Creatorium (Salem & Ada).png" },
       { name: "Dele\u2019s Life", file: "Dele\u2019s Life.jpg" },
-      { name: "Dezny", file: "Dezny.jpg" },
+      { name: "Dezny", file: "Dezny.jpg", winner: true },
       { name: "Rachel Ojuromi", file: "Rachel Ojuromi.jpg" },
       { name: "Tobe Szn", file: "Tobe Szn.jpg" }
     ]
@@ -52,7 +52,7 @@ const AWARDS_DATA = [
       { name: "Amaeya", file: "Amaeya.jpg" },
       { name: "Egertton", file: "Egertton.jpg" },
       { name: "Esoterica", file: "Esoterica.jpg" },
-      { name: "Fimi", file: "Fimi.jpg" },
+      { name: "Fimi", file: "Fimi.jpg", winner: true },
       { name: "Scottyolorin", file: "Scottyolorin.jpg" },
       { name: "Zaylevelten", file: "Zaylevelten.jpg" }
     ]
@@ -63,7 +63,7 @@ const AWARDS_DATA = [
     folder: "EXCELLENCE IN FILM & SCREEN STORYTELLING",
     nominees: [
       { name: "Dammy Twitch (Call of My Life)", file: "Dammy Twitch \u2014 Call of My Life .jpg" },
-      { name: "Kemi Adetiba (To Kill a Monkey)", file: "Kemi Adetiba \u2014 To Kill a Monkey.jpg" },
+      { name: "Kemi Adetiba (To Kill a Monkey)", file: "Kemi Adetiba \u2014 To Kill a Monkey.jpg", winner: true },
       { name: "Wale & Akinola Davies (My Father’s Shadow)", file: "Wale & Akinola Davies and Funmbi Ogunbanwo — My Father’s Shadow .jpg" }
     ]
   },
@@ -75,7 +75,7 @@ const AWARDS_DATA = [
       { name: "Big Cabal (Tomiwa Aladekomo)", file: "Big Cabal (Tomiwa Aladekomo) .jpg" },
       { name: "Bumpa (Kelvin Umechukwu)", file: "Bumpa (Kelvin Umechukwu)  .jpg" },
       { name: "Moniepoint (Tosin Eniolorunda)", file: "Moniepoint (Tosin Eniolorunda) .jpg" },
-      { name: "PiggyVest (Odunayo Eweniyi)", file: "PiggyVest (Odunayo Eweniyi)  .png" },
+      { name: "PiggyVest (Odunayo Eweniyi)", file: "PiggyVest (Odunayo Eweniyi)  .png", winner: true },
       { name: "Zappie (Kelvin Edosa)", file: "Zappie (Kelvin Edosa) .jpg" }
     ]
   },
@@ -85,7 +85,7 @@ const AWARDS_DATA = [
     folder: "VISIONARY LEADERSHIP AWARD",
     nominees: [
       { name: "Akarachi Amadi", file: "Akarachi Amadi .webp" },
-      { name: "Chioma Ude", file: "Chioma Ude.webp" },
+      { name: "Chioma Ude", file: "Chioma Ude.webp", winner: true },
       { name: "Juliet Olanipekun", file: "Juliet Olanipekun  .jpg" },
       { name: "Ugoma Chinelo Ebilah", file: "Ugoma Chinelo Ebilah .jpg" }
     ]
@@ -433,11 +433,13 @@ export default function VvsPassAndVotingFlow() {
                                 handleVote(cat.id, nominee.name);
                               }}
                               className={`group border rounded-xl overflow-hidden transition-all duration-500 relative ${
-                                isJury
-                                  ? "border-[#c5a059]/25 bg-[#c5a059]/5 cursor-not-allowed"
-                                  : isSelected
-                                    ? `border-[#c5a059] border-2 bg-[#c5a059]/10 shadow-[0_0_25px_rgba(197,160,89,0.2)] ${votingClosed ? 'cursor-default' : 'scale-[1.02] cursor-pointer'}`
-                                    : `border-white/10 bg-white/[0.01] ${votingClosed ? 'cursor-default' : 'hover:border-white/20 hover:bg-white/[0.02] cursor-pointer'}`
+                                nominee.winner
+                                  ? "border-[#c5a059] border-2 bg-[#c5a059]/15 shadow-[0_0_30px_rgba(197,160,89,0.3)] scale-[1.01] cursor-default"
+                                  : isJury
+                                    ? "border-white/5 bg-white/[0.005] opacity-35 cursor-not-allowed grayscale"
+                                    : isSelected
+                                      ? `border-[#c5a059]/50 border-2 bg-[#c5a059]/5 shadow-[0_0_25px_rgba(197,160,89,0.15)] ${votingClosed ? 'cursor-default grayscale opacity-60' : 'scale-[1.02] cursor-pointer'}`
+                                      : `border-white/10 bg-white/[0.01] ${votingClosed ? 'cursor-default grayscale opacity-35' : 'hover:border-white/20 hover:bg-white/[0.02] cursor-pointer'}`
                               }`}
                             >
                               <div className="aspect-square relative w-full overflow-hidden bg-white/5">
@@ -445,23 +447,30 @@ export default function VvsPassAndVotingFlow() {
                                   src={imgSrc}
                                   alt={nominee.name}
                                   className={`w-full h-full object-cover transition-all duration-700 ease-out ${
-                                    isJury
-                                      ? "grayscale-0 scale-100 opacity-100"
-                                      : isSelected 
-                                        ? "grayscale-0 scale-105" 
-                                        : `grayscale opacity-60 ${votingClosed ? '' : 'group-hover:opacity-85'}`
+                                    nominee.winner
+                                      ? "grayscale-0 scale-105 opacity-100"
+                                      : isJury
+                                        ? "grayscale scale-100 opacity-50"
+                                        : isSelected 
+                                          ? "grayscale scale-105 opacity-80" 
+                                          : `grayscale opacity-50 ${votingClosed ? '' : 'group-hover:opacity-85'}`
                                   }`}
+                                
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
                                 
-                                {isSelected && !isJury && (
-                                  <div className="absolute top-2.5 right-2.5 bg-[#c5a059] text-black px-2 py-1 rounded font-mono text-[8px] font-black tracking-widest uppercase flex items-center gap-1 shadow-md">
+                                {nominee.winner ? (
+                                  <div className="absolute top-2.5 right-2.5 bg-[#c5a059] text-black px-2.5 py-1 rounded font-sans text-[9px] font-black tracking-wider uppercase flex items-center gap-1.5 shadow-[0_0_15px_rgba(197,160,89,0.5)] z-20 border border-[#c5a059]">
+                                    🏆 WINNER
+                                  </div>
+                                ) : isSelected && !isJury && (
+                                  <div className="absolute top-2.5 right-2.5 bg-white/20 text-white px-2 py-1 rounded font-mono text-[8px] font-black tracking-widest uppercase flex items-center gap-1 shadow-md">
                                     <Check size={8} strokeWidth={4} /> SELECTED
                                   </div>
                                 )}
                               </div>
-                              <div className={`p-3 transition-colors duration-300 ${isSelected && !isJury ? "bg-[#c5a059]/5" : ""}`}>
-                                <p className={`text-xs font-extrabold leading-tight line-clamp-2 uppercase ${isSelected && !isJury ? "text-[#c5a059]" : "text-white/70 group-hover:text-white"}`}>{nominee.name}</p>
+                              <div className={`p-3 transition-colors duration-300 ${nominee.winner ? "bg-[#c5a059]/5" : isSelected && !isJury ? "bg-[#c5a059]/2" : ""}`}>
+                                <p className={`text-xs font-extrabold leading-tight line-clamp-2 uppercase ${nominee.winner ? "text-[#c5a059]" : isSelected && !isJury ? "text-[#c5a059]/80" : "text-white/70 group-hover:text-white"}`}>{nominee.name}</p>
                               </div>
                             </div>
                           );
@@ -472,12 +481,11 @@ export default function VvsPassAndVotingFlow() {
                 })}
               </div>
 
-              {/* Floating Summary action bar */}
               {votingClosed ? (
                 <div className="fixed bottom-0 left-0 w-full bg-black/85 backdrop-blur-md border-t border-white/10 py-5 px-6 z-50 flex justify-center shadow-2xl">
                   <div className="w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <span className="text-sm font-mono font-extrabold uppercase tracking-widest text-[#c5a059] animate-pulse">
-                      VOTING NOW CLOSED... Winners to be announced.
+                    <span className="text-sm font-mono font-extrabold uppercase tracking-widest text-[#c5a059] animate-pulse flex items-center gap-2">
+                      🏆 VVS LAGOS 2026 WINNERS ANNOUNCED!
                     </span>
                     <button
                       onClick={() => {

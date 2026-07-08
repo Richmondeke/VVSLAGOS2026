@@ -128,6 +128,7 @@ export default function TypeBLandingPage() {
     const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
     const [activeMask, setActiveMask] = useState<"white" | "black">("white");
     const [rotationOffset, setRotationOffset] = useState(0);
+    const [scheduleView, setScheduleView] = useState<"calendar" | "list">("calendar");
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -193,7 +194,12 @@ export default function TypeBLandingPage() {
             venue: "Alliance Française, Ikoyi, Lagos",
             category: "Networking & Reception",
             description: "An exclusive gathering of founders, creators, and leaders to kick off VVS Lagos 2026. Network with fellow innovators and enjoy curated hospitality in a premium setting.",
-            image: "/assets/ONALAJA.webp"
+            image: "/assets/ONALAJA.webp",
+            gridCol: 1,
+            gridSpan: 1,
+            gridRow: 1,
+            dateLabel: "July 6",
+            disabled: true
         },
         {
             date: "July 7 - 9, 2026",
@@ -203,7 +209,12 @@ export default function TypeBLandingPage() {
             venue: "Mikano, 65 Adeola Odeku, VI, Lagos",
             category: "Pop-Up & Retail",
             description: "A premium trunk show featuring retail collections from luxury Nigerian fashion brands and our VVS Innovators.",
-            image: "/assets/FRUCHE.webp"
+            image: "/assets/FRUCHE.webp",
+            gridCol: 2,
+            gridSpan: 3,
+            gridRow: 1,
+            dateLabel: "July 7 - 9",
+            path: "/popup"
         },
         {
             date: "July 9, 2026",
@@ -213,7 +224,12 @@ export default function TypeBLandingPage() {
             venue: "Mikano, 65 Adeola Odeku, VI, Lagos",
             category: "Exclusive Preview",
             description: "An exclusive preview event for art collectors and patrons, showcasing high luxury design and select curated items.",
-            image: "/assets/FRUCHE.webp"
+            image: "/assets/FRUCHE.webp",
+            gridCol: 4,
+            gridSpan: 1,
+            gridRow: 3,
+            dateLabel: "July 9",
+            path: "/collectors-day"
         },
         {
             date: "July 9 - 12, 2026",
@@ -223,7 +239,12 @@ export default function TypeBLandingPage() {
             venue: "Blank Space, Grace Arena Plaza, VI, Lagos",
             category: "Art Exhibition",
             description: "A contemporary art exhibition showcasing boundary-pushing visual works from local and international modern artists.",
-            image: "/assets/PIECE ET PATCH.webp"
+            image: "/assets/PIECE ET PATCH.webp",
+            gridCol: 4,
+            gridSpan: 4,
+            gridRow: 2,
+            dateLabel: "July 9 - 12",
+            path: "/artexhibition"
         },
         {
             date: "July 9, 2026",
@@ -233,7 +254,11 @@ export default function TypeBLandingPage() {
             venue: "Yenwa Gallery, Lagos",
             category: "Art Exhibition",
             description: "A specialized exhibition presenting experimental artworks and installations developed under the Future Labs incubator program.",
-            image: "/assets/TJ WHO.webp"
+            image: "/assets/TJ WHO.webp",
+            gridCol: 4,
+            gridSpan: 1,
+            gridRow: 4,
+            dateLabel: "July 9"
         },
         {
             date: "July 9, 2026",
@@ -243,7 +268,11 @@ export default function TypeBLandingPage() {
             venue: "Octo Lagos, Musa Yar'Adua, VI, Lagos",
             category: "Album Release & Party",
             description: "An exclusive celebration for the release of the official VVS Lagos album, featuring guest DJ sets and live performances.",
-            image: "/assets/TZAR STUDIOS.webp"
+            image: "/assets/TZAR STUDIOS.webp",
+            gridCol: 4,
+            gridSpan: 1,
+            gridRow: 5,
+            dateLabel: "July 9"
         },
         {
             date: "July 10, 2026",
@@ -253,7 +282,11 @@ export default function TypeBLandingPage() {
             venue: "British Council, Lagos",
             category: "Fashion Exhibition",
             description: "A showcase of new collections created by rising fashion designers in the Future Labs incubator program, highlighting British Council support.",
-            image: "/assets/HERTUNBA.avif"
+            image: "/assets/HERTUNBA.avif",
+            gridCol: 5,
+            gridSpan: 1,
+            gridRow: 1,
+            dateLabel: "July 10"
         },
         {
             date: "July 11, 2026",
@@ -263,7 +296,12 @@ export default function TypeBLandingPage() {
             venue: "TBD, Lagos",
             category: "Film & Cinema",
             description: "A curated series of screenings, short films, and panel discussions on new-age African cinema, presented in partnership with AFRIFF.",
-            image: "/assets/LFJ OFFICIAL.webp"
+            image: "/assets/LFJ OFFICIAL.webp",
+            gridCol: 6,
+            gridSpan: 1,
+            gridRow: 1,
+            dateLabel: "July 11",
+            path: "/film-experience"
         },
         {
             date: "July 11, 2026",
@@ -273,7 +311,11 @@ export default function TypeBLandingPage() {
             venue: "FOMO Lagos, VI, Lagos",
             category: "Nightlife & Party",
             description: "An electric night of music, style, and celebration, co-hosted at FOMO Lagos for fashion creatives and enthusiasts.",
-            image: "/assets/IN OFFICIAL.png"
+            image: "/assets/IN OFFICIAL.png",
+            gridCol: 6,
+            gridSpan: 1,
+            gridRow: 3,
+            dateLabel: "July 11"
         },
         {
             date: "July 12, 2026",
@@ -284,6 +326,10 @@ export default function TypeBLandingPage() {
             category: "Haute Couture Runway",
             description: "The official runway show and main fashion event of VVS Lagos 2026. Presentation of collections by the VVS Innovators.",
             image: "/assets/IN OFFICIAL.png",
+            gridCol: 7,
+            gridSpan: 1,
+            gridRow: 1,
+            dateLabel: "July 12",
             ticketUrl: "https://www.pv.rsvp/vvs-fashion-show"
         }
     ], []);
@@ -779,97 +825,271 @@ export default function TypeBLandingPage() {
             {/* 5. Match Schedule Layout */}
             <section id="schedule" className="py-24 max-w-7xl mx-auto px-6">
                 
-                <div className="mb-14 text-center lg:text-left">
-                    <span className="text-[#c5a059] text-xs font-mono font-bold tracking-[0.4em] uppercase block mb-2">VVS Calendar</span>
-                    <h2 className="text-3xl sm:text-5xl font-extrabold uppercase tracking-tighter">EVENT SCHEDULE IN LAGOS</h2>
-                    <p className="opacity-50 text-sm mt-2">Strategized flow of locations and events. July 5 - 12, 2026.</p>
-                </div>
-
-                <div className="flex flex-col gap-4">
-                    {optimizedEvents.map((event, idx) => (
-                        <motion.div
-                            key={idx}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, margin: "-50px" }}
-                            transition={{ duration: 0.5, delay: idx * 0.05 }}
-                            className={`p-5 sm:p-7 rounded-2xl border transition-all duration-300 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-xl hover:-translate-y-1 ${
-                                theme === "dark" 
-                                    ? "bg-white/[0.02] border-white/10 hover:border-[#c5a059]/40 hover:bg-white/[0.04]" 
-                                    : "bg-white border-black/10 hover:border-[#c5a059]/40 hover:bg-[#FDFBF7]"
+                <div className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div className="text-center lg:text-left">
+                        <span className="text-[#c5a059] text-xs font-mono font-bold tracking-[0.4em] uppercase block mb-2">VVS Calendar</span>
+                        <h2 className="text-3xl sm:text-5xl font-extrabold uppercase tracking-tighter">EVENT SCHEDULE IN LAGOS</h2>
+                        <p className="opacity-50 text-sm mt-2">Strategized flow of locations and events. July 6 - 12, 2026.</p>
+                    </div>
+                    {/* View Switcher Toggle */}
+                    <div className={`flex p-1 rounded-xl border self-center lg:self-auto shrink-0 shadow-lg ${
+                        theme === "dark" ? "bg-white/5 border-white/10" : "bg-black/5 border-black/10"
+                    }`}>
+                        <button
+                            onClick={() => {
+                                triggerHaptic("light");
+                                setScheduleView("calendar");
+                            }}
+                            className={`px-4 py-2 rounded-lg text-[10px] font-mono font-extrabold uppercase tracking-wider transition-all ${
+                                scheduleView === "calendar"
+                                    ? "bg-[#c5a059] text-black shadow-md"
+                                    : theme === "dark" 
+                                        ? "text-white/60 hover:text-white" 
+                                        : "text-black/60 hover:text-black"
                             }`}
                         >
-                            {/* Date Column */}
-                            <div className="flex flex-col min-w-[120px]">
-                                <span className="font-mono text-xs font-black tracking-widest text-[#c5a059] uppercase">{event.shortDate}</span>
-                                <span className="text-[11px] opacity-50 mt-1">{event.time}</span>
-                            </div>
-
-                            {/* Title & Venue info */}
-                            <div className="flex-1 min-w-0">
-                                <span className={`text-[10px] uppercase font-mono tracking-widest font-extrabold px-2.5 py-0.5 rounded-full inline-block mb-2 ${
-                                    theme === "dark" ? "bg-white/10 text-white" : "bg-black/5 text-black"
-                                }`}>
-                                    {event.category}
-                                </span>
-                                <h3 className="text-lg sm:text-xl font-bold tracking-tight uppercase leading-snug break-words">{event.title}</h3>
-                                <p className="text-xs opacity-50 flex items-center gap-1.5 mt-1.5">
-                                    <MapPin size={12} className="text-[#c5a059]" /> {event.venue}
-                                </p>
-                            </div>
-
-                            {/* Description block */}
-                            <div className="lg:max-w-md">
-                                <p className="text-xs opacity-60 leading-relaxed font-light">{event.description}</p>
-                            </div>
-
-                            {/* CTA Action button */}
-                            {event.ticketUrl ? (
-                                <div className="shrink-0 flex items-center">
-                                    <a
-                                        href={event.ticketUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
-                                    >
-                                        Buy Tickets
-                                    </a>
-                                </div>
-                            ) : event.shortDate === "JULY 11" && event.category === "Film & Cinema" ? (
-                                <div className="shrink-0 flex items-center">
-                                    <a
-                                        href="/panels"
-                                        className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
-                                    >
-                                        View Panels
-                                    </a>
-                                </div>
-                            ) : event.shortDate === "JULY 9" && event.category === "Album Release & Party" ? (
-                                <div className="shrink-0 flex items-center">
-                                    <a
-                                        href="/descendants"
-                                        className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
-                                    >
-                                        Album Details
-                                    </a>
-                                </div>
-                            ) : (
-                                <div className="shrink-0 flex items-center">
-                                    <button
-                                        onClick={() => {
-                                            triggerHaptic("medium");
-                                            setRsvpData(prev => ({ ...prev, events: [event.shortDate] }));
-                                            setIsRSVPOpen(true);
-                                        }}
-                                        className={`w-full lg:w-auto px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black`}
-                                    >
-                                        Get Invitation
-                                    </button>
-                                </div>
-                            )}
-                        </motion.div>
-                    ))}
+                            Calendar Grid
+                        </button>
+                        <button
+                            onClick={() => {
+                                triggerHaptic("light");
+                                setScheduleView("list");
+                            }}
+                            className={`px-4 py-2 rounded-lg text-[10px] font-mono font-extrabold uppercase tracking-wider transition-all ${
+                                scheduleView === "list"
+                                    ? "bg-[#c5a059] text-black shadow-md"
+                                    : theme === "dark" 
+                                        ? "text-white/60 hover:text-white" 
+                                        : "text-black/60 hover:text-black"
+                            }`}
+                        >
+                            Timeline List
+                        </button>
+                    </div>
                 </div>
+
+                {scheduleView === "calendar" ? (
+                    <div className="w-full overflow-x-auto scrollbar-none pb-4">
+                        <div className="min-w-[950px] lg:min-w-full">
+                            {/* Week days header grid */}
+                            <div className="grid grid-cols-7 gap-3 mb-4">
+                                {[
+                                    { day: "MON", date: "6", active: false },
+                                    { day: "TUE", date: "7", active: true },
+                                    { day: "WED", date: "8", active: true },
+                                    { day: "THU", date: "9", active: true },
+                                    { day: "FRI", date: "10", active: true },
+                                    { day: "SAT", date: "11", active: true },
+                                    { day: "SUN", date: "12", active: true }
+                                ].map((d, index) => (
+                                    <div 
+                                        key={index} 
+                                        className={`p-3 rounded-xl border text-center transition-all ${
+                                            d.active
+                                                ? theme === "dark"
+                                                    ? "bg-[#c5a059]/10 border-[#c5a059]/30 text-[#c5a059]"
+                                                    : "bg-[#c5a059]/15 border-[#c5a059]/40 text-[#a37f3a]"
+                                                : theme === "dark"
+                                                    ? "bg-white/[0.02] border-white/5 opacity-30 text-white"
+                                                    : "bg-black/[0.02] border-black/5 opacity-30 text-black"
+                                        }`}
+                                    >
+                                        <span className="block text-[9px] font-mono tracking-widest font-black uppercase">{d.day}</span>
+                                        <span className="block text-lg font-bold font-sans mt-0.5">{d.date}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Grid calendar area */}
+                            <div className="grid grid-cols-7 grid-rows-5 gap-3 relative min-h-[560px]">
+                                {/* Background grid line indicators for calendar look */}
+                                {Array.from({ length: 7 }).map((_, i) => (
+                                    <div 
+                                        key={i} 
+                                        className={`absolute top-0 bottom-0 border-l border-dashed pointer-events-none ${
+                                            theme === "dark" ? "border-white/5" : "border-black/5"
+                                        }`}
+                                        style={{ left: `${(i / 7) * 100}%` }}
+                                    />
+                                ))}
+
+                                {optimizedEvents.map((event, idx) => {
+                                    const isMultiDay = event.gridSpan > 1;
+                                    return (
+                                        <div
+                                            key={idx}
+                                            style={{
+                                                gridColumn: `${event.gridCol} / span ${event.gridSpan}`,
+                                                gridRow: `${event.gridRow}`,
+                                            }}
+                                            className={`p-4 sm:p-5 rounded-2xl border transition-all duration-300 flex flex-col justify-between group hover:-translate-y-0.5 ${
+                                                isMultiDay
+                                                    ? theme === "dark"
+                                                        ? "bg-[#c5a059]/5 border-[#c5a059]/35 text-white hover:bg-[#c5a059]/10 hover:shadow-[0_0_20px_rgba(197,160,89,0.15)]"
+                                                        : "bg-[#c5a059]/10 border-[#c5a059]/45 text-black hover:bg-[#c5a059]/15 hover:shadow-[0_0_20px_rgba(197,160,89,0.1)]"
+                                                    : theme === "dark"
+                                                        ? "bg-white/[0.01] border-white/10 text-white hover:bg-white/[0.03] hover:border-[#c5a059]/40 hover:shadow-[0_0_20px_rgba(197,160,89,0.1)]"
+                                                        : "bg-black/[0.005] border-black/10 text-black hover:bg-black/[0.015] hover:border-[#c5a059]/40 hover:shadow-[0_0_20px_rgba(197,160,89,0.05)]"
+                                            }`}
+                                        >
+                                            <div>
+                                                <div className="flex items-center justify-between gap-2 mb-2">
+                                                    <span className={`text-[8px] uppercase font-mono tracking-wider font-extrabold px-2 py-0.5 rounded-full inline-block ${
+                                                        isMultiDay 
+                                                            ? theme === "dark" ? "bg-[#c5a059]/20 text-[#c5a059]" : "bg-[#c5a059]/30 text-[#826122]"
+                                                            : theme === "dark" ? "bg-white/10 text-white/70" : "bg-black/10 text-black/70"
+                                                    }`}>
+                                                        {event.category}
+                                                    </span>
+                                                    {isMultiDay && (
+                                                        <span className={`text-[8px] font-mono tracking-widest uppercase font-black ${
+                                                            theme === "dark" ? "text-[#c5a059]" : "text-[#826122]"
+                                                        }`}>
+                                                            ↔ MULTI-DAY
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-tight leading-snug line-clamp-2">
+                                                    {event.title}
+                                                </h4>
+                                                <span className="block text-[9px] font-mono opacity-50 mt-1.5">{event.time}</span>
+                                                <span className="block text-[9px] opacity-40 mt-0.5 font-light leading-snug truncate">{event.venue}</span>
+                                            </div>
+
+                                            <div className="mt-4 flex items-center justify-between gap-2">
+                                                {event.ticketUrl ? (
+                                                    <a
+                                                        href={event.ticketUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-[9px] uppercase tracking-wider font-extrabold bg-[#c5a059] text-black hover:bg-white hover:text-black transition-all shadow-md"
+                                                    >
+                                                        Tickets
+                                                    </a>
+                                                ) : event.shortDate === "JULY 11" && event.category === "Film & Cinema" ? (
+                                                    <a
+                                                        href="/panels"
+                                                        className="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-[9px] uppercase tracking-wider font-extrabold bg-[#c5a059] text-black hover:bg-white hover:text-black transition-all shadow-md"
+                                                    >
+                                                        Panels
+                                                    </a>
+                                                ) : event.shortDate === "JULY 9" && event.category === "Album Release & Party" ? (
+                                                    <a
+                                                        href="/descendants"
+                                                        className="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-[9px] uppercase tracking-wider font-extrabold bg-[#c5a059] text-black hover:bg-white hover:text-black transition-all shadow-md"
+                                                    >
+                                                        Album
+                                                    </a>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => {
+                                                            triggerHaptic("medium");
+                                                            setRsvpData(prev => ({ ...prev, events: [event.shortDate] }));
+                                                            setIsRSVPOpen(true);
+                                                        }}
+                                                        className={`px-3.5 py-1.5 rounded-lg text-[9px] uppercase tracking-wider font-extrabold transition-all ${
+                                                            theme === "dark"
+                                                                ? "bg-[#c5a059]/25 text-[#c5a059] hover:bg-[#c5a059] hover:text-black"
+                                                                : "bg-[#c5a059]/30 text-[#826122] hover:bg-[#c5a059] hover:text-black"
+                                                        }`}
+                                                    >
+                                                        RSVP
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="flex flex-col gap-4">
+                        {optimizedEvents.map((event, idx) => (
+                            <motion.div
+                                key={idx}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: "-50px" }}
+                                transition={{ duration: 0.5, delay: idx * 0.05 }}
+                                className={`p-5 sm:p-7 rounded-2xl border transition-all duration-300 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:shadow-xl hover:-translate-y-1 ${
+                                    theme === "dark" 
+                                        ? "bg-white/[0.02] border-white/10 hover:border-[#c5a059]/40 hover:bg-white/[0.04]" 
+                                        : "bg-white border-black/10 hover:border-[#c5a059]/40 hover:bg-[#FDFBF7]"
+                                }`}
+                            >
+                                {/* Date Column */}
+                                <div className="flex flex-col min-w-[120px]">
+                                    <span className="font-mono text-xs font-black tracking-widest text-[#c5a059] uppercase">{event.dateLabel || event.shortDate}</span>
+                                    <span className="text-[11px] opacity-50 mt-1">{event.time}</span>
+                                </div>
+
+                                {/* Title & Venue info */}
+                                <div className="flex-1 min-w-0">
+                                    <span className={`text-[10px] uppercase font-mono tracking-widest font-extrabold px-2.5 py-0.5 rounded-full inline-block mb-2 ${
+                                        theme === "dark" ? "bg-white/10 text-white" : "bg-black/5 text-black"
+                                    }`}>
+                                        {event.category}
+                                    </span>
+                                    <h3 className="text-lg sm:text-xl font-bold tracking-tight uppercase leading-snug break-words">{event.title}</h3>
+                                    <p className="text-xs opacity-50 flex items-center gap-1.5 mt-1.5">
+                                        <MapPin size={12} className="text-[#c5a059]" /> {event.venue}
+                                    </p>
+                                </div>
+
+                                {/* Description block */}
+                                <div className="lg:max-w-md">
+                                    <p className="text-xs opacity-60 leading-relaxed font-light">{event.description}</p>
+                                </div>
+
+                                {/* CTA Action button */}
+                                {event.ticketUrl ? (
+                                    <div className="shrink-0 flex items-center">
+                                        <a
+                                            href={event.ticketUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
+                                        >
+                                            Buy Tickets
+                                        </a>
+                                    </div>
+                                ) : event.shortDate === "JULY 11" && event.category === "Film & Cinema" ? (
+                                    <div className="shrink-0 flex items-center">
+                                        <a
+                                            href="/panels"
+                                            className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
+                                        >
+                                            View Panels
+                                        </a>
+                                    </div>
+                                ) : event.shortDate === "JULY 9" && event.category === "Album Release & Party" ? (
+                                    <div className="shrink-0 flex items-center">
+                                        <a
+                                            href="/descendants"
+                                            className={`w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black shadow-[0_0_20px_rgba(197,160,89,0.3)]`}
+                                        >
+                                            Album Details
+                                        </a>
+                                    </div>
+                                ) : (
+                                    <div className="shrink-0 flex items-center">
+                                        <button
+                                            onClick={() => {
+                                                triggerHaptic("medium");
+                                                setRsvpData(prev => ({ ...prev, events: [event.shortDate] }));
+                                                setIsRSVPOpen(true);
+                                            }}
+                                            className={`w-full lg:w-auto px-6 py-3 rounded-xl text-xs uppercase tracking-wider font-extrabold shadow-sm hover:scale-[1.03] transition-all active:scale-[0.98] bg-[#c5a059] text-black hover:bg-white hover:text-black`}
+                                        >
+                                            Get Invitation
+                                        </button>
+                                    </div>
+                                )}
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
             </section>
 
             {/* 6. Upcoming Events Calendar Slider (Featuring VVS Innovators, strict gold/white/obsidian highlights) */}

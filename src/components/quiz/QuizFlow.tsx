@@ -75,7 +75,7 @@ const AWARDS_DATA = [
       { name: "Big Cabal (Tomiwa Aladekomo)", file: "Big Cabal (Tomiwa Aladekomo) .jpg" },
       { name: "Bumpa (Kelvin Umechukwu)", file: "Bumpa (Kelvin Umechukwu)  .jpg" },
       { name: "Moniepoint (Tosin Eniolorunda)", file: "Moniepoint (Tosin Eniolorunda) .jpg" },
-      { name: "PiggyVest (Odunayo Eweniyi)", file: "PiggyVest (Odunayo Eweniyi)  .png", winner: true },
+      { name: "PiggyVest (Odunayo Eweniyi)", file: "PiggyVest (Odunayo Eweniyi)  .png" },
       { name: "Zappie (Kelvin Edosa)", file: "Zappie (Kelvin Edosa) .jpg" }
     ]
   },
@@ -85,7 +85,7 @@ const AWARDS_DATA = [
     folder: "VISIONARY LEADERSHIP AWARD",
     nominees: [
       { name: "Akarachi Amadi", file: "Akarachi Amadi .webp" },
-      { name: "Chioma Ude", file: "Chioma Ude.webp", winner: true },
+      { name: "Chioma Ude", file: "Chioma Ude.webp" },
       { name: "Juliet Olanipekun", file: "Juliet Olanipekun  .jpg" },
       { name: "Ugoma Chinelo Ebilah", file: "Ugoma Chinelo Ebilah .jpg" }
     ]
@@ -436,7 +436,7 @@ export default function VvsPassAndVotingFlow() {
                                 nominee.winner
                                   ? "border-[#c5a059] border-2 bg-[#c5a059]/15 shadow-[0_0_30px_rgba(197,160,89,0.3)] scale-[1.01] cursor-default"
                                   : isJury
-                                    ? "border-white/5 bg-white/[0.005] opacity-35 cursor-not-allowed grayscale"
+                                    ? "border-white/10 bg-white/[0.01] cursor-default opacity-85"
                                     : isSelected
                                       ? `border-[#c5a059]/50 border-2 bg-[#c5a059]/5 shadow-[0_0_25px_rgba(197,160,89,0.15)] ${votingClosed ? 'cursor-default grayscale opacity-60' : 'scale-[1.02] cursor-pointer'}`
                                       : `border-white/10 bg-white/[0.01] ${votingClosed ? 'cursor-default grayscale opacity-35' : 'hover:border-white/20 hover:bg-white/[0.02] cursor-pointer'}`
@@ -450,7 +450,7 @@ export default function VvsPassAndVotingFlow() {
                                     nominee.winner
                                       ? "grayscale-0 scale-105 opacity-100"
                                       : isJury
-                                        ? "grayscale scale-100 opacity-50"
+                                        ? "grayscale-0 scale-100 opacity-90"
                                         : isSelected 
                                           ? "grayscale scale-105 opacity-80" 
                                           : `grayscale opacity-50 ${votingClosed ? '' : 'group-hover:opacity-85'}`

@@ -30,6 +30,7 @@ const EVENT_OPTIONS = [
     { value: "JULY 10", label: "July 10 — Future Labs Fashion Exhibition @ British Council Ikoyi" },
     { value: "JULY 11_FILM", label: "July 11 — VVS Film Experience with AFRIFF @ Film One Landmark VI" },
     { value: "JULY 11_FASHION", label: "July 11 — VVS Fashion Night Out @ Fomo Lagos" },
+    { value: "JULY 11_DINNER", label: "July 11 — VVS Private Dinner @ Four Points by Sheraton VI" },
     { value: "JULY 12", label: "July 12 — VVS Runway Show @ Club 245, VI" },
 ];
 

@@ -39,8 +39,8 @@ export default function ForgotPasswordPage() {
                     ✉️
                 </div>
                 <div className="space-y-1">
-                    <h1 className="text-lg font-bold text-white uppercase tracking-widest font-mono">// SIGNAL_TRANSMITTED</h1>
-                    <p className="text-xs text-vvs-gold font-mono uppercase tracking-wider">Check your inbox</p>
+                    <h1 className="text-xl font-bold text-white tracking-tight">Check your email</h1>
+                    <p className="text-xs text-vvs-gold">Password reset instructions sent</p>
                 </div>
                 <p className="text-xs text-text-secondary leading-relaxed px-2">
                     If an account exists for <span className="font-mono text-white bg-white/5 px-1.5 py-0.5 rounded border border-white/10">{email}</span>, we have sent password reset instructions.

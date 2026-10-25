@@ -2,6 +2,8 @@
 
 import { useAuth } from "@/lib/auth-context";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { getStoredRSVPs, saveRSVP } from "@/lib/events";
 
 type Article = {
     id: string;
@@ -83,13 +85,13 @@ const MOCK_ARTICLES: Article[] = [
     },
     {
         id: "news-5",
-        title: "VVS Lagos Convention Week 2026: The Creative Convergence",
+        title: "VVS Lagos Curated Schedule: Fashion Week, Penthouse Activations & Art X",
         category: "Announcements",
-        date: "Updated 2d ago",
+        date: "Updated just now",
         image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80",
         summary:
-            "Get ready for the ultimate annual convergence of art, culture, and fashion in Lagos. This year features physical exhibitions, panel discussions, live experiences, and showcase runways.",
-        readTime: "6 min read",
+            "From the Old Fashioned Monkey Shoulder evening to the I.N Official Flagship Launch, Deeds Magazine Halloween party, Jägermeister grill session, and Art X & Canex party — reserve your access passes directly on the Events tab.",
+        readTime: "3 min read",
         author: {
             name: "VVS Lagos Curatorial",
             avatar: "https://www.vvslagos.com/assets/VVSMASCOT7.png",
@@ -100,42 +102,90 @@ const MOCK_ARTICLES: Article[] = [
 
 const BANNER_ADS = [
     {
-        id: "ad-1",
-        tag: "MTN // VVS PARTNERSHIP",
-        title: "Free Data every Month on MTN VVS Plan",
-        cta: "Activate",
+        id: "ad-in-official",
+        eventId: "in-official-flagship",
+        tag: "FASHION WEEK // OCT 30",
+        title: "I.N Official Flagship Launch Party",
+        cta: "RSVP Now",
         tagColor: "text-vvs-accent",
-        emoji: "📶",
+        emoji: "✨",
         description:
-            "Stay connected to the creative grid. Get 10GB free data monthly on the exclusive MTN VVS custom plan.",
+            "Flagship launch party during Lagos Fashion Week at the Penthouse Space.",
     },
     {
-        id: "ad-2",
-        tag: "MAYBELLINE // VVS BEAUTY",
-        title: "Maybelline Cosmetics",
-        cta: "Claim Spot",
+        id: "ad-halloween",
+        eventId: "halloween-deeds-magazine",
+        tag: "HALLOWEEN // OCT 31",
+        title: "Halloween Party with Deeds Magazine",
+        cta: "Claim Pass",
         tagColor: "text-vvs-gold",
-        emoji: "💄",
+        emoji: "🎃",
         description:
-            "VVS Runway partner. Discover raw attitude and premium editorial palettes designed for the Surulere catwalk.",
+            "The premier Halloween gathering at the Penthouse Space with Deeds Magazine.",
+    },
+    {
+        id: "ad-jagermeister",
+        eventId: "jagermeister-grill-plan",
+        tag: "SPACE STATION // OCT 31",
+        title: "Jägermeister Meisters of the Grill",
+        cta: "Reserve Spot",
+        tagColor: "text-vvs-accent",
+        emoji: "🔥",
+        description:
+            "Grill masters, cold shots, and live DJ sets in collaboration with Space Station.",
+    },
+    {
+        id: "ad-art-x",
+        eventId: "art-x-canex-party",
+        tag: "ART & CULTURE // NOV 7",
+        title: "Art X and Canex Party",
+        cta: "RSVP",
+        tagColor: "text-vvs-gold",
+        emoji: "🎨",
+        description:
+            "Celebrating contemporary African art and music at the Penthouse Space.",
+    },
+    {
+        id: "ad-monkey-shoulder",
+        eventId: "monkey-shoulder",
+        tag: "EXCLUSIVE // OCT 25",
+        title: "Old Fashioned Monkey Shoulder Event",
+        cta: "Claim Spot",
+        tagColor: "text-vvs-accent",
+        emoji: "🥃",
+        description:
+            "Curated tasting, bespoke cocktails, and music at the Penthouse Space.",
     },
 ];
 
 export default function FeedPage() {
     const { user } = useAuth();
+    const router = useRouter();
     const [activeAd, setActiveAd] = useState(0);
     const [articles, setArticles] = useState<Article[]>(MOCK_ARTICLES);
     const [activeArticleIndex, setActiveArticleIndex] = useState(0);
     const [followingAuthors, setFollowingAuthors] = useState<Record<string, boolean>>({});
     const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
+    const [myRsvps, setMyRsvps] = useState<string[]>([]);
 
     // Auto-scroll the banner ads
     useEffect(() => {
+        setMyRsvps(getStoredRSVPs());
         const timer = setInterval(() => {
             setActiveAd((prev) => (prev + 1) % BANNER_ADS.length);
         }, 5000);
         return () => clearInterval(timer);
     }, []);
+
+    const handleBannerRSVP = (ad: typeof BANNER_ADS[number]) => {
+        if (ad.eventId) {
+            saveRSVP(ad.eventId);
+            setMyRsvps(getStoredRSVPs());
+            router.push(`/social?tab=tickets&event=${ad.eventId}`);
+        } else {
+            router.push("/social");
+        }
+    };
 
     const selectedArticle = articles.find((a) => a.id === selectedArticleId) || null;
 
@@ -330,8 +380,12 @@ export default function FeedPage() {
                             </div>
 
                             <div className="flex items-center gap-4 shrink-0 z-10">
-                                <button className="px-5 py-2.5 bg-white text-vvs-black rounded-full text-xs font-extrabold flex items-center gap-1.5 hover:bg-white/95 transition-all shadow-md cursor-pointer z-10">
-                                    View <span className="font-sans font-black">»</span>
+                                <button 
+                                    type="button"
+                                    onClick={() => handleBannerRSVP(BANNER_ADS[activeAd])}
+                                    className="px-5 py-2.5 bg-white text-vvs-black rounded-full text-xs font-extrabold flex items-center gap-1.5 hover:bg-white/95 transition-all shadow-md cursor-pointer z-10"
+                                >
+                                    {myRsvps.includes(BANNER_ADS[activeAd].eventId) ? "Pass Claimed ✓" : `${BANNER_ADS[activeAd].cta} »`}
                                 </button>
                             </div>
 

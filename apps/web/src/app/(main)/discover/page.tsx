@@ -3,7 +3,9 @@
 import Countdown from "@/components/countdown";
 import { useAuth } from "@/lib/auth-context";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api-client";
+import { getStoredRSVPs, saveRSVP } from "@/lib/events";
 
 type Opportunity = {
     id: string;
@@ -233,27 +235,69 @@ const CATEGORIES = ["All", "Fashion", "Film", "Photography", "Music", "Tech", "C
 
 const BANNER_ADS = [
     {
-        id: "ad-1",
-        tag: "VVS LAGOS 2026",
-        title: "VVSLagos is 24 days away",
+        id: "ad-in-official",
+        eventId: "in-official-flagship",
+        tag: "FASHION WEEK // OCT 30",
+        title: "I.N Official Flagship Launch Party",
         cta: "RSVP",
         tagColor: "text-vvs-accent",
         imageUrl:
             "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=400&q=80",
         description:
-            "Experience the 5th edition of VVS Lagos - Art, Fashion, and Cultural Extravaganza.",
-        targetDate: "2026-07-05T19:00:00",
+            "Official flagship launch party during Fashion Week at the Penthouse Space.",
+        targetDate: "2026-10-30T18:00:00",
     },
     {
-        id: "ad-2",
-        tag: "VVS CASTING // SURULERE",
-        title: "VVS Casting",
-        cta: "Claim Spot",
+        id: "ad-halloween",
+        eventId: "halloween-deeds-magazine",
+        tag: "HALLOWEEN // OCT 31",
+        title: "Halloween Party with Deeds Magazine",
+        cta: "RSVP",
         tagColor: "text-vvs-gold",
         imageUrl:
-            "https://images.unsplash.com/photo-1488161628813-04466f872be2?auto=format&fit=crop&w=400&q=80",
-        description: "June 23rd, 2026",
-        targetDate: "2026-06-23T09:00:00",
+            "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=400&q=80",
+        description:
+            "High-fashion costumes, soundscapes, and night sets at Penthouse Space.",
+        targetDate: "2026-10-31T20:00:00",
+    },
+    {
+        id: "ad-jagermeister",
+        eventId: "jagermeister-grill-plan",
+        tag: "GRILL & SOUND // OCT 31",
+        title: "Jägermeister Meisters of the Grill",
+        cta: "RSVP",
+        tagColor: "text-vvs-accent",
+        imageUrl:
+            "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=400&q=80",
+        description:
+            "Space Station collaboration with grill masters and live DJ sets.",
+        targetDate: "2026-10-31T16:00:00",
+    },
+    {
+        id: "ad-art-x",
+        eventId: "art-x-canex-party",
+        tag: "ART & CULTURE // NOV 7",
+        title: "Art X and Canex Party",
+        cta: "RSVP",
+        tagColor: "text-vvs-gold",
+        imageUrl:
+            "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=400&q=80",
+        description:
+            "Celebrating contemporary African art and creative expression at Penthouse Space.",
+        targetDate: "2026-11-07T19:00:00",
+    },
+    {
+        id: "ad-monkey-shoulder",
+        eventId: "monkey-shoulder",
+        tag: "EXCLUSIVE // OCT 25",
+        title: "Old Fashioned Monkey Shoulder Event",
+        cta: "RSVP",
+        tagColor: "text-vvs-accent",
+        imageUrl:
+            "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=400&q=80",
+        description:
+            "Curated tasting, bespoke cocktails, and music at Penthouse Space.",
+        targetDate: "2026-10-25T19:00:00",
     },
 ];
 
@@ -268,12 +312,14 @@ const getDaysLeft = (deadlineStr: string) => {
 
 export default function DiscoverPage() {
     const { user, addXp } = useAuth();
+    const router = useRouter();
     const [currentView, setCurrentTab] = useState<"opportunities" | "creatives">("opportunities");
     const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
     const [isLoadingOpps, setIsLoadingOpps] = useState(true);
     const [selectedType, setSelectedType] = useState<string>("All");
     const [selectedCategory, setSelectedCategory] = useState<string>("All");
     const [searchQuery, setSearchQuery] = useState("");
+    const [myRsvps, setMyRsvps] = useState<string[]>([]);
 
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -288,11 +334,22 @@ export default function DiscoverPage() {
 
     // Auto-scroll the banner ads
     useEffect(() => {
+        setMyRsvps(getStoredRSVPs());
         const timer = setInterval(() => {
             setActiveAd((prev) => (prev + 1) % BANNER_ADS.length);
         }, 6000);
         return () => clearInterval(timer);
     }, []);
+
+    const handleBannerRSVP = (ad: typeof BANNER_ADS[number]) => {
+        if (ad.eventId) {
+            saveRSVP(ad.eventId);
+            setMyRsvps(getStoredRSVPs());
+            router.push(`/social?tab=tickets&event=${ad.eventId}`);
+        } else {
+            router.push("/social");
+        }
+    };
 
     // Fetch opportunities dynamically
     useEffect(() => {
@@ -396,9 +453,12 @@ export default function DiscoverPage() {
                     {/* Right content - View button cleanly pushed right, with large overlaid diamond shape */}
                     <div className="flex items-center gap-4 shrink-0 z-10">
                         {/* View Button */}
-                        <button className="px-5 py-2.5 bg-white text-vvs-black rounded-full text-xs font-extrabold flex items-center gap-1.5 hover:bg-white/95 transition-all shadow-md cursor-pointer z-10">
-                            {BANNER_ADS[activeAd].cta}{" "}
-                            <span className="font-sans font-black">»</span>
+                        <button 
+                            type="button"
+                            onClick={() => handleBannerRSVP(BANNER_ADS[activeAd])}
+                            className="px-5 py-2.5 bg-white text-vvs-black rounded-full text-xs font-extrabold flex items-center gap-1.5 hover:bg-white/95 transition-all shadow-md cursor-pointer z-10"
+                        >
+                            {myRsvps.includes(BANNER_ADS[activeAd].eventId) ? "Pass Claimed ✓" : `${BANNER_ADS[activeAd].cta} »`}
                         </button>
                     </div>
 

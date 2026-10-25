@@ -3,20 +3,22 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api-client";
+import { CURRENT_EVENTS, EventItem, saveRSVP } from "@/lib/events";
 import Link from "next/link";
 
 type ContentEvent = {
     id: string;
-    customSlug: string;
+    customSlug?: string;
     title: string;
     description: string;
     eventDate: string;
     location: string;
-    bannerUrl: string | null;
+    bannerUrl?: string | null;
 };
 
 export default function RsvpPage() {
     const params = useParams();
+    const router = useRouter();
     const slug = params.slug as string;
 
     const [event, setEvent] = useState<ContentEvent | null>(null);
@@ -33,6 +35,26 @@ export default function RsvpPage() {
 
     useEffect(() => {
         async function fetchEvent() {
+            // First check local CURRENT_EVENTS dictionary
+            const localEvent = CURRENT_EVENTS.find(
+                (e) => e.slug === slug || e.id === slug
+            );
+
+            if (localEvent) {
+                setEvent({
+                    id: localEvent.id,
+                    customSlug: localEvent.slug,
+                    title: localEvent.title,
+                    description: localEvent.description,
+                    eventDate: localEvent.fullDate,
+                    location: localEvent.venue,
+                    bannerUrl: localEvent.bannerUrl,
+                });
+                setLoading(false);
+                return;
+            }
+
+            // Fallback to API if not in current list
             try {
                 const data = await apiClient<ContentEvent>(`/api/content/events/${slug}`);
                 setEvent(data);
@@ -50,15 +72,24 @@ export default function RsvpPage() {
         setSubmitting(true);
         setError(null);
         try {
-            await apiClient("/api/content/rsvp", {
-                method: "POST",
-                body: {
-                    name: formData.name,
-                    email: formData.email,
-                    attendance: formData.attendance,
-                    events: [event?.id]
-                }
-            });
+            if (event?.id) {
+                saveRSVP(event.id);
+            }
+
+            try {
+                await apiClient("/api/content/rsvp", {
+                    method: "POST",
+                    body: {
+                        name: formData.name,
+                        email: formData.email,
+                        attendance: formData.attendance,
+                        events: [event?.id],
+                    },
+                });
+            } catch {
+                // local save already succeeded
+            }
+
             setSuccess(true);
         } catch (err: any) {
             setError(err.message || "Failed to submit RSVP");
@@ -81,8 +112,8 @@ export default function RsvpPage() {
                 <span className="text-5xl mb-4">📭</span>
                 <h1 className="text-2xl font-bold text-text-primary">Event Not Found</h1>
                 <p className="text-text-secondary mt-2">The event you are looking for does not exist or has been removed.</p>
-                <Link href="/" className="mt-8 px-6 py-2 bg-text-primary text-vvs-bg font-bold rounded-full">
-                    Return Home
+                <Link href="/social" className="mt-8 px-6 py-2.5 bg-text-primary text-vvs-bg font-bold rounded-full hover:bg-vvs-gold transition-colors">
+                    View Events Schedule
                 </Link>
             </div>
         );
@@ -91,8 +122,8 @@ export default function RsvpPage() {
     return (
         <div className="min-h-screen bg-vvs-bg text-text-primary py-12 px-4">
             <div className="max-w-2xl mx-auto">
-                <Link href="/" className="inline-flex items-center text-sm font-bold text-text-muted hover:text-text-primary mb-8 transition-colors">
-                    ← Back to Platform
+                <Link href="/social" className="inline-flex items-center text-sm font-bold text-text-muted hover:text-text-primary mb-8 transition-colors">
+                    ← Back to Events Schedule
                 </Link>
 
                 <div className="bg-vvs-card border border-text-secondary/10 rounded-2xl overflow-hidden shadow-2xl">
@@ -122,12 +153,20 @@ export default function RsvpPage() {
                         </div>
 
                         {success ? (
-                            <div className="bg-vvs-gold/10 border border-vvs-gold/30 rounded-xl p-6 text-center">
-                                <span className="text-4xl block mb-4 text-vvs-gold">✓</span>
-                                <h3 className="text-xl font-bold text-vvs-gold mb-2">RSVP Confirmed!</h3>
+                            <div className="bg-vvs-gold/10 border border-vvs-gold/30 rounded-xl p-6 text-center space-y-4">
+                                <span className="text-4xl block text-vvs-gold">✓</span>
+                                <h3 className="text-xl font-bold text-vvs-gold">RSVP Confirmed!</h3>
                                 <p className="text-sm text-text-secondary">
-                                    Your spot has been reserved. We'll send you an email with further details shortly.
+                                    Your spot has been reserved. Your digital access pass is now active under My Passes.
                                 </p>
+                                <div className="pt-2">
+                                    <Link
+                                        href="/social?tab=tickets"
+                                        className="inline-block px-6 py-2.5 bg-text-primary text-vvs-bg font-bold rounded-full hover:bg-vvs-gold transition-colors text-xs"
+                                    >
+                                        View in My Passes →
+                                    </Link>
+                                </div>
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-4">
@@ -140,7 +179,7 @@ export default function RsvpPage() {
                                         type="text" 
                                         value={formData.name}
                                         onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full bg-black/20 border border-text-secondary/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-vvs-gold transition-colors"
+                                        className="w-full bg-black/20 border border-text-secondary/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-vvs-gold transition-colors text-text-primary"
                                         placeholder="John Doe"
                                     />
                                 </div>
@@ -152,7 +191,7 @@ export default function RsvpPage() {
                                         type="email" 
                                         value={formData.email}
                                         onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                        className="w-full bg-black/20 border border-text-secondary/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-vvs-gold transition-colors"
+                                        className="w-full bg-black/20 border border-text-secondary/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-vvs-gold transition-colors text-text-primary"
                                         placeholder="john@example.com"
                                     />
                                 </div>
@@ -162,7 +201,7 @@ export default function RsvpPage() {
                                     <select 
                                         value={formData.attendance}
                                         onChange={e => setFormData({ ...formData, attendance: e.target.value })}
-                                        className="w-full bg-black/20 border border-text-secondary/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-vvs-gold transition-colors appearance-none"
+                                        className="w-full bg-black/20 border border-text-secondary/20 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-vvs-gold transition-colors appearance-none text-text-primary"
                                     >
                                         <option value="yes">Yes, I will attend</option>
                                         <option value="no">No, I cannot attend</option>
@@ -173,7 +212,7 @@ export default function RsvpPage() {
                                 <button 
                                     type="submit" 
                                     disabled={submitting}
-                                    className="w-full mt-4 py-4 bg-text-primary text-vvs-bg font-bold rounded-lg hover:bg-vvs-gold transition-colors disabled:opacity-50"
+                                    className="w-full mt-4 py-4 bg-text-primary text-vvs-bg font-bold rounded-lg hover:bg-vvs-gold transition-colors disabled:opacity-50 cursor-pointer"
                                 >
                                     {submitting ? "Submitting..." : "Submit RSVP"}
                                 </button>

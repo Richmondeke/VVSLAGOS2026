@@ -2,123 +2,97 @@
 
 import Countdown from "@/components/countdown";
 import { useAuth } from "@/lib/auth-context";
-import { useEffect, useState } from "react";
+import { CURRENT_EVENTS, EventItem, getStoredRSVPs, saveRSVP, removeRSVP } from "@/lib/events";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { apiClient } from "@/lib/api-client";
 
-type EventItem = {
-    id: string;
-    fullDate: string;
-    date: string;
-    title: string;
-    venue: string;
-    time: string;
-    category: string;
-    note: string;
-    xpCost?: number;
-};
-
-const MOCK_EVENTS: EventItem[] = [
-    {
-        id: "ev-1",
-        fullDate: "2026-07-05T19:00:00",
-        date: "July 5",
-        title: "VVS Convention — Opening Night",
-        venue: "British/Canadian Residence, Lagos",
-        time: "7:00 PM",
-        category: "Opening Gala",
-        note: "Honorary Awards • Recap Videos • Performances • Dinner • Comedy • 5th Anniversary Celebration",
-        xpCost: 200,
-    },
-    {
-        id: "ev-2",
-        fullDate: "2026-07-06T10:00:00",
-        date: "July 6",
-        title: "VVS Convention — Panel Sessions",
-        venue: "Alliance Française Lagos",
-        time: "10:00 AM",
-        category: "Panel Discussion",
-        note: "5 Sessions • Industry Panelists • Networking • Q&A",
-        xpCost: 50,
-    },
-    {
-        id: "ev-3",
-        fullDate: "2026-07-07T09:00:00",
-        date: "July 7 – 12",
-        title: "VVS Convention Week",
-        venue: "Multiple Venues, Lagos",
-        time: "9:00 AM",
-        category: "Convention",
-        note: "Workshops • Themed Events • Dress Code Parties • Creative Sessions • Networking",
-        xpCost: 100,
-    },
-    {
-        id: "ev-4",
-        fullDate: "2026-07-08T11:00:00",
-        date: "July 8 – 10",
-        title: "VVS Convention — Pop-Up Shop",
-        venue: "Convention Hall, Lagos",
-        time: "11:00 AM",
-        category: "Pop-Up",
-        note: "Exclusive Merch • Limited Drops • Brand Collaborations",
-        xpCost: 0,
-    },
-    {
-        id: "ev-5",
-        fullDate: "2026-07-10T19:00:00",
-        date: "July 10",
-        title: "VVS Convention — Showcase Night",
-        venue: "Convention Hall, Lagos",
-        time: "7:00 PM",
-        category: "Showcase",
-        note: "Creative Showcases • Live Performances • Brand Reveals",
-        xpCost: 100,
-    },
-    {
-        id: "ev-6",
-        fullDate: "2026-07-12T18:00:00",
-        date: "July 12",
-        title: "VVS Convention — Closing Ceremony",
-        venue: "Convention Hall, Lagos",
-        time: "6:00 PM",
-        category: "Closing Event",
-        note: "Awards Recap • Final Performances • Afterparty",
-        xpCost: 150,
-    },
-];
-
-export default function SocialPage() {
+function SocialPageContent() {
     const { user, addXp } = useAuth();
-    const [events] = useState<EventItem[]>(MOCK_EVENTS);
+    const searchParams = useSearchParams();
+    const [events] = useState<EventItem[]>(CURRENT_EVENTS);
     const [activeTab, setActiveTab] = useState<"events" | "tickets">("events");
     const [myTickets, setMyTickets] = useState<string[]>([]);
     const [hoveredEventId, setHoveredEventId] = useState<string | null>(null);
 
+    // RSVP Modal State
+    const [selectedEventForRsvp, setSelectedEventForRsvp] = useState<EventItem | null>(null);
+    const [rsvpName, setRsvpName] = useState("");
+    const [rsvpEmail, setRsvpEmail] = useState("");
+    const [rsvpAttendance, setRsvpAttendance] = useState("yes");
+    const [isSubmittingRsvp, setIsSubmittingRsvp] = useState(false);
+    const [rsvpSuccessMessage, setRsvpSuccessMessage] = useState<string | null>(null);
+
     // Load registered tickets from local storage on mount
     useEffect(() => {
-        const saved = localStorage.getItem("vvs-rsvps");
-        if (saved) {
-            try {
-                setMyTickets(JSON.parse(saved));
-            } catch (e) {
-                console.error("Failed to parse tickets", e);
+        setMyTickets(getStoredRSVPs());
+
+        const tab = searchParams?.get("tab");
+        if (tab === "tickets") {
+            setActiveTab("tickets");
+        }
+
+        const eventId = searchParams?.get("event");
+        if (eventId) {
+            const ev = CURRENT_EVENTS.find((e) => e.id === eventId || e.slug === eventId);
+            if (ev) {
+                setSelectedEventForRsvp(ev);
             }
         }
-    }, []);
+    }, [searchParams]);
 
-    const handleRSVP = (eventId: string) => {
-        if (myTickets.includes(eventId)) return;
+    useEffect(() => {
+        if (user) {
+            if (user.name && !rsvpName) setRsvpName(user.name);
+            if (user.email && !rsvpEmail) setRsvpEmail(user.email);
+        }
+    }, [user, rsvpName, rsvpEmail]);
 
-        const updated = [...myTickets, eventId];
-        setMyTickets(updated);
-        localStorage.setItem("vvs-rsvps", JSON.stringify(updated));
+    const openRsvpModal = (event: EventItem) => {
+        setSelectedEventForRsvp(event);
+        setRsvpSuccessMessage(null);
+    };
 
-        // Reward user for getting a pass
-        addXp(100);
+    const handleConfirmRSVP = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        if (!selectedEventForRsvp) return;
+
+        setIsSubmittingRsvp(true);
+        try {
+            // Attempt backend API RSVP call if available
+            try {
+                await apiClient("/api/content/rsvp", {
+                    method: "POST",
+                    body: {
+                        name: rsvpName || user?.name || "VVS Member",
+                        email: rsvpEmail || user?.email || "member@vvslagos.com",
+                        attendance: rsvpAttendance,
+                        events: [selectedEventForRsvp.id],
+                    },
+                });
+            } catch (err) {
+                // Backend not connected or mock mode — locally saved RSVP takes precedence
+                console.info("Using local RSVP storage for pass confirmation.");
+            }
+
+            const updated = saveRSVP(selectedEventForRsvp.id);
+            setMyTickets(updated);
+            addXp(100);
+
+            setRsvpSuccessMessage(`RSVP confirmed for ${selectedEventForRsvp.title}!`);
+            setTimeout(() => {
+                setSelectedEventForRsvp(null);
+                setRsvpSuccessMessage(null);
+                setActiveTab("tickets");
+            }, 1200);
+        } finally {
+            setIsSubmittingRsvp(false);
+        }
     };
 
     const handleCancelRSVP = (eventId: string) => {
-        const updated = myTickets.filter((id) => id !== eventId);
+        const updated = removeRSVP(eventId);
         setMyTickets(updated);
-        localStorage.setItem("vvs-rsvps", JSON.stringify(updated));
     };
 
     // Helper to get day name label
@@ -137,8 +111,8 @@ export default function SocialPage() {
                         Events
                     </h1>
                     <p className="text-text-secondary max-w-2xl text-sm leading-relaxed">
-                        Secure your entry passes to showrooms, casting calls, and exclusive design
-                        summits. RSVP to redeem your digital access passes.
+                        Discover upcoming events, launch parties, and experiences. RSVP to reserve
+                        your spot and view your access passes.
                     </p>
                 </div>
 
@@ -211,14 +185,12 @@ export default function SocialPage() {
                                         {event.title}
                                     </h3>
 
-                                    {/* Activities expansion with pure CSS transitions */}
-                                    <div
-                                        className={`transition-all duration-300 overflow-hidden flex flex-wrap gap-2 ${
-                                            isHovered
-                                                ? "max-h-20 opacity-100 mt-3"
-                                                : "max-h-0 opacity-0 mt-0"
-                                        }`}
-                                    >
+                                    <p className="text-xs text-text-secondary max-w-xl leading-relaxed">
+                                        {event.description}
+                                    </p>
+
+                                    {/* Activities chips */}
+                                    <div className="flex flex-wrap gap-2 pt-1">
                                         {activities.map((act, i) => (
                                             <span
                                                 key={i}
@@ -252,15 +224,20 @@ export default function SocialPage() {
                                         {/* RSVP Action */}
                                         <button
                                             type="button"
-                                            onClick={() => handleRSVP(event.id)}
-                                            disabled={hasPass}
+                                            onClick={() => {
+                                                if (hasPass) {
+                                                    setActiveTab("tickets");
+                                                } else {
+                                                    openRsvpModal(event);
+                                                }
+                                            }}
                                             className={`px-5 py-2.5 rounded-full text-xs font-bold transition-all duration-300 ${
                                                 hasPass
-                                                    ? "bg-vvs-green/10 border border-vvs-green/30 text-vvs-green cursor-not-allowed"
+                                                    ? "bg-vvs-green/10 border border-vvs-green/30 text-vvs-green hover:bg-vvs-green/20 cursor-pointer"
                                                     : "bg-text-primary text-vvs-bg hover:bg-vvs-gold hover:text-text-primary cursor-pointer shadow-md"
                                             }`}
                                         >
-                                            {hasPass ? "Pass Claimed ✓" : "Claim Pass"}
+                                            {hasPass ? "View Pass ✓" : "RSVP Now"}
                                         </button>
                                     </div>
                                 </div>
@@ -277,12 +254,18 @@ export default function SocialPage() {
                         <div className="glass-panel text-center py-20 rounded-2xl max-w-xl mx-auto border border-text-secondary/5">
                             <span className="text-5xl">🎟️</span>
                             <h3 className="text-base font-bold mt-4 text-text-primary">
-                                No access passes active
+                                No active passes yet
                             </h3>
                             <p className="text-xs text-text-secondary mt-1">
-                                Claim entry passes to showroom previews and roundtables from the
-                                schedule list.
+                                You haven't RSVP'd to any events yet. Browse the schedule to claim your spot.
                             </p>
+                            <button
+                                type="button"
+                                onClick={() => setActiveTab("events")}
+                                className="mt-5 px-6 py-2.5 bg-text-primary text-vvs-bg text-xs font-bold rounded-full hover:bg-vvs-gold transition-colors cursor-pointer"
+                            >
+                                Browse Events Schedule
+                            </button>
                         </div>
                     ) : (
                         <div className="grid gap-6 md:grid-cols-2">
@@ -309,8 +292,8 @@ export default function SocialPage() {
                                                         {ev.title}
                                                     </h3>
                                                 </div>
-                                                <span className="text-xs text-text-muted">
-                                                    Pass ID: #{ev.id.toUpperCase()}
+                                                <span className="text-xs text-text-muted font-mono">
+                                                    Pass ID: #{ev.id.toUpperCase().slice(0, 10)}
                                                 </span>
                                             </div>
 
@@ -318,10 +301,10 @@ export default function SocialPage() {
                                             <div className="grid grid-cols-2 gap-y-4 text-xs">
                                                 <div>
                                                     <span className="block text-[8px] text-text-muted uppercase tracking-wider">
-                                                        MEMBER NAME
+                                                        GUEST NAME
                                                     </span>
                                                     <span className="font-bold text-text-primary">
-                                                        {user?.name || "Verified vanguard"}
+                                                        {user?.name || rsvpName || "VVS Member"}
                                                     </span>
                                                 </div>
                                                 <div>
@@ -329,7 +312,7 @@ export default function SocialPage() {
                                                         STATUS
                                                     </span>
                                                     <span className="font-bold text-vvs-green uppercase tracking-wide">
-                                                        ✓ VERIFIED VISITOR
+                                                        ✓ RSVP CONFIRMED
                                                     </span>
                                                 </div>
                                                 <div>
@@ -342,7 +325,7 @@ export default function SocialPage() {
                                                 </div>
                                                 <div>
                                                     <span className="block text-[8px] text-text-muted uppercase tracking-wider">
-                                                        LOCATION VENUE
+                                                        VENUE
                                                     </span>
                                                     <span className="font-bold text-text-primary uppercase leading-tight">
                                                         {ev.venue}
@@ -354,7 +337,7 @@ export default function SocialPage() {
                                             <div className="border-t border-text-secondary/10 pt-4 flex items-end justify-between">
                                                 <div className="space-y-1">
                                                     <span className="block text-[7px] text-text-muted font-mono tracking-widest leading-none">
-                                                        BARCODE SECURED
+                                                        DIGITAL PASS
                                                     </span>
                                                     <span className="font-mono text-base md:text-lg leading-none tracking-widest text-text-primary select-none opacity-80">
                                                         ||||| ||| || ||||| |
@@ -364,7 +347,7 @@ export default function SocialPage() {
                                                 <button
                                                     type="button"
                                                     onClick={() => handleCancelRSVP(ev.id)}
-                                                    className="text-[10px] font-bold text-text-muted hover:text-vvs-accent transition-colors"
+                                                    className="text-[10px] font-bold text-text-muted hover:text-vvs-accent transition-colors cursor-pointer"
                                                 >
                                                     Cancel RSVP
                                                 </button>
@@ -377,6 +360,122 @@ export default function SocialPage() {
                     )}
                 </div>
             )}
+
+            {/* RSVP Confirmation Modal */}
+            {selectedEventForRsvp && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+                    <div className="relative w-full max-w-lg rounded-2xl bg-vvs-card border border-text-secondary/15 p-6 md:p-8 shadow-2xl">
+                        {rsvpSuccessMessage ? (
+                            <div className="text-center py-6 space-y-4">
+                                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-vvs-gold/15 text-3xl text-vvs-gold">
+                                    ✓
+                                </div>
+                                <h3 className="text-xl font-bold text-text-primary">
+                                    RSVP Confirmed!
+                                </h3>
+                                <p className="text-sm text-text-secondary">
+                                    {rsvpSuccessMessage}
+                                </p>
+                                <p className="text-xs text-vvs-gold font-mono">
+                                    Taking you to your pass...
+                                </p>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleConfirmRSVP} className="space-y-5">
+                                <div className="flex items-start justify-between border-b border-text-secondary/10 pb-4">
+                                    <div>
+                                        <span className="text-[10px] font-mono uppercase tracking-widest text-vvs-gold font-bold">
+                                            Reserve Access Pass
+                                        </span>
+                                        <h2 className="text-xl font-serif font-bold text-text-primary mt-1">
+                                            {selectedEventForRsvp.title}
+                                        </h2>
+                                        <p className="text-xs text-text-secondary mt-1">
+                                            📅 {selectedEventForRsvp.date} @ {selectedEventForRsvp.time} • 📍 {selectedEventForRsvp.venue}
+                                        </p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedEventForRsvp(null)}
+                                        className="text-text-muted hover:text-text-primary text-xl font-bold p-1 cursor-pointer"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-semibold text-text-secondary">
+                                            Full Name
+                                        </label>
+                                        <input
+                                            required
+                                            type="text"
+                                            value={rsvpName}
+                                            onChange={(e) => setRsvpName(e.target.value)}
+                                            placeholder="Your full name"
+                                            className="w-full rounded-xl bg-black/20 border border-text-secondary/20 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-vvs-gold transition-colors"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-semibold text-text-secondary">
+                                            Email Address
+                                        </label>
+                                        <input
+                                            required
+                                            type="email"
+                                            value={rsvpEmail}
+                                            onChange={(e) => setRsvpEmail(e.target.value)}
+                                            placeholder="your.email@example.com"
+                                            className="w-full rounded-xl bg-black/20 border border-text-secondary/20 px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-vvs-gold transition-colors"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <label className="text-xs font-semibold text-text-secondary">
+                                            Attendance Confirmation
+                                        </label>
+                                        <select
+                                            value={rsvpAttendance}
+                                            onChange={(e) => setRsvpAttendance(e.target.value)}
+                                            className="w-full rounded-xl bg-black/20 border border-text-secondary/20 px-4 py-3 text-sm text-text-primary focus:outline-none focus:border-vvs-gold transition-colors"
+                                        >
+                                            <option value="yes">Yes, I will attend</option>
+                                            <option value="maybe">Interested (Keep me updated)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-3 pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedEventForRsvp(null)}
+                                        className="flex-1 py-3 px-4 rounded-xl border border-text-secondary/20 text-xs font-bold text-text-secondary hover:text-text-primary hover:border-text-secondary/40 transition-colors cursor-pointer"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmittingRsvp}
+                                        className="flex-1 py-3 px-4 rounded-xl bg-text-primary text-vvs-bg text-xs font-bold hover:bg-vvs-gold hover:text-text-primary transition-colors cursor-pointer disabled:opacity-50"
+                                    >
+                                        {isSubmittingRsvp ? "Reserving..." : "Confirm RSVP"}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
+    );
+}
+
+export default function SocialPage() {
+    return (
+        <Suspense fallback={<div className="min-h-[50vh] flex items-center justify-center"><span className="text-2xl animate-pulse">⚡</span></div>}>
+            <SocialPageContent />
+        </Suspense>
     );
 }

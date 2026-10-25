@@ -199,13 +199,13 @@ export default function WalletPage() {
             {/* Ledger logs */}
             <div className="space-y-4">
                 <div className="flex items-center justify-between border-b border-text-secondary/10 pb-2">
-                    <span className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest block">TRANSACTION LEDGER</span>
-                    <span className="text-[10px] font-mono text-text-muted">{transactions.length} ACTIONS LOGGED</span>
+                    <span className="mono-caps text-[10px] font-bold text-text-secondary tracking-widest block">RECENT ACTIVITY</span>
+                    <span className="text-[10px] font-mono text-text-muted">{transactions.length} items</span>
                 </div>
 
                 {transactions.length === 0 ? (
                     <div className="rounded-vvs-lg border border-dashed border-text-secondary/10 bg-transparent p-12 text-center">
-                        <span className="text-xs text-text-muted uppercase tracking-wider font-mono">No Ledger Records Found</span>
+                        <span className="text-xs text-text-muted font-medium">No recent transactions</span>
                     </div>
                 ) : (
                     <div className="space-y-2.5">

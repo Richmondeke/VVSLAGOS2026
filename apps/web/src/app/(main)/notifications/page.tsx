@@ -79,7 +79,7 @@ export default function NotificationsPage() {
 
     return (
         <div className="mx-auto max-w-3xl p-6 space-y-8">
-            {/* Header Telemetry */}
+            {/* Header */}
             <div className="flex items-end justify-between border-b border-text-secondary/15 pb-6">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-text-primary flex items-center gap-3">
@@ -92,7 +92,7 @@ export default function NotificationsPage() {
                 {hasUnread && (
                     <button 
                         onClick={markAllRead} 
-                        className="mono-caps text-xs text-vvs-gold hover:text-text-primary border border-vvs-gold/30 hover:border-white px-3 py-1.5 rounded bg-vvs-gold/5 hover:bg-text-secondary/5 transition-all"
+                        className="mono-caps text-xs text-vvs-gold hover:text-text-primary border border-vvs-gold/30 hover:border-white px-3 py-1.5 rounded bg-vvs-gold/5 hover:bg-text-secondary/5 transition-all cursor-pointer"
                     >
                         Mark all as read
                     </button>
@@ -101,11 +101,11 @@ export default function NotificationsPage() {
 
             {notifications.length === 0 && (
                 <div className="glass-panel rounded-xl p-12 text-center border border-text-secondary/10 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-text-secondary/15" />
-                    <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-text-secondary/15" />
-                    <div className="text-4xl mb-4 text-text-primary/20">🔔</div>
-                    <p className="text-text-primary/60 font-medium">Your telemetry channel is quiet.</p>
-                    <p className="text-xs text-text-primary/40 mt-1 font-mono uppercase tracking-wider">No active signals detected at this coordinates</p>
+                    <div className="text-4xl mb-3 text-text-primary/30">🔔</div>
+                    <h3 className="text-base font-semibold text-text-primary">No notifications yet</h3>
+                    <p className="text-sm text-text-secondary mt-1 max-w-md mx-auto">
+                        You're all caught up! When there are event announcements, RSVP updates, or invites, you'll see them right here.
+                    </p>
                 </div>
             )}
 
